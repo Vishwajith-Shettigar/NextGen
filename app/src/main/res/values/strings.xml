@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">NextGen</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_label">Home</string>
+    <string name="nearby_label">Near By</string>
+    <string name="notification_label">Notification</string>
+    <string name="profile_label">Profile</string>
+
+
 </resources>

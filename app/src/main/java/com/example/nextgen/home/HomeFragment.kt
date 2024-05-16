@@ -12,8 +12,8 @@ import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.Fragment.FragmentScope
 import com.example.nextgen.R
+import com.example.nextgen.databinding.FragmentHomeBinding
 import javax.inject.Inject
-
 
 @FragmentScope
 class HomeFragment : BaseFragment() {
@@ -22,6 +22,8 @@ class HomeFragment : BaseFragment() {
 
   @Inject
   lateinit var fragment: Fragment
+
+  lateinit var binding: FragmentHomeBinding
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
@@ -32,10 +34,8 @@ class HomeFragment : BaseFragment() {
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
-    val view = inflater.inflate(
-      R.layout.fragment_home, container, false
-    )
-    return view
+    binding = FragmentHomeBinding.inflate(inflater,container,false)
+    return binding.root
   }
 
   companion object {
@@ -44,6 +44,4 @@ class HomeFragment : BaseFragment() {
       return HomeFragment()
     }
   }
-
-
 }

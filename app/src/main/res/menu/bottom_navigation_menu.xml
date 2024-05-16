@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="bottom_navigation">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/home_24"
+        android:title="@string/home_label"
+        />
+    <item
+        android:id="@+id/nearby"
+        android:enabled="true"
+        android:icon="@drawable/nearby_24"
+        android:title="@string/nearby_label" />
+    <item
+        android:id="@+id/notification"
+        android:enabled="true"
+        android:icon="@drawable/notifications_24"
+        android:title="@string/notification_label" />
+    <item
+        android:id="@+id/profile"
+        android:enabled="true"
+        android:icon="@drawable/person_24"
+        android:title="@string/profile_label" />
+</menu>

@@ -11,16 +11,12 @@
         android:layout_height="match_parent"
         tools:context=".home.HomeFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:src="@color/purple_200"
+            android:contentDescription="dewwe" />
 
-        <Button
-            android:id="@+id/btn"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
 
     </FrameLayout>
 </layout>

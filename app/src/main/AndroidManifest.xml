@@ -13,9 +13,6 @@
         android:theme="@style/Theme.NextGen"
         tools:targetApi="31">
         <activity
-            android:name=".nearby.NearByActivity"
-            android:exported="false" />
-        <activity
             android:name=".home.HomeActivity"
             android:exported="true">
             <intent-filter>
