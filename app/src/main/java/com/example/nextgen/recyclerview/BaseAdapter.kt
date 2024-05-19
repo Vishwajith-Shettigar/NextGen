@@ -17,12 +17,13 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
 
 
   var expressionViewHolderBinding: ((T, ViewBinding) -> Unit)? = null
-  var expressionOnCreateViewHolder: ((ViewGroup) -> ViewBinding)? = null
+  var expressionOnCreateViewHolder: ((ViewGroup, ViewType) -> ViewBinding)? = null
+  val expressionGetViewType: ((T) -> ViewType)? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-
+    val viewTypeEnum = ViewType.values()[viewType]
     return expressionOnCreateViewHolder?.let {
-      it(parent).let {
+      it(parent, viewTypeEnum).let {
         BaseViewHolder(
           it,
           expressionViewHolderBinding!!
@@ -39,7 +40,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
     holder.bind(itemList[position])
   }
 
-  fun addItems(newItems:MutableList<T>){
+  fun addItems(newItems: MutableList<T>) {
     itemList.addAll(newItems)
     notifyDataSetChanged()
   }
@@ -49,10 +50,19 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
     private val binding: ViewBinding,
     private val expression: (T, ViewBinding) -> Unit,
   ) : RecyclerView.ViewHolder(binding.root) {
-
     fun bind(item: T) {
       expression(item, binding)
     }
+  }
 
+  override fun getItemViewType(position: Int): Int {
+    // Implement logic to determine view type for each item
+    val item = itemList[position]
+    return expressionGetViewType?.let { it(item).ordinal }!!
+  }
+
+  enum class ViewType {
+    CREATE_POST,
+    POST
   }
 }
