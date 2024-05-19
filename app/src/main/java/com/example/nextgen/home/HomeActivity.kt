@@ -18,7 +18,6 @@ import com.example.nextgen.notification.NotificationFragment
 import com.example.nextgen.profile.ProfileFragment
 import javax.inject.Inject
 
-@ActivityScope
 class HomeActivity : BaseActivity() {
   @Inject
   lateinit var activity: AppCompatActivity

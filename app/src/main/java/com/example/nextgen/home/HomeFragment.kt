@@ -15,7 +15,6 @@ import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentHomeBinding
 import javax.inject.Inject
 
-@FragmentScope
 class HomeFragment : BaseFragment() {
   @Inject
   lateinit var activity: AppCompatActivity
