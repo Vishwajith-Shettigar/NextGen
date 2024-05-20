@@ -9,7 +9,6 @@ protobuf {
         all().each { task ->
             task.builtins {
                 java {
-                    // This setup is per https://github.com/google/protobuf-gradle-plugin/issues/315.
                     option 'lite'
                 }
             }
@@ -18,7 +17,7 @@ protobuf {
 }
 
 dependencies {
-    implementation 'com.google.protobuf:protobuf-javalite:3.22.3'
+    implementation 'com.google.protobuf:protobuf-javalite:4.26.1'
 }
 
 sourceSets {
