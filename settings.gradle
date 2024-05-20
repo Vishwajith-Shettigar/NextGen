@@ -1,17 +1,21 @@
+
 pluginManagement {
     repositories {
         google()
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
     }
 }
+
+include ':app', ':model'
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
+        jcenter() // Note: JCenter is deprecated, use it only if necessary
     }
 }
 rootProject.name = "NextGen"
-include ':app'
-include ':model'
+

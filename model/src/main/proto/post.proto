@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.example.model";
+option java_multiple_files = true;
+
+message Post {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+}

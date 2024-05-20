@@ -7,16 +7,15 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
+import com.example.model.Post
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.ActivityScope
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ActivityHomeBinding
-import com.example.nextgen.databinding.FragmentHomeBinding
-import com.example.nextgen.nearby.NearByFragment
-import com.example.nextgen.notification.NotificationFragment
-import com.example.nextgen.profile.ProfileFragment
 import javax.inject.Inject
+
+
 
 class HomeActivity : BaseActivity() {
   @Inject
@@ -29,10 +28,8 @@ class HomeActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-
     viewPagerAdapter = ViewPagerAdapter(this)
     binding.viewPager.adapter = viewPagerAdapter
-
 
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
       when (menu.itemId) {

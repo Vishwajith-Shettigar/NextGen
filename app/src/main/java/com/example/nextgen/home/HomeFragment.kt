@@ -1,5 +1,6 @@
 package com.example.nextgen.home
 
+import android.app.Person
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -32,6 +33,8 @@ class HomeFragment : BaseFragment() {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
+
+
     // Inflate the layout for this fragment
     binding = FragmentHomeBinding.inflate(inflater,container,false)
     return binding.root

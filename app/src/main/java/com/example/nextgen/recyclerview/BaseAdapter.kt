@@ -1,10 +1,8 @@
 package com.example.nextgen.recyclerview
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-
 
 class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
 
@@ -18,7 +16,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
 
   var expressionViewHolderBinding: ((T, ViewBinding) -> Unit)? = null
   var expressionOnCreateViewHolder: ((ViewGroup, ViewType) -> ViewBinding)? = null
-  val expressionGetViewType: ((T) -> ViewType)? = null
+  var expressionGetViewType: ((T) -> ViewType)? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
     val viewTypeEnum = ViewType.values()[viewType]
