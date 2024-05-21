@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+// firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,6 +43,7 @@ apply plugin: 'kotlin-kapt'
 dependencies {
 
     implementation project(':model')
+    implementation project(':domain')
 
     implementation("com.google.protobuf:protobuf-javalite:4.26.1") {
         exclude module: 'protobuf-java'
@@ -49,6 +52,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -57,5 +61,13 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.46'
     kapt 'com.google.dagger:dagger-compiler:2.43.2'
 
+
+    //firenbase
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation 'com.google.firebase:firebase-auth:23.0.0'
+    implementation 'com.google.firebase:firebase-database:21.0.0'
+    implementation 'com.google.firebase:firebase-firestore:25.0.0'
+    implementation 'com.google.firebase:firebase-storage:21.0.0'
 
 }

@@ -1,39 +1,36 @@
 package com.example.nextgen.home
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
-import com.example.model.Post
+import com.example.domain.post.PostController
 import com.example.nextgen.Activity.ActivityComponent
-import com.example.nextgen.Activity.ActivityScope
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ActivityHomeBinding
+import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
-
-
 
 class HomeActivity : BaseActivity() {
   @Inject
   lateinit var activity: AppCompatActivity
 
+  @Inject
+  lateinit var firebaseFirestore: FirebaseFirestore
+
   lateinit var binding: ActivityHomeBinding
 
   lateinit var viewPagerAdapter: ViewPagerAdapter
+
+  @Inject
+  lateinit var postController: PostController
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
     viewPagerAdapter = ViewPagerAdapter(this)
     binding.viewPager.adapter = viewPagerAdapter
-val p=Post.newBuilder().apply {
- this.id=1
-  this.name="ded"
-}.build()
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
       when (menu.itemId) {
         R.id.home -> {

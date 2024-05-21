@@ -1,6 +1,7 @@
 package com.example.nextgen.Application
 
 import android.app.Application
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MyApplication : Application() {
 
@@ -8,7 +9,10 @@ class MyApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    appComponent=DaggerAppComponent.create()
+    FirebaseFirestore.setLoggingEnabled(true)
+    appComponent = DaggerAppComponent.builder()
+      .appModule(AppModule(this))
+      .build()
     appComponent.inject(this)
   }
 }
