@@ -12,6 +12,7 @@ import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.nextgen.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -121,6 +122,11 @@ class NearByFragment : Fragment() , OnMapReadyCallback {
           // Add a marker at the other user's location
           mMap.addMarker(MarkerOptions().position(otherUserLocation).title(" User 3")
             .icon(bitmapDescriptorFromVector(R.drawable.notifications_24)))
+
+          mMap.setOnMarkerClickListener { marker ->
+              Log.e("#",marker.toString())
+            true
+          }
 
         }
       }
