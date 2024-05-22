@@ -7,10 +7,10 @@
     android:background="@color/teal_700"
     >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <fragment
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
