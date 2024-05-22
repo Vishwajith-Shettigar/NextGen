@@ -11,6 +11,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.protobuf:protobuf-gradle-plugin:$protobufVersion"
         classpath 'com.google.gms:google-services:4.4.1'
+        // secrets gradle plugin
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
+
 
     }
 }
