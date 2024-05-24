@@ -31,6 +31,7 @@ class HomeActivity : BaseActivity() {
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
     viewPagerAdapter = ViewPagerAdapter(this)
     binding.viewPager.adapter = viewPagerAdapter
+
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
       when (menu.itemId) {
         R.id.home -> {

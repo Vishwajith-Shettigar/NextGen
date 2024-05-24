@@ -1,8 +1,10 @@
 package com.example.nextgen.Application
 
 import android.content.Context
-import com.example.domain.post.PostController
+import com.firebase.geofire.GeoFire
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,5 +22,6 @@ class AppModule(private val context: Context) {
   fun provideFirebaseFirestore():FirebaseFirestore{
     return FirebaseFirestore.getInstance()
   }
+
 
 }
