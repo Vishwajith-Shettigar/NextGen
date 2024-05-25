@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
-            type="com.example.nextgen.signup.SignupViewModel" />
+            type="com.example.nextgen.signup.SignInViewModel" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".signup.SignupSigninActivity"
-        android:background="@color/white">
-
+        tools:context=".Signinactivity"
+        android:background="@color/white"
+        >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,75 +31,62 @@
                 android:textSize="50dp"
                 android:text="NextGen"
                 android:layout_marginBottom="100dp"
-
                 />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nextgen_logo"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="#7E7B7B"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@{viewModel.usernameLiveData}"
-                android:layout_marginBottom="10dp"
-                android:hint="Enter username " />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email"
                 android:layout_width="300dp"
+                android:textColor="@color/black"
+                android:textColorHint="#7E7B7B"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/username"
+                android:layout_below="@+id/nextgen_logo"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="10dp"
+                android:text="@{viewModel.emailLiveData}"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="@{viewModel.emailLiveData}"
                 android:layout_marginBottom="10dp"
-                android:hint="Enter email "
-                android:textColor="@color/black"
-                android:textColorHint="#7E7B7B" />
+                android:hint="Enter email " />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/email"
-                android:hint="Enter password "
-                android:layout_margin="10dp"
-                android:text="@{viewModel.passwordLiveData}"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="#7E7B7B"
-                />
+                android:layout_marginTop="10dp"
+                android:text="@{viewModel.passwordLiveData}"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Enter password " />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/signupbtn"
+                android:id="@+id/signinbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:layout_below="@id/password"
                 android:layout_centerInParent="true"
-                android:text="sign up"
-                android:textColor="@color/white"
                 android:layout_marginTop="10dp"
-                />
+                android:text="sign in"
+
+                android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/signinherebtn"
+                android:id="@+id/signupherebtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/signupbtn"
+                android:layout_below="@+id/signinbtn"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:focusable="true"
+                android:text="Dont have an account ? create here"
                 android:onClick="@{viewModel.onClickSignIn}"
-                android:text="Already have an account ? sign in here"
                 android:textColor="#626997" />
         </RelativeLayout>
+
+
     </RelativeLayout>
 </layout>

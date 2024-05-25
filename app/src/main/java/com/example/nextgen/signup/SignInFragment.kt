@@ -10,28 +10,18 @@ import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
+import com.example.nextgen.databinding.FragmentSignInBinding
 import com.example.nextgen.databinding.FragmentSignupBinding
 import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignupFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
-class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
+class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
 
 
   @Inject
   lateinit var fragment: Fragment
 
-  private lateinit var binding: FragmentSignupBinding
+  private lateinit var binding: FragmentSignInBinding
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
@@ -41,27 +31,27 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
-    binding = FragmentSignupBinding.inflate(inflater, container, false)
+    binding = FragmentSignInBinding.inflate(inflater, container, false)
 
-    val signupViewModel = SignupViewModel(fragment as RouteToSignupSigninListener)
+    val signInViewModel = SignInViewModel(fragment as RouteToSignupSigninListener)
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = signupViewModel
+      it.viewModel = signInViewModel
     }
     return binding.root
   }
 
   companion object {
-    val tag: String = "SignUpFragment"
+    val tag: String = "SignInFragment"
 
-    fun newInstance(): SignupFragment {
-      return SignupFragment()
+    fun newInstance(): SignInFragment {
+      return SignInFragment()
     }
   }
 
   override fun routeToSignupOrSignin() {
-    Log.e(LOG_KEY,"Sign up Fragment called")
-    (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(SignInFragment.newInstance(),SignInFragment.tag)
+    Log.e(LOG_KEY,"sign in Fragment called")
+    (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(SignupFragment.newInstance(),SignupFragment.tag)
   }
 }

@@ -32,9 +32,6 @@ import kotlin.random.Random
 
 class HomeFragment : BaseFragment() {
   @Inject
-  lateinit var activity: AppCompatActivity
-
-  @Inject
   lateinit var fragment: Fragment
 
   @Inject
