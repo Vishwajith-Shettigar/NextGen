@@ -3,12 +3,16 @@ package com.example.nextgen.home
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domain.post.PostController
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ActivityHomeBinding
+import com.example.nextgen.nearby.NearByFragment
+import com.example.nextgen.notification.NotificationFragment
+import com.example.nextgen.profile.ProfileFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
@@ -29,45 +33,54 @@ class HomeActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-    viewPagerAdapter = ViewPagerAdapter(this)
-    binding.viewPager.adapter = viewPagerAdapter
+
+    loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
       when (menu.itemId) {
         R.id.home -> {
-          binding.viewPager.currentItem = 0
+          loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
           true
         }
         R.id.nearby -> {
-          binding.viewPager.currentItem = 1
+          loadFragment(NearByFragment.newInstance(), NearByFragment.TAG)
           true
         }
         R.id.notification -> {
-          binding.viewPager.currentItem = 2
+          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
           true
         }
         R.id.profile -> {
-          binding.viewPager.currentItem = 3
+          loadFragment(ProfileFragment.newInstance(), ProfileFragment.TAG)
           true
         }
         else -> false
       }
     }
 
-    binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-      override fun onPageSelected(position: Int) {
-        super.onPageSelected(position)
-        when (position) {
-          0 -> binding.bottomNavigation.menu.findItem(R.id.home).isChecked = true
-          1 -> binding.bottomNavigation.menu.findItem(R.id.nearby).isChecked = true
-          2 -> binding.bottomNavigation.menu.findItem(R.id.notification).isChecked = true
-          3 -> binding.bottomNavigation.menu.findItem(R.id.profile).isChecked = true
-        }
-      }
-    })
-
   }
 
+
+  private fun loadFragment(fragment: Fragment, tag: String) {
+    val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+    val currentFragment = supportFragmentManager.primaryNavigationFragment
+    if (currentFragment != null) {
+      fragmentTransaction.hide(currentFragment)
+    }
+
+    var fragmentTemp = supportFragmentManager.findFragmentByTag(tag)
+    if (fragmentTemp == null) {
+      fragmentTemp = fragment
+      fragmentTransaction.add(R.id.frame_layout, fragmentTemp, tag)
+    } else {
+      fragmentTransaction.show(fragmentTemp)
+    }
+
+    fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp)
+    fragmentTransaction.setReorderingAllowed(true)
+    fragmentTransaction.commitNowAllowingStateLoss()
+  }
   override fun injectDependencies(activityComponent: ActivityComponent) {
     activityComponent.inject(this)
   }

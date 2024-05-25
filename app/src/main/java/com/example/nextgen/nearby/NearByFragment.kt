@@ -80,6 +80,9 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
   }
 
   companion object {
+
+    const val TAG = "NearByFragment"
+
     fun newInstance(): NearByFragment {
       return NearByFragment()
     }

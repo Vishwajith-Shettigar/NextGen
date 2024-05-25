@@ -109,6 +109,9 @@ storeUsers()
   }
 
   companion object {
+
+    const val TAG = "HomeFragment"
+
     /** Returns instance of [HomeFragment] */
     fun newInstance(): HomeFragment {
       return HomeFragment()

@@ -33,6 +33,9 @@ class ProfileFragment : BaseFragment() {
   }
 
   companion object {
+
+    const val TAG = "ProfileFragment"
+
     fun newInstance(): ProfileFragment {
       return ProfileFragment()
     }
