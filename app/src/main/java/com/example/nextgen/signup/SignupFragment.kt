@@ -74,6 +74,7 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
           (activity as RouteToHomeActivity).routeToHome()
         }
         is com.example.utility.Result.Failure -> {
+          Log.e(LOG_KEY,it.message)
         }
         else -> Unit
       }

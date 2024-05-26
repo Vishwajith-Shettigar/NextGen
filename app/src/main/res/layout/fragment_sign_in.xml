@@ -42,7 +42,6 @@
                 android:layout_below="@+id/nextgen_logo"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="10dp"
-                android:text="@{viewModel.emailLiveData}"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
@@ -58,7 +57,6 @@
                 android:textColor="@color/black"
                 android:textColorHint="#7E7B7B"
                 android:layout_marginTop="10dp"
-                android:text="@{viewModel.passwordLiveData}"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:hint="Enter password " />
@@ -83,7 +81,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:text="Dont have an account ? create here"
-                android:onClick="@{viewModel.onClickSignIn}"
+                android:onClick="@{viewModel.onClickSignUp}"
                 android:textColor="#626997" />
         </RelativeLayout>
 
