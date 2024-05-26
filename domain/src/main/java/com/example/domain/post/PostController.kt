@@ -10,9 +10,6 @@ class PostController @Inject constructor(
   val fireBaseFireStore:FirebaseFirestore
 ) {
 
-  fun lol(){
-    Log.e("#","im --> "+fireBaseFireStore.toString())
-  }
 
 
 }

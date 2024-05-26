@@ -23,6 +23,9 @@ class NotificationFragment : Fragment() {
   }
 
   companion object {
+
+    const val TAG = "NotificationFragment"
+
     fun newInstance(): NotificationFragment {
       return NotificationFragment()
     }
