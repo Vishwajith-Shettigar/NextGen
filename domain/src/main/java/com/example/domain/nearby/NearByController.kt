@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.constants.LOG_KEY
-import com.example.domain.nearby.utility.GeoUtils
+import com.example.utility.GeoUtils
 import com.example.model.GeoPoint
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils

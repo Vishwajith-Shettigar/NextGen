@@ -2,6 +2,9 @@ package com.example.nextgen.Application
 
 import android.content.Context
 import com.firebase.geofire.GeoFire
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -23,5 +26,10 @@ class AppModule(private val context: Context) {
     return FirebaseFirestore.getInstance()
   }
 
+  @Provides
+  @Singleton
+  fun provideFirebaseAuth():FirebaseAuth{
+    return Firebase.auth
+  }
 
 }

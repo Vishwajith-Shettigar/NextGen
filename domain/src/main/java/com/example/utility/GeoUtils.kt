@@ -1,4 +1,4 @@
-package com.example.domain.nearby.utility
+package com.example.utility
 
 import com.google.firebase.firestore.GeoPoint;
 import java.lang.Math.*

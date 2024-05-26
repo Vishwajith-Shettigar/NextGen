@@ -9,14 +9,13 @@ import com.example.nextgen.viewmodel.ObservableViewModel
 
 
 class SignInViewModel(
-  private val fragment: RouteToSignupSigninListener
-  ): ObservableViewModel() {
+  private val fragment: RouteToSignupSigninListener,
+) : ObservableViewModel() {
 
-   val emailLiveData:LiveData<String> = MutableLiveData<String>()
-  val passwordLiveData:LiveData<String> = MutableLiveData<String>()
+  val emailLiveData: LiveData<String> = MutableLiveData<String>()
+  val passwordLiveData: LiveData<String> = MutableLiveData<String>()
 
-fun onClickSignIn(view: View){
-  fragment.routeToSignupOrSignin()
-}
-
+  fun onClickSignIn(view: View) {
+    fragment.routeToSignupOrSignin()
+  }
 }

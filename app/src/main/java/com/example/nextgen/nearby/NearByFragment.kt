@@ -16,7 +16,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
-import com.example.domain.nearby.utility.GeoUtils
+import com.example.utility.GeoUtils
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R

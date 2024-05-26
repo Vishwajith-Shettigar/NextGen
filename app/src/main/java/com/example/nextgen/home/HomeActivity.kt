@@ -1,5 +1,7 @@
 package com.example.nextgen.home
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
@@ -81,7 +83,14 @@ class HomeActivity : BaseActivity() {
     fragmentTransaction.setReorderingAllowed(true)
     fragmentTransaction.commitNowAllowingStateLoss()
   }
+
   override fun injectDependencies(activityComponent: ActivityComponent) {
     activityComponent.inject(this)
+  }
+
+  companion object {
+    fun createHomeActivity(context: Context): Intent {
+      return Intent(context, HomeActivity::class.java)
+    }
   }
 }

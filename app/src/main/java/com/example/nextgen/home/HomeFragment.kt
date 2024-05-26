@@ -14,7 +14,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.domain.nearby.NearByController
-import com.example.domain.nearby.utility.GeoUtils
+import com.example.utility.GeoUtils
 import com.example.domain.profile.ProfileController
 import com.example.model.GeoPoint
 import com.example.model.Profile

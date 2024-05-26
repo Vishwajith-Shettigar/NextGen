@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
 
-
   @Inject
   lateinit var fragment: Fragment
 
@@ -29,7 +28,7 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ): View? {
+  ): View {
     // Inflate the layout for this fragment
     binding = FragmentSignInBinding.inflate(inflater, container, false)
 
@@ -51,7 +50,10 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
   }
 
   override fun routeToSignupOrSignin() {
-    Log.e(LOG_KEY,"sign in Fragment called")
-    (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(SignupFragment.newInstance(),SignupFragment.tag)
+    Log.e(LOG_KEY, "sign in Fragment called")
+    (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(
+      SignupFragment.newInstance(),
+      SignupFragment.tag
+    )
   }
 }

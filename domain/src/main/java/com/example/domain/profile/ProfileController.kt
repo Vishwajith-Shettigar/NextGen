@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ProfileController @Inject constructor(
-  private val firestore: FirebaseFirestore,
+  private val firestore: FirebaseFirestore
 ) {
 
   fun saveUsers(profile: Profile){

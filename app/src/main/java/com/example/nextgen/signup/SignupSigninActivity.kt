@@ -7,20 +7,22 @@ import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
+import com.example.nextgen.home.HomeActivity
 
-class SignupSigninActivity : BaseActivity(),RouteToSignupSigninActivityListener {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
-      loadFragment(SignupFragment.newInstance(),SignupFragment.tag)
-    }
+class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener,
+  RouteToHomeActivity {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_signup)
+    loadFragment(SignupFragment.newInstance(), SignupFragment.tag)
+  }
 
   override fun injectDependencies(activityComponent: ActivityComponent) {
     activityComponent.inject(this)
   }
 
-  override fun routeToSignupSigninActivity(fragment: Fragment,tag: String) {
-    loadFragment(fragment,tag)
+  override fun routeToSignupSigninActivity(fragment: Fragment, tag: String) {
+    loadFragment(fragment, tag)
   }
 
   private fun loadFragment(fragment: Fragment, tag: String) {
@@ -49,4 +51,7 @@ class SignupSigninActivity : BaseActivity(),RouteToSignupSigninActivityListener 
     fragmentTransaction.commitNowAllowingStateLoss()
   }
 
+  override fun routeToHome() {
+    startActivity(HomeActivity.createHomeActivity(this))
+  }
 }
