@@ -1,5 +1,6 @@
 package com.example.domain.profile
 
+import android.net.ConnectivityManager.NetworkCallback
 import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
@@ -39,5 +40,9 @@ class ProfileController @Inject constructor(
         println("Error adding user data: $e")
       }
   }
+
+//  fun getUserProfile(userId:String,callback:(Result)){
+//
+//  }
 
 }

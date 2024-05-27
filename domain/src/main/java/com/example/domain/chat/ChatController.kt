@@ -2,6 +2,7 @@ package com.example.domain.chat
 
 import com.example.domain.constants.CHATS_NODE
 import com.example.domain.constants.USERS_COLLECTION
+import com.example.model.Chat
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -10,7 +11,6 @@ import javax.inject.Inject
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
@@ -19,6 +19,7 @@ class ChatController @Inject constructor(
   private val firestore: FirebaseFirestore,
   private val firebaseDatabase: FirebaseDatabase,
 ) {
+
   private suspend fun saveUsersChatRecord(user1ID: String, user2ID: String) {
     val chatId = Random.nextAlphanumericString(4) + Random.nextAlphanumericString(6)
     val user1ChatData = hashMapOf(user2ID to chatId)
@@ -86,5 +87,26 @@ class ChatController @Inject constructor(
     } catch (e: Exception) {
       callback(Result.Failure(e.message ?: "Couldn't send"))
     }
+  }
+
+  fun retrieveChats(user1ID: String, callback: (Result) -> Unit) {
+    val chats: MutableList<Chat> = mutableListOf()
+    firestore.collection(USERS_COLLECTION).document(user1ID).get()
+      .addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          val document = task.result
+          if (document != null) {
+            val usersList = document.get("chats") as? Map<*, *>
+
+            usersList?.mapKeys {
+                val userId=it.key
+                val chatId=it.value
+                //Todo: get user profile and store evrything in chats list
+
+            }
+          }
+        }
+      }
+
   }
 }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.example.model";
+option java_multiple_files = true;
+
+message Chat{
+  string user_id=1;
+  string chat_id=2;
+  string image_url=3;
+  string last_message=4;
+}
+
