@@ -5,6 +5,7 @@ import com.firebase.geofire.GeoFire
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -30,6 +31,12 @@ class AppModule(private val context: Context) {
   @Singleton
   fun provideFirebaseAuth():FirebaseAuth{
     return Firebase.auth
+  }
+
+  @Provides
+  @Singleton
+  fun provideFirebaseDatabase():FirebaseDatabase{
+    return FirebaseDatabase.getInstance()
   }
 
 }
