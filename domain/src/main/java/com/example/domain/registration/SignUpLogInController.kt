@@ -6,6 +6,7 @@ import android.util.EventLog
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.USERS_COLLECTION
 import com.example.utility.Result
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Singleton
 class SignUpLogInController @Inject constructor(
@@ -43,6 +45,7 @@ class SignUpLogInController @Inject constructor(
       }
   }
 
+  // Todo: Do hashing and salting with password
   fun registerUser(
     activity: Activity, username: String, email: String, password: String,
     callback: (com.example.utility.Result) -> Unit,
@@ -62,7 +65,9 @@ class SignUpLogInController @Inject constructor(
               saveUser(username, email, password) { result ->
                 when (result) {
                   is com.example.utility.Result.Success -> {
+
                     callback(com.example.utility.Result.Success())
+
                   }
                   is com.example.utility.Result.Failure -> {
                     if (auth.currentUser != null) {
@@ -110,6 +115,7 @@ class SignUpLogInController @Inject constructor(
     }
   }
 
+  // Todo: Do hashing and salting with password
   suspend fun saveUser(
     username: String,
     email: String,
@@ -120,9 +126,12 @@ class SignUpLogInController @Inject constructor(
       "userId" to auth.currentUser!!.uid,
       "username" to username,
       "email" to email,
-      "password" to password
+      "password" to password,
+      "name" to null,
+      "imageUrl" to null,
+      "chats" to mutableMapOf<String,String>()
     )
-    firestore.collection("users").document(auth.currentUser!!.uid)
+    firestore.collection(USERS_COLLECTION).document(auth.currentUser!!.uid)
       .set(user).addOnSuccessListener {
         callback(com.example.utility.Result.Success())
       }

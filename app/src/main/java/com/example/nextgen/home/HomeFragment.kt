@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.domain.chat.ChatController
 import com.example.domain.nearby.NearByController
 import com.example.utility.GeoUtils
 import com.example.domain.profile.ProfileController
@@ -36,8 +37,12 @@ class HomeFragment : BaseFragment() {
 
   @Inject
   lateinit var nearByController: NearByController
+
   @Inject
   lateinit var profileController: ProfileController
+
+  @Inject
+  lateinit var chatController: ChatController
 
 
   lateinit var binding: FragmentHomeBinding
@@ -54,19 +59,17 @@ class HomeFragment : BaseFragment() {
   ): View? {
 
     // Inflate the layout for this fragment
-    binding = FragmentHomeBinding.inflate(inflater,container,false)
+    binding = FragmentHomeBinding.inflate(inflater, container, false)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-
-storeUsers()
-
+    storeUsers()
+      chatController.initiateChat("f9TJhzT3GmPimdgpP8lPt3LUxyc2","TQb5C8BlvfdsFFd0ApSFmNmCqey1")
     return binding.root
   }
 
 
   // Store user data initially after signup
   // Todo: handle this in sign up page
-  fun storeUsers(){
+  fun storeUsers() {
     // Check if the location permissions are granted, if not, request them
     if (ActivityCompat.checkSelfPermission(
         requireContext(),
@@ -91,12 +94,12 @@ storeUsers()
 
           val profile = Profile.newBuilder().apply {
             this.userId = Random.nextInt(0, 100).toString()
-            this.userName = Random.nextInt(0,2000).toString()+" vish "
+            this.userName = Random.nextInt(0, 2000).toString() + " vish "
             this.firstName = "vish"
             this.lastName = "shetigar"
             this.location = GeoPoint.newBuilder().apply {
-              this.latitude =it.latitude
-                this.longitude = it.longitude
+              this.latitude = it.latitude
+              this.longitude = it.longitude
             }.build()
           }.build()
 
