@@ -15,8 +15,8 @@ class SignInViewModel(
   private val signUpLogInController: SignUpLogInController,
 ) : ObservableViewModel() {
 
-  private val _loginResult = MutableLiveData<com.example.utility.Result>()
-  val loginResult: LiveData<com.example.utility.Result> get() = _loginResult
+  private val _loginResult = MutableLiveData<com.example.utility.Result<*>>()
+  val loginResult: LiveData<com.example.utility.Result<*>> get() = _loginResult
 
   fun onClickSignUp(view: View) {
     fragment.routeToSignupOrSignin()

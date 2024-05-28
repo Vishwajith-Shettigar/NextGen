@@ -26,14 +26,14 @@ class SignUpLogInController @Inject constructor(
 
   fun logIn(
     activity: AppCompatActivity, email: String, password: String,
-    callback: (com.example.utility.Result) -> Unit,
+    callback: (com.example.utility.Result<*>) -> Unit,
   ) {
     auth.signInWithEmailAndPassword(email, password)
       .addOnCompleteListener(activity) { task ->
         if (task.isSuccessful) {
           // Sign in success, update UI with the signed-in user's information
           Log.d(LOG_KEY, "signInWithEmail:success")
-          callback(com.example.utility.Result.Success())
+          callback(com.example.utility.Result.Success("Successful"))
 
         } else {
           // If sign in fails, display a message to the user.
@@ -48,7 +48,7 @@ class SignUpLogInController @Inject constructor(
   // Todo: Do hashing and salting with password
   fun registerUser(
     activity: Activity, username: String, email: String, password: String,
-    callback: (com.example.utility.Result) -> Unit,
+    callback: (com.example.utility.Result<*>) -> Unit,
   ) {
     CoroutineScope(Dispatchers.IO).launch {
       auth.signOut()
@@ -64,9 +64,9 @@ class SignUpLogInController @Inject constructor(
 
               saveUser(username, email, password) { result ->
                 when (result) {
-                  is com.example.utility.Result.Success -> {
+                  is com.example.utility.Result.Success<*> -> {
 
-                    callback(com.example.utility.Result.Success())
+                    callback(com.example.utility.Result.Success("Saved"))
 
                   }
                   is com.example.utility.Result.Failure -> {
@@ -120,7 +120,7 @@ class SignUpLogInController @Inject constructor(
     username: String,
     email: String,
     password: String,
-    callback: (com.example.utility.Result) -> Unit,
+    callback: (com.example.utility.Result<*>) -> Unit,
   ) {
     val user = hashMapOf(
       "userId" to auth.currentUser!!.uid,
@@ -133,7 +133,7 @@ class SignUpLogInController @Inject constructor(
     )
     firestore.collection(USERS_COLLECTION).document(auth.currentUser!!.uid)
       .set(user).addOnSuccessListener {
-        callback(com.example.utility.Result.Success())
+        callback(com.example.utility.Result.Success("Saved"))
       }
       .addOnFailureListener {
         callback(com.example.utility.Result.Failure(it.message.toString()))

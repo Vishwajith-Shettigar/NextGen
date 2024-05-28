@@ -70,7 +70,7 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
     }
     signupViewModel.registrationResult.observe(viewLifecycleOwner) {
       when (it) {
-        is com.example.utility.Result.Success -> {
+        is com.example.utility.Result.Success<*> -> {
           (activity as RouteToHomeActivity).routeToHome()
         }
         is com.example.utility.Result.Failure -> {

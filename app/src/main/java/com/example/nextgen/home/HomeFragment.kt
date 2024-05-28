@@ -14,6 +14,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.domain.chat.ChatController
+import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
 import com.example.utility.GeoUtils
 import com.example.domain.profile.ProfileController
@@ -61,8 +62,6 @@ class HomeFragment : BaseFragment() {
     // Inflate the layout for this fragment
     binding = FragmentHomeBinding.inflate(inflater, container, false)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-    storeUsers()
-      chatController.initiateChat("f9TJhzT3GmPimdgpP8lPt3LUxyc2","TQb5C8BlvfdsFFd0ApSFmNmCqey1")
     return binding.root
   }
 
