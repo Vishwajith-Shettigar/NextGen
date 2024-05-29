@@ -8,6 +8,7 @@ import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -22,8 +23,13 @@ import kotlinx.coroutines.tasks.await
 @Singleton
 class ProfileController @Inject constructor(
   private val firestore: FirebaseFirestore,
+  private val firebaseAuth: FirebaseAuth
 ) {
 
+  fun getUserId():String?
+  {
+    return firebaseAuth.currentUser?.uid
+  }
   fun saveUsers(profile: Profile) {
     val latitude = profile.location.latitude
     val longitude = profile.location.longitude

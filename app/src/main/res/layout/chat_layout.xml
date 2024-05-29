@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+<variable
+    name="viewModel"
+    type="com.example.nextgen.home.ChatViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="6dp"
+        android:id="@+id/searchla"
+        android:elevation="3dp"
+        android:layout_marginTop="1dp"
+
+        >
+
+        <RelativeLayout
+            android:layout_marginBottom="10dp"
+            android:id="@+id/parent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:cardCornerRadius="45dp"
+                android:id="@+id/image_cardview"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+
+                >
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    app:imageUrl="@{viewModel.imageUrl}"
+                    android:background="@drawable/ic_launcher_background"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+
+            <RelativeLayout
+                android:id="@+id/parentOf_username_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/image_cardview">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/username"
+                    android:text="@{viewModel.username}"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+
+                    />
+
+                <TextView
+                    android:id="@+id/last_message"
+                    android:textSize="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/username"
+                    android:text="@{viewModel.lastMessage}"
+                    android:textColor="#454141" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/time_stamp"
+                android:textSize="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1:70 PM "
+                android:textColor="#454141"
+                android:layout_alignEnd="@+id/parentOf_username_message" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</layout>
