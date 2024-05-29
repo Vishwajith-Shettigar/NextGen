@@ -8,12 +8,22 @@ import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.home.HomeActivity
-
+import com.google.firebase.auth.FirebaseAuth
+import javax.inject.Inject
 class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener,
   RouteToHomeActivity {
+
+  @Inject
+   lateinit var firebaseAuth:FirebaseAuth
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_signup)
+    if(firebaseAuth.currentUser!=null){
+      startActivity(HomeActivity.createHomeActivity(this))
+      finish()
+    }
+    Log.e(LOG_KEY,firebaseAuth.currentUser.toString())
+
     loadFragment(SignupFragment.newInstance(), SignupFragment.tag)
   }
 
@@ -53,5 +63,6 @@ class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener
 
   override fun routeToHome() {
     startActivity(HomeActivity.createHomeActivity(this))
+    finish()
   }
 }

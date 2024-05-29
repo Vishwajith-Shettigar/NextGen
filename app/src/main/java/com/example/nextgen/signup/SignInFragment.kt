@@ -54,8 +54,8 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
 
     signInViewModel.loginResult.observe(viewLifecycleOwner){
       when (it) {
-        is com.example.utility.Result.Success -> {
-          (activity as RouteToHomeActivity).routeToHome()
+        is com.example.utility.Result.Success<*> -> {
+          (activity as? RouteToHomeActivity)?.routeToHome()
         }
         is com.example.utility.Result.Failure -> {
           Log.e(LOG_KEY,it.message)
