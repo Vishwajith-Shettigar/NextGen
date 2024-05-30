@@ -2,12 +2,14 @@ package com.example.nextgen.home
 
 import android.text.format.DateUtils
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import com.example.domain.constants.LOG_KEY
 import com.example.model.Chat
 
 class ChatViewModel(
   private val chat: Chat,
+  private val chatSummaryClickListener: ChatSummaryClickListener,
 ) : HomeItemViewModel() {
 
   init {
@@ -27,5 +29,10 @@ class ChatViewModel(
 
   val now = System.currentTimeMillis();
   val time by lazy {
-    DateUtils.getRelativeTimeSpanString(chat.timestamp, now, DateUtils.DAY_IN_MILLIS);  }
+    DateUtils.getRelativeTimeSpanString(chat.timestamp, now, DateUtils.DAY_IN_MILLIS);
+  }
+
+ fun onClickChat(view:View){
+    chatSummaryClickListener.onChatSummaryClicked(chat)
+  }
 }
