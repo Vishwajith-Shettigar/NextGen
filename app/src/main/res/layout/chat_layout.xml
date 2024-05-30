@@ -79,7 +79,7 @@
                 android:textSize="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1:70 PM "
+                android:text="@{viewModel.time}"
                 android:textColor="#454141"
                 android:layout_alignEnd="@+id/parentOf_username_message" />
         </RelativeLayout>

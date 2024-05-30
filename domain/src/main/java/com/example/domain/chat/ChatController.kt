@@ -95,21 +95,31 @@ class ChatController @Inject constructor(
   }
 
   // Saves last message sent by users
-  private suspend fun saveLastMessage(senderId: String, receiverId: String, text: String) {
+  private suspend fun saveLastMessage(senderId: String, receiverId: String, text: String,curTime:Long) {
     Log.e(LOG_KEY, "saveLast")
     try {
       // Creating the paths for the nested fields
       val senderChatField = "chats.$receiverId.lastMessage"
       val receiverChatField = "chats.$senderId.lastMessage"
 
+      val lastMessageTimeSender="chats.$receiverId.time"
+      val lastMessageTimeReceiver="chats.$senderId.time"
+
+
       // Update the sender's document
       firestore.collection(USERS_COLLECTION).document(senderId)
-        .update(senderChatField, text)
+        .update(
+          senderChatField , text,
+          lastMessageTimeSender , curTime
+        )
         .await()
 
       // Update the receiver's document
       firestore.collection(USERS_COLLECTION).document(receiverId)
-        .update(receiverChatField, text)
+        .update(
+          receiverChatField, text,
+          lastMessageTimeReceiver, curTime
+        )
         .await()
 
       Log.e(LOG_KEY, "Last message saved successfully")
@@ -129,18 +139,19 @@ class ChatController @Inject constructor(
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val messageRef = firebaseDatabase.getReference("$CHATS_NODE/$chatId").push()
+        val curTime=Date().time
         val messageData = mapOf(
           "senderId" to senderId,
           "receiverId" to receiverId,
           "text" to text,
-          "timestamp" to Date().time
+          "timestamp" to curTime
         )
 
         // Use await() to ensure the operation completes
         messageRef.setValue(messageData).await()
 
         // Save the last message
-        saveLastMessage(senderId, receiverId, text)
+        saveLastMessage(senderId, receiverId, text,curTime)
 
         // Invoke the callback with success result on the main thread
         withContext(Dispatchers.Main) {
@@ -185,6 +196,7 @@ class ChatController @Inject constructor(
                   var imageUrl: String? = null
                   var username: String? = null
                   val lastMessage: String = child.get("lastMessage") as String
+                  val timeStamp: Long? = child.get("time") as Long?
 
                   // Get user profile
                   val userProfileResult = profileController.getUserProfile(userId)
@@ -204,13 +216,14 @@ class ChatController @Inject constructor(
                     this.userId = userId
                     this.imageUrl = imageUrl ?: ""
                     this.userName = username ?: ""
-                    this.lastMessage = lastMessage ?: ""
+                    this.lastMessage = lastMessage
+                    this.timestamp= timeStamp?:0
                   }.build()
                 }
               }
               val chatList = deferredChats.awaitAll()
               chats.clear()
-              chats.addAll(chatList)
+              chats.addAll(chatList.sortedBy { it.timestamp })
               withContext(Dispatchers.Main) {
                 callback(com.example.utility.Result.Success(chats))
               }
