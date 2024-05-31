@@ -2,6 +2,7 @@ package com.example.nextgen.message
 
 import android.database.Observable
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.chat.ChatController
@@ -14,17 +15,19 @@ import com.example.utility.Result
 
 class MessageListViewModel(
   private val userId: String,
-  chatController: ChatController,
-  chat: Chat,
+ private val chatController: ChatController,
+  private val chat: Chat,
   private val messageOnLongPressListener: MessageOnLongPressListener,
   profileController: ProfileController,
 ) : ObservableViewModel() {
   private var _messageList = MutableLiveData<List<MessageViewModel>>()
   val messageList: LiveData<List<MessageViewModel>> get() = _messageList
 
-  val status: MutableLiveData<String> = MutableLiveData("ll")
+  val status: MutableLiveData<String> = MutableLiveData("fetching....")
 
+  val messageText: MutableLiveData<String> = MutableLiveData("")
 
+   var chatId:String?=chat.chatId
   init {
     profileController.getUserStatus(chat.userId) { result ->
       if (result is Result.Success) {
@@ -47,10 +50,22 @@ class MessageListViewModel(
   }
 
   init {
-    chatController.retrieveMessages("w2f6gmz6ac") { result ->
+    chatController.retrieveMessages(chat.chatId) { result ->
       if (result is com.example.utility.Result.Success) {
         processData(result.data)
       }
+    }
+  }
+
+  fun onSendClick(view: View){
+    if(chatId=="" || chatId==null){
+      chatController.initiateChat(userId,chat.userId){result->
+        if (result is com.example.utility.Result.Success) {
+         chatId=result.data
+        }
+      }
+    }
+    chatController.sendMessage(chat.chatId,userId,chat.userId,messageText.value.toString()){
     }
   }
 

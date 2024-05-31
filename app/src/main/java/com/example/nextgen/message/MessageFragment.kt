@@ -146,6 +146,8 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
       }
   }
 
+
+
   override fun onLongPress(message: Message) {
     TODO("Not yet implemented")
   }

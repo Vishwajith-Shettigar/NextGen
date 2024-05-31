@@ -104,16 +104,16 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="-57dp"
             android:layout_marginBottom="5dp"
-            android:padding="5dp"
-            app:cardCornerRadius="50dp">
+            android:clickable="true"
+            android:onClick="@{viewModel.onSendClick}"
+            app:cardCornerRadius="30dp">
 
-            <ImageView
-                android:id="@+id/sendbutn"
+            <ImageButton
+                android:id="@+id/send_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="center"
                 android:background="@drawable/flag_transparent"
-                android:padding="10dp"
+                android:padding="4dp"
                 android:src="@drawable/send_icon" />
         </androidx.cardview.widget.CardView>
 
@@ -129,6 +129,7 @@
             android:background="@drawable/edittext_background"
             android:hint="Enter a message"
             android:padding="5dp"
+            android:text="@{viewModel.messageText}"
             android:paddingStart="20dp"
             android:textColor="@color/black"
             android:textColorHint="#6F6C6C" />

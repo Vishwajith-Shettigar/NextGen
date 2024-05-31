@@ -34,7 +34,7 @@ class ChatController @Inject constructor(
 ) {
 
   // Saves users chat record.
-  suspend fun saveUsersChatRecord(user1ID: String, user2ID: String) {
+  suspend fun saveUsersChatRecord(user1ID: String, user2ID: String,callback: (Result<String>) -> Unit) {
     val chatId = Random.nextAlphanumericString(4) + Random.nextAlphanumericString(6)
     val user1ChatData = hashMapOf(
       user2ID to hashMapOf(
@@ -56,17 +56,18 @@ class ChatController @Inject constructor(
         val user2DocRef = firestore.collection(USERS_COLLECTION).document(user2ID)
         batch.set(user2DocRef, mapOf("chats" to user2ChatData), SetOptions.merge())
       }.await()
+      callback(com.example.utility.Result.Success(chatId))
     } catch (e: Exception) {
     }
   }
 
-  fun initiateChat(user1ID: String, user2ID: String) {
+  fun initiateChat(user1ID: String, user2ID: String,callback: (Result<String>) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
       val chatId = isChatExists(user1ID, user2ID)
       if (chatId != null) {
 
       } else {
-        saveUsersChatRecord(user1ID, user2ID)
+        saveUsersChatRecord(user1ID, user2ID,callback)
       }
     }
   }
