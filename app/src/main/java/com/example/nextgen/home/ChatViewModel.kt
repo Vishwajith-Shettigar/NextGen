@@ -27,7 +27,7 @@ class ChatViewModel(
     chat.lastMessage
   }
 
-  val now = System.currentTimeMillis();
+  val now = System.currentTimeMillis()
   val time by lazy {
     DateUtils.getRelativeTimeSpanString(chat.timestamp, now, DateUtils.DAY_IN_MILLIS);
   }

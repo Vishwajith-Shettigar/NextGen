@@ -7,16 +7,26 @@ import android.os.Bundle
 import android.util.Log
 import com.example.domain.constants.LOG_KEY
 import com.example.model.Chat
+import com.example.nextgen.Activity.ActivityComponent
+import com.example.nextgen.Activity.ActivityScope
+import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.utility.getProtoExtra
 import com.example.utility.putProtoExtra
 
-class MessageActivity : AppCompatActivity() {
+
+class MessageActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_message)
     val args = intent.getProtoExtra(MESSAGEACTIVITY_INTENT_EXTRAS_KEY, Chat.getDefaultInstance())
+    supportFragmentManager.beginTransaction()
+      .add(R.id.frame_layout, MessageFragment.newInstance(args!!))
+      .commit()
+  }
 
+  override fun injectDependencies(activityComponent: ActivityComponent) {
+    activityComponent.inject(this)
   }
 
   companion object {

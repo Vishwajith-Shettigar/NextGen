@@ -17,7 +17,6 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_marginTop="0dp"
             android:background="#FDF9F9F9"
-
             >
 
             <RelativeLayout
@@ -112,11 +111,9 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
+                android:background="@drawable/flag_transparent"
                 android:padding="10dp"
-                android:src="@drawable/send_icon"
-               android:background="@drawable/flag_transparent"
-
-                />
+                android:src="@drawable/send_icon" />
         </androidx.cardview.widget.CardView>
 
         <EditText
@@ -124,19 +121,16 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="60dp"
+            android:layout_marginEnd="60dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/edittext_background"
             android:hint="Enter a message"
             android:padding="5dp"
-            android:paddingLeft="10dp"
+            android:paddingStart="20dp"
             android:textColor="@color/black"
-            android:textColorHint="#6F6C6C"
-
-
-            />
+            android:textColorHint="#6F6C6C" />
 
     </RelativeLayout>
 </layout>

@@ -95,22 +95,27 @@ class ChatController @Inject constructor(
   }
 
   // Saves last message sent by users
-  private suspend fun saveLastMessage(senderId: String, receiverId: String, text: String,curTime:Long) {
+  private suspend fun saveLastMessage(
+    senderId: String,
+    receiverId: String,
+    text: String,
+    curTime: Long,
+  ) {
     Log.e(LOG_KEY, "saveLast")
     try {
       // Creating the paths for the nested fields
       val senderChatField = "chats.$receiverId.lastMessage"
       val receiverChatField = "chats.$senderId.lastMessage"
 
-      val lastMessageTimeSender="chats.$receiverId.time"
-      val lastMessageTimeReceiver="chats.$senderId.time"
+      val lastMessageTimeSender = "chats.$receiverId.time"
+      val lastMessageTimeReceiver = "chats.$senderId.time"
 
 
       // Update the sender's document
       firestore.collection(USERS_COLLECTION).document(senderId)
         .update(
-          senderChatField , text,
-          lastMessageTimeSender , curTime
+          senderChatField, text,
+          lastMessageTimeSender, curTime
         )
         .await()
 
@@ -139,7 +144,7 @@ class ChatController @Inject constructor(
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val messageRef = firebaseDatabase.getReference("$CHATS_NODE/$chatId").push()
-        val curTime=Date().time
+        val curTime = Date().time
         val messageData = mapOf(
           "senderId" to senderId,
           "receiverId" to receiverId,
@@ -151,7 +156,7 @@ class ChatController @Inject constructor(
         messageRef.setValue(messageData).await()
 
         // Save the last message
-        saveLastMessage(senderId, receiverId, text,curTime)
+        saveLastMessage(senderId, receiverId, text, curTime)
 
         // Invoke the callback with success result on the main thread
         withContext(Dispatchers.Main) {
@@ -217,7 +222,7 @@ class ChatController @Inject constructor(
                     this.imageUrl = imageUrl ?: ""
                     this.userName = username ?: ""
                     this.lastMessage = lastMessage
-                    this.timestamp= timeStamp?:0
+                    this.timestamp = timeStamp ?: 0
                   }.build()
                 }
               }
@@ -239,4 +244,37 @@ class ChatController @Inject constructor(
       callback(com.example.utility.Result.Failure(e.toString()))
     }
   }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun retrieveMessages(
+    chatId: String,
+    callback: (com.example.utility.Result<List<Message>>) -> Unit,
+  ) {
+    val messageList = mutableListOf<Message>()
+    val messageRef = firebaseDatabase.getReference("$CHATS_NODE/$chatId")
+
+    // Add a listener for real-time updates
+    messageRef.addValueEventListener(object : ValueEventListener {
+      override fun onDataChange(snapshot: DataSnapshot) {
+        messageList.clear()
+        snapshot.children.forEach { dataSnapshot ->
+          val message = dataSnapshot.getValue(Message::class.java)
+          message?.let {
+            messageList.add(it)
+          }
+        }
+        // Switch to Main thread to invoke the callback
+        CoroutineScope(Dispatchers.Main).launch {
+          callback(Result.Success(messageList))
+        }
+      }
+
+      override fun onCancelled(error: DatabaseError) {
+        CoroutineScope(Dispatchers.Main).launch {
+          callback(Result.Failure(error.message))
+        }
+      }
+    })
+  }
+
 }
