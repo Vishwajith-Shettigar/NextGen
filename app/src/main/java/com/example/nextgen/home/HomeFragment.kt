@@ -107,7 +107,7 @@ class HomeFragment : BaseFragment() {
       }
     }
 
-    chatAdapter.expressionViewHolderBinding = { viewModel, viewBinding ->
+    chatAdapter.expressionViewHolderBinding = { viewModel,viewtype, viewBinding ->
 
       val itemBinding = viewBinding as ChatLayoutBinding
       itemBinding.viewModel = viewModel as ChatViewModel?

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+<variable
+    name="viewModel"
+    type="com.example.nextgen.message.MessageListViewModel" />
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -37,7 +39,7 @@
                         android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lyka chat"
+                        android:text="@{viewModel.userName}"
                         android:textColor="@color/black"
                         android:textSize="20dp"
 
@@ -69,7 +71,8 @@
                         android:layout_height="40dp"
                         android:background="@drawable/ic_launcher_background"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_launcher_foreground" />
+                        imageUrl="@{viewModel.imageUrl}"
+                        />
                 </androidx.cardview.widget.CardView>
 
                 <ImageView

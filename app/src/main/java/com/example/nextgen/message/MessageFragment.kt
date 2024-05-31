@@ -6,23 +6,50 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.profile.ProfileController
 import com.example.model.Chat
+import com.example.model.Message
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.Fragment.FragmentScope
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ChatLayoutBinding
 import com.example.nextgen.databinding.FragmentMessageBinding
+import com.example.nextgen.databinding.ReceiverMessageLayoutBinding
+import com.example.nextgen.databinding.SenderMessageLayoutBinding
+import com.example.nextgen.home.ChatSummaryClickListener
+import com.example.nextgen.home.ChatViewModel
+import com.example.nextgen.home.HomeItemViewModel
+import com.example.nextgen.home.HomeViewModel
+import com.example.nextgen.recyclerview.BaseAdapter
 import com.example.utility.getProto
 import com.example.utility.putProto
 import javax.inject.Inject
 
-class MessageFragment : BaseFragment() {
+class MessageFragment : BaseFragment(), MessageOnLongPressListener {
   private lateinit var binding: FragmentMessageBinding
+
   @Inject
   lateinit var chatController: ChatController
+
+  @Inject
+  lateinit var fragment: Fragment
+
+  @Inject
+  lateinit var activity: AppCompatActivity
+
+  @Inject
+  lateinit var profileController: ProfileController
+
+  private val userId by lazy {
+    profileController.getUserId()
+  }
+
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
@@ -33,20 +60,78 @@ class MessageFragment : BaseFragment() {
   ): View? {
     // Inflate the layout for this fragment
     binding = FragmentMessageBinding.inflate(inflater)
-    val args= arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY,Chat.getDefaultInstance())
-    Log.e(LOG_KEY,args?.chatId.toString())
+    val chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())
+    Log.e(LOG_KEY, chat?.chatId.toString())
 
-    chatController.retrieveMessages("w2f6gmz6ac"){
-      when(it){
-        is com.example.utility.Result.Success->{
-          Log.e(LOG_KEY,it.data.size.toString())
+    val messageListViewModel =
+      MessageListViewModel(
+        userId!!,
+        chatController,
+        chat!!,
+        fragment as MessageOnLongPressListener
+      )
+
+    val messageListAdapter = BaseAdapter<MessageViewModel>()
+    val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
+    binding.viewModel=messageListViewModel
+    binding.recyclerview.apply {
+      adapter = messageListAdapter
+      layoutManager = chatLayoutManager
+    }
+
+    messageListViewModel.messageList.observe(viewLifecycleOwner) {
+      messageListAdapter.itemList = it as MutableList<MessageViewModel>
+    }
+
+    messageListViewModel.messageList.observe(viewLifecycleOwner) {
+      messageListAdapter.itemList = it as MutableList<MessageViewModel>
+    }
+
+    messageListAdapter.expressionGetViewType = { messageViewModel ->
+      if (messageViewModel.isSender)
+        BaseAdapter.ViewType.SENDER_MESSAGE
+      else
+        BaseAdapter.ViewType.RECEIVER_MESSAGE
+    }
+
+
+    messageListAdapter.expressionOnCreateViewHolder = { viewGroup, viewType ->
+      when (viewType) {
+        BaseAdapter.ViewType.SENDER_MESSAGE -> {
+          SenderMessageLayoutBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+          )
         }
-        is com.example.utility.Result.Failure->{
-          Log.e(LOG_KEY,it.message.toString())
+        BaseAdapter.ViewType.RECEIVER_MESSAGE -> {
+          ReceiverMessageLayoutBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+          )
         }
-        else -> {}
+        else -> {
+          throw IllegalArgumentException("Encountered unexpected view type: $viewType")
+        }
       }
     }
+
+    messageListAdapter.expressionViewHolderBinding = { viewModel, viewtype, viewBinding ->
+
+
+      val itemBinding: ViewBinding
+      if (viewtype == BaseAdapter.ViewType.SENDER_MESSAGE) {
+        itemBinding = viewBinding as SenderMessageLayoutBinding
+        itemBinding.viewModel = viewModel
+      } else {
+        itemBinding = viewBinding as ReceiverMessageLayoutBinding
+        itemBinding.viewModel = viewModel
+
+      }
+
+    }
+
     return binding.root
 
   }
@@ -61,5 +146,9 @@ class MessageFragment : BaseFragment() {
           putProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, chat)
         }
       }
+  }
+
+  override fun onLongPress(message: Message) {
+    TODO("Not yet implemented")
   }
 }
