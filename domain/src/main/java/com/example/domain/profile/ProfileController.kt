@@ -1,6 +1,5 @@
 package com.example.domain.profile
 
-import android.net.ConnectivityManager.NetworkCallback
 import android.util.Log
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
@@ -14,22 +13,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.example.utility.Result
+import kotlinx.coroutines.*
 
 @Singleton
 class ProfileController @Inject constructor(
   private val firestore: FirebaseFirestore,
-  private val firebaseAuth: FirebaseAuth
+  private val firebaseAuth: FirebaseAuth,
 ) {
 
-  fun getUserId():String?
-  {
+  fun getUserId(): String? {
     return firebaseAuth.currentUser?.uid
   }
+
   fun saveUsers(profile: Profile) {
     val latitude = profile.location.latitude
     val longitude = profile.location.longitude
@@ -63,6 +60,28 @@ class ProfileController @Inject constructor(
     } catch (e: Exception) {
       com.example.utility.Result.Failure(e.message ?: "Failed to retrieve user profile")
     }
+  }
+
+  fun getUserStatus(userId: String, callback: (com.example.utility.Result<String>) -> Unit) {
+    try {
+       CoroutineScope(Dispatchers.IO).launch {
+         Log.e(LOG_KEY, userId)
+         val document = firestore.collection(USERS_COLLECTION).document(userId)
+         document.addSnapshotListener { snapShot, e ->
+           if (snapShot != null) {
+             if (snapShot.exists()) {
+               Log.e(LOG_KEY, snapShot.get("status").toString()+ userId)
+
+                 callback(com.example.utility.Result.Success(snapShot.get("status").toString()))
+
+             }
+           }
+         }
+       }
+    } catch (e: Exception) {
+      com.example.utility.Result.Failure(e.message ?: "Failed to retrieve user profile")
+    }
+
   }
 }
 

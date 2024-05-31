@@ -57,7 +57,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ): View? {
+  ): View {
     // Inflate the layout for this fragment
     binding = FragmentMessageBinding.inflate(inflater)
     val chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())
@@ -68,12 +68,14 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         userId!!,
         chatController,
         chat!!,
-        fragment as MessageOnLongPressListener
+        fragment as MessageOnLongPressListener,
+        profileController
       )
 
     val messageListAdapter = BaseAdapter<MessageViewModel>()
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.viewModel=messageListViewModel
+    binding.lifecycleOwner=this
     binding.recyclerview.apply {
       adapter = messageListAdapter
       layoutManager = chatLayoutManager
@@ -93,7 +95,6 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
       else
         BaseAdapter.ViewType.RECEIVER_MESSAGE
     }
-
 
     messageListAdapter.expressionOnCreateViewHolder = { viewGroup, viewType ->
       when (viewType) {
@@ -129,11 +130,8 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         itemBinding.viewModel = viewModel
 
       }
-
     }
-
     return binding.root
-
   }
 
   companion object {

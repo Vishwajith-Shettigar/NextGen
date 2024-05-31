@@ -129,6 +129,7 @@ class SignUpLogInController @Inject constructor(
       "password" to password,
       "name" to null,
       "imageUrl" to null,
+      "status" to "online",
       "chats" to mutableMapOf<String,String>()
     )
     firestore.collection(USERS_COLLECTION).document(auth.currentUser!!.uid)

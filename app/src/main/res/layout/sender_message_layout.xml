@@ -29,6 +29,7 @@
                 android:paddingTop="7dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="27dp"
+                android:layout_marginBottom="10dp"
                 android:text="@{viewModel.text}"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
@@ -39,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/message"
                 android:layout_marginLeft="-70dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_toRightOf="@id/message"
                 android:padding="7dp"
                 android:text="@{viewModel.timestamp}"
