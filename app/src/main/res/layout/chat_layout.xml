@@ -13,18 +13,19 @@
     <RelativeLayout
         android:id="@+id/chat_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_marginTop="1dp"
         android:background="@color/white"
         android:elevation="3dp"
         android:onClick="@{viewModel.onClickChat}"
-        android:padding="6dp">
+      android:padding="5dp"
+       >
 
         <RelativeLayout
             android:id="@+id/parent_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_height="match_parent"
+         >
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/image_cardview"
@@ -90,8 +91,10 @@
                 android:text="@{viewModel.unReadMessage}"
                 android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE}"
                 android:background="@drawable/new_messsage_alert_background"
-                android:layout_alignEnd="@+id/parentOf_username_message"
-                android:layout_alignBottom="@+id/time_stamp"
+                android:layout_alignEnd="@+id/time_stamp"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_alignBottom="@id/parentOf_username_message"
                 />
 
         </RelativeLayout>

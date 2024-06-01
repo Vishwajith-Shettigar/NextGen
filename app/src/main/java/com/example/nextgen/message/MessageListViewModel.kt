@@ -78,9 +78,11 @@ class MessageListViewModel(
   }
 
   fun onSendClick(view: View) {
-    chatController.sendMessage(chat.chatId, userId, chat.userId, messageText.get().toString()) {
-      if (it is com.example.utility.Result.Success)
-        messageText.set("")
+    if (!messageText.get().toString().isBlank()) {
+      chatController.sendMessage(chat.chatId, userId, chat.userId, messageText.get().toString()) {
+        if (it is com.example.utility.Result.Success)
+          messageText.set("")
+      }
     }
 
   }
