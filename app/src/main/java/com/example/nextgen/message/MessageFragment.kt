@@ -55,6 +55,11 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
 
   lateinit var chat: Chat
 
+  lateinit var viewModelFactory: MessageListViewModelFactory
+  lateinit var messageListViewModel: MessageListViewModel
+
+  var messageListAdapter = BaseAdapter<MessageViewModel>()
+
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
@@ -68,10 +73,17 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     binding = FragmentMessageBinding.inflate(inflater, container, false)
     chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())!!
 
-    val viewModelFactory = MessageListViewModelFactory(userId!!, chatController, chat, this as MessageOnLongPressListener, profileController)
-    val messageListViewModel = ViewModelProvider(this, viewModelFactory)[MessageListViewModel::class.java]
+    viewModelFactory = MessageListViewModelFactory(
+      userId!!,
+      chatController,
+      chat,
+      this as MessageOnLongPressListener,
+      profileController
+    )
+    messageListViewModel =
+      ViewModelProvider(this, viewModelFactory)[MessageListViewModel::class.java]
 
-    val messageListAdapter = BaseAdapter<MessageViewModel>()
+
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.viewModel = messageListViewModel
     binding.lifecycleOwner = this
@@ -143,8 +155,17 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
       }
   }
 
+  override fun onLongPress(message: Message, index: Int) {
+    if (!message.isDeleted && message.senderId == userId) {
+      binding.deletechat.visibility = View.VISIBLE
 
-  override fun onLongPress(message: Message) {
-    TODO("Not yet implemented")
+      binding.deletechat.setOnClickListener {
+
+        messageListViewModel.deleteMessage(message, index, messageListAdapter.itemList.size) {
+          if (it is com.example.utility.Result.Success)
+            binding.deletechat.visibility = View.GONE
+        }
+      }
+    }
   }
 }

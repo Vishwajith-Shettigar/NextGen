@@ -18,8 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:onLongClick="@{viewModel.onLongClick}"
             android:background="@drawable/sender_chat_background">
-            >
+
 
             <TextView
                 android:id="@+id/message"

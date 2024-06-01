@@ -188,7 +188,8 @@ class ChatController @Inject constructor(
           "senderId" to senderId,
           "receiverId" to receiverId,
           "text" to text,
-          "timestamp" to curTime
+          "timestamp" to curTime,
+          "isDeleted" to false
         )
         // Use await() to ensure the operation completes
         saveLastMessage(senderId, receiverId, text, curTime)
@@ -308,9 +309,13 @@ class ChatController @Inject constructor(
       override fun onDataChange(snapshot: DataSnapshot) {
         messageList.clear()
         snapshot.children.forEach { dataSnapshot ->
+
           val message = dataSnapshot.getValue(Message::class.java)
           message?.let {
-            messageList.add(it)
+            val updatedMessage = message.toBuilder()
+              .setMessageId(dataSnapshot.key)
+              .build()
+            messageList.add(updatedMessage)
           }
         }
         // Switch to Main thread to invoke the callback
@@ -325,6 +330,42 @@ class ChatController @Inject constructor(
         }
       }
     })
+  }
+
+  fun deleteLastMessage(message: Message, chatId: String) {
+
+  }
+
+  fun deleteChat(message: Message, chatId: String, index: Int, totalSize: Int,
+  callback: (Result<String>) -> Unit) {
+    try {
+      CoroutineScope(Dispatchers.IO).launch {
+        val messageRef =
+          firebaseDatabase.getReference("$CHATS_NODE/$chatId/${message.messageId}")
+        val updates = HashMap<String, Any>()
+        updates["isDeleted"] = true
+        updates["text"] = "This message has been deleted"
+
+        messageRef.updateChildren(updates)
+          .addOnSuccessListener {
+            CoroutineScope(Dispatchers.IO).launch {
+              val curTime = Date().time
+              saveLastMessage(
+                message.senderId, message.receiverId, "This message has been deleted",
+                curTime
+              )
+            }
+            callback(com.example.utility.Result.Success("Successfully deleted"))
+          }
+          .addOnFailureListener { e ->
+            callback(com.example.utility.Result.Failure(e.toString()))
+
+          }
+      }
+    } catch (e: java.lang.Exception) {
+      callback(com.example.utility.Result.Failure(e.toString()))
+
+    }
   }
 
 }

@@ -25,4 +25,6 @@ message Message{
   string receiver_id=2;
   string text=3;
   int64 timestamp=4;
+  string message_id=5;
+  bool is_deleted=6;
 }

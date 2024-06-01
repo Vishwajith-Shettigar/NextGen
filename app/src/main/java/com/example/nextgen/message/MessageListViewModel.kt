@@ -87,10 +87,22 @@ class MessageListViewModel(
 
   }
 
+  fun deleteMessage(message: Message,index:Int,totalSize:Int
+  ,callback: (Result<String>) -> Unit) {
+    chatController.deleteChat(message, chat.chatId,index,totalSize){
+      callback(it)
+    }
+  }
+
   fun processData(data: List<Message>) {
     val messageViewModelList: MutableList<MessageViewModel> = mutableListOf()
-    data.forEach {
-      messageViewModelList.add(MessageViewModel(userId, it, messageOnLongPressListener))
+    data.mapIndexed { index, message ->
+      messageViewModelList.add(
+        MessageViewModel(
+          userId, message, messageOnLongPressListener,
+          index
+        )
+      )
     }
     chatController.updateSeenAndUnreadMessage(chat.userId, userId)
     _messageList.value = messageViewModelList
