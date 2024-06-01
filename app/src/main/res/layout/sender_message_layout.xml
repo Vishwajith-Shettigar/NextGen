@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+                <variable
+                    name="viewModel"
+                    type="com.example.nextgen.message.MessageViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:id="@+id/parent_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:onLongClick="@{viewModel.onLongClick}"
+            android:background="@drawable/sender_chat_background">
+
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="35dp"
+                android:paddingTop="7dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="27dp"
+                android:layout_marginBottom="10dp"
+                android:text="@{viewModel.text}"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/message"
+                android:layout_marginLeft="-70dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/message"
+                android:padding="7dp"
+                android:text="@{viewModel.timestamp}"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

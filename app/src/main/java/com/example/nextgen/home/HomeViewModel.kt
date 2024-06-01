@@ -12,10 +12,11 @@ import com.example.nextgen.viewmodel.ObservableViewModel
 
 class HomeViewModel(
   private val chatController: ChatController,
-  private val userId:String
+  private val userId:String,
+  private val chatSummaryClickListener: ChatSummaryClickListener
 ):ObservableViewModel() {
-  private var _nearbyUsers = MutableLiveData<List<HomeItemViewModel>>()
-  val nearbyUsers: LiveData<List<HomeItemViewModel>> get() = _nearbyUsers
+  private var _chatList = MutableLiveData<List<HomeItemViewModel>>()
+  val chatList: LiveData<List<HomeItemViewModel>> get() = _chatList
 
   init {
       chatController.retrieveChats(userId){result->
@@ -28,8 +29,8 @@ class HomeViewModel(
   fun processData(data:MutableList<Chat>){
     val chatViewModelList:MutableList<HomeItemViewModel> = mutableListOf()
     data.forEach {
-      chatViewModelList.add(ChatViewModel(it))
+      chatViewModelList.add(ChatViewModel(it,chatSummaryClickListener))
     }
-    _nearbyUsers.value=chatViewModelList
+    _chatList.value=chatViewModelList
   }
 }

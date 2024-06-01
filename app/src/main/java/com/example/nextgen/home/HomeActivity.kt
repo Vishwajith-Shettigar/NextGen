@@ -4,21 +4,25 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.example.domain.constants.LOG_KEY
 import com.example.domain.post.PostController
+import com.example.model.Chat
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ActivityHomeBinding
+import com.example.nextgen.message.MessageActivity
 import com.example.nextgen.nearby.NearByFragment
 import com.example.nextgen.notification.NotificationFragment
 import com.example.nextgen.profile.ProfileFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
-class HomeActivity : BaseActivity() {
+class HomeActivity : BaseActivity(),ChatSummaryClickListener {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -92,5 +96,10 @@ class HomeActivity : BaseActivity() {
     fun createHomeActivity(context: Context): Intent {
       return Intent(context, HomeActivity::class.java)
     }
+  }
+
+  override fun onChatSummaryClicked(chat: Chat) {
+    Log.e(LOG_KEY,"clicked")
+    startActivity(MessageActivity.createMessageActivity(this,chat))
   }
 }

@@ -41,6 +41,9 @@ class HomeFragment : BaseFragment() {
   lateinit var fragment: Fragment
 
   @Inject
+  lateinit var activity: AppCompatActivity
+
+  @Inject
   lateinit var nearByController: NearByController
 
   @Inject
@@ -70,14 +73,16 @@ class HomeFragment : BaseFragment() {
     // Inflate the layout for this fragment
     binding = FragmentHomeBinding.inflate(inflater, container, false)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-    val homeViewModel = HomeViewModel(chatController, userId!!)
+    val homeViewModel =
+      HomeViewModel(chatController, userId!!, activity as ChatSummaryClickListener)
     val chatAdapter = BaseAdapter<HomeItemViewModel>()
-    val chatLayoutManager = LinearLayoutManager(activity?.applicationContext)
+
+    val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.chatsRecyclerview.apply {
       adapter = chatAdapter
       layoutManager = chatLayoutManager
     }
-    homeViewModel.nearbyUsers.observe(viewLifecycleOwner) {
+    homeViewModel.chatList.observe(viewLifecycleOwner) {
       chatAdapter.itemList = it as MutableList<HomeItemViewModel>
     }
 
@@ -103,7 +108,7 @@ class HomeFragment : BaseFragment() {
       }
     }
 
-    chatAdapter.expressionViewHolderBinding = { viewModel, viewBinding ->
+    chatAdapter.expressionViewHolderBinding = { viewModel,viewtype, viewBinding ->
 
       val itemBinding = viewBinding as ChatLayoutBinding
       itemBinding.viewModel = viewModel as ChatViewModel?

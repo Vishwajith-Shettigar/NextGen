@@ -14,7 +14,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
     get() = field
 
 
-  var expressionViewHolderBinding: ((T, ViewBinding) -> Unit)? = null
+  var expressionViewHolderBinding: ((T,ViewType,ViewBinding) -> Unit)? = null
   var expressionOnCreateViewHolder: ((ViewGroup, ViewType) -> ViewBinding)? = null
   var expressionGetViewType: ((T) -> ViewType)? = null
 
@@ -24,6 +24,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
       it(parent, viewTypeEnum).let {
         BaseViewHolder(
           it,
+          viewTypeEnum,
           expressionViewHolderBinding!!
         )
       }
@@ -46,10 +47,11 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
   // Base ViewHolder
   class BaseViewHolder<T> internal constructor(
     private val binding: ViewBinding,
-    private val expression: (T, ViewBinding) -> Unit,
+    private val viewType: ViewType,
+    private val expression: (T,ViewType, ViewBinding) -> Unit,
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: T) {
-      expression(item, binding)
+      expression(item,viewType,binding)
     }
   }
 

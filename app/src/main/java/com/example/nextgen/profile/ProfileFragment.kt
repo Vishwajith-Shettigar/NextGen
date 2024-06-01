@@ -33,10 +33,6 @@ class ProfileFragment : BaseFragment() {
   ): View? {
     // Inflate the layout for this fragment
     val view= inflater.inflate(R.layout.fragment_profile, container, false)
-    chatController.sendMessage("w2f6gmz6ac","f9TJhzT3GmPimdgpP8lPt3LUxyc2",
-    "TQb5C8BlvfdsFFd0ApSFmNmCqey1",Random().nextLong().toString()){
-
-    }
     return view
 
   }

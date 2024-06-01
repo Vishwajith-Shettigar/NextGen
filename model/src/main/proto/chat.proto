@@ -5,12 +5,19 @@ package model;
 option java_package = "com.example.model";
 option java_multiple_files = true;
 
+message LastMessageInfo{
+  string text=1;
+  bool seen=3;
+}
+
 message Chat{
   string user_id=1;
   string chat_id=2;
   string image_url=3;
-  string last_message=4;
+  LastMessageInfo last_message=4;
   string user_name=5;
+  int64 timestamp=6;
+   int64 unread_message=7;
 }
 
 message Message{
@@ -18,4 +25,6 @@ message Message{
   string receiver_id=2;
   string text=3;
   int64 timestamp=4;
+  string message_id=5;
+  bool is_deleted=6;
 }
