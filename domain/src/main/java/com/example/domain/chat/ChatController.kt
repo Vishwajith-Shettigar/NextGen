@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
@@ -105,7 +106,7 @@ class ChatController @Inject constructor(
     senderId: String,
     receiverId: String,
   ) {
-Log.e(LOG_KEY,senderId+ "  "+ receiverId)
+    Log.e(LOG_KEY, senderId + "  " + receiverId)
     CoroutineScope(Dispatchers.IO).launch {
       val UnreadMessageField = "chats.$senderId.unreadMessage"
       val seenChatField = "chats.$senderId.lastMessage.seen"
@@ -288,16 +289,22 @@ Log.e(LOG_KEY,senderId+ "  "+ receiverId)
     }
   }
 
+  var messageRef: DatabaseReference? = null
+  fun removeEventListener(eventListener: ValueEventListener) {
+    eventListener.let {
+      messageRef?.removeEventListener(it)
+    }
+  }
+
   @OptIn(ExperimentalCoroutinesApi::class)
   fun retrieveMessages(
     chatId: String,
     callback: (com.example.utility.Result<List<Message>>) -> Unit,
-  ) {
+  ): ValueEventListener {
     val messageList = mutableListOf<Message>()
-    val messageRef = firebaseDatabase.getReference("$CHATS_NODE/$chatId")
-
+    messageRef = firebaseDatabase.getReference("$CHATS_NODE/$chatId")
     // Add a listener for real-time updates
-    messageRef.addValueEventListener(object : ValueEventListener {
+    return messageRef!!.addValueEventListener(object : ValueEventListener {
       override fun onDataChange(snapshot: DataSnapshot) {
         messageList.clear()
         snapshot.children.forEach { dataSnapshot ->

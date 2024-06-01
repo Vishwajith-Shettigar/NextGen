@@ -17,6 +17,12 @@ import com.example.model.Chat
 import com.example.model.Message
 import com.example.nextgen.viewmodel.ObservableViewModel
 import com.example.utility.Result
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MessageListViewModel(
   private val userId: String,
@@ -28,26 +34,37 @@ class MessageListViewModel(
   private var _messageList = MutableLiveData<List<MessageViewModel>>()
   val messageList: LiveData<List<MessageViewModel>> get() = _messageList
 
+  private var valueEventListener: ValueEventListener? = null
+
   val status: MutableLiveData<String> = MutableLiveData("fetching....")
 
   val messageText = ObservableField<String>()
+  override fun onCleared() {
+    super.onCleared()
+    valueEventListener?.let {
+      chatController.removeEventListener(it)
+    }
+  }
+
+  private val viewModelJob = Job()
+  private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
   init {
-    chatController.updateSeenAndUnreadMessage(chat.userId,userId)
+    viewModelScope.launch {
+      chatController.updateSeenAndUnreadMessage(chat.userId, userId)
 
-    chatController.retrieveMessages(chat.chatId) { result ->
-      if (result is com.example.utility.Result.Success) {
-        processData(result.data)
-
+      valueEventListener = chatController.retrieveMessages(chat.chatId) { result ->
+        if (result is com.example.utility.Result.Success) {
+          processData(result.data)
+        }
       }
-    }
 
-    profileController.getUserStatus(chat.userId) { result ->
-      if (result is Result.Success) {
-        status.value = (result.data)  // Use postValue for background thread updates
-      } else {
-        // Handle failure case if necessary
-        status.postValue("Error retrieving status") // or some default value
+      profileController.getUserStatus(chat.userId) { result ->
+        if (result is Result.Success) {
+          status.value = (result.data)
+        } else {
+          status.postValue("Error retrieving status")
+        }
       }
     }
   }
@@ -62,19 +79,18 @@ class MessageListViewModel(
 
   fun onSendClick(view: View) {
     chatController.sendMessage(chat.chatId, userId, chat.userId, messageText.get().toString()) {
-      if(it is com.example.utility.Result.Success)
+      if (it is com.example.utility.Result.Success)
         messageText.set("")
     }
 
   }
 
   fun processData(data: List<Message>) {
-    Log.e(LOG_KEY,"yyyyyyyyyyyyyyyyyyyyeeeee "+ userId)
     val messageViewModelList: MutableList<MessageViewModel> = mutableListOf()
     data.forEach {
       messageViewModelList.add(MessageViewModel(userId, it, messageOnLongPressListener))
     }
-    chatController.updateSeenAndUnreadMessage(chat.userId,userId)
+    chatController.updateSeenAndUnreadMessage(chat.userId, userId)
     _messageList.value = messageViewModelList
   }
 }

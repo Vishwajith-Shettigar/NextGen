@@ -29,17 +29,6 @@ class MessageActivity : BaseActivity() {
     activityComponent.inject(this)
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    Log.e(LOG_KEY,"destroyed activty ---------------->")
-    finish()
-  }
-
-  override fun onBackPressed() {
-    super.onBackPressed()
-    Log.e(LOG_KEY,"back pressed activty ---------------->")
-
-  }
   companion object {
 
     /** Key for MessageActivity extras */

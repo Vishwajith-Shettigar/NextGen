@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
@@ -66,16 +67,9 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     // Inflate the layout for this fragment
     binding = FragmentMessageBinding.inflate(inflater, container, false)
     chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())!!
-    Log.e(LOG_KEY, chat.chatId.toString())
 
-    val messageListViewModel =
-      MessageListViewModel(
-        userId!!,
-        chatController,
-        chat,
-        this as MessageOnLongPressListener,
-        profileController
-      )
+    val viewModelFactory = MessageListViewModelFactory(userId!!, chatController, chat, this as MessageOnLongPressListener, profileController)
+    val messageListViewModel = ViewModelProvider(this, viewModelFactory)[MessageListViewModel::class.java]
 
     val messageListAdapter = BaseAdapter<MessageViewModel>()
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -135,11 +129,6 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
       }
     }
     return binding.root
-  }
-  override fun onDestroy() {
-    super.onDestroy()
-    Log.e(LOG_KEY,"destroyed fragment ---------------->")
-    activity.finish()
   }
 
   companion object {
