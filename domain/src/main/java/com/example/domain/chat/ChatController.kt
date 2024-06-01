@@ -34,7 +34,11 @@ class ChatController @Inject constructor(
 ) {
 
   // Saves users chat record.
-  suspend fun saveUsersChatRecord(user1ID: String, user2ID: String,callback: (Result<String>) -> Unit) {
+  suspend fun saveUsersChatRecord(
+    user1ID: String,
+    user2ID: String,
+    callback: (Result<String>) -> Unit,
+  ) {
     val chatId = Random.nextAlphanumericString(4) + Random.nextAlphanumericString(6)
     val user1ChatData = hashMapOf(
       user2ID to hashMapOf(
@@ -61,13 +65,13 @@ class ChatController @Inject constructor(
     }
   }
 
-  fun initiateChat(user1ID: String, user2ID: String,callback: (Result<String>) -> Unit) {
+  fun initiateChat(user1ID: String, user2ID: String, callback: (Result<String>) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
       val chatId = isChatExists(user1ID, user2ID)
       if (chatId != null) {
 
       } else {
-        saveUsersChatRecord(user1ID, user2ID,callback)
+        saveUsersChatRecord(user1ID, user2ID, callback)
       }
     }
   }
@@ -152,7 +156,6 @@ class ChatController @Inject constructor(
           "text" to text,
           "timestamp" to curTime
         )
-
         // Use await() to ensure the operation completes
         messageRef.setValue(messageData).await()
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 <variable
     name="viewModel"
     type="com.example.nextgen.message.MessageListViewModel" />
+
     </data>
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F4F4F8">
@@ -99,14 +100,13 @@
             android:id="@+id/sendbtn_cardview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/message"
+            android:layout_alignEnd="@+id/message"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="-57dp"
+            android:layout_marginEnd="-57dp"
             android:layout_marginBottom="5dp"
-            android:clickable="true"
-            android:onClick="@{viewModel.onSendClick}"
-            app:cardCornerRadius="30dp">
+            app:cardCornerRadius="30dp"
+            android:focusable="true">
 
             <ImageButton
                 android:id="@+id/send_btn"
@@ -114,6 +114,8 @@
                 android:layout_height="50dp"
                 android:background="@drawable/flag_transparent"
                 android:padding="4dp"
+                android:clickable="true"
+                android:onClick="@{viewModel.onSendClick}"
                 android:src="@drawable/send_icon" />
         </androidx.cardview.widget.CardView>
 
@@ -129,10 +131,11 @@
             android:background="@drawable/edittext_background"
             android:hint="Enter a message"
             android:padding="5dp"
-            android:text="@{viewModel.messageText}"
+            android:text="@={viewModel.messageText}"
             android:paddingStart="20dp"
             android:textColor="@color/black"
-            android:textColorHint="#6F6C6C" />
+            android:textColorHint="#6F6C6C"
+             />
 
     </RelativeLayout>
 </layout>

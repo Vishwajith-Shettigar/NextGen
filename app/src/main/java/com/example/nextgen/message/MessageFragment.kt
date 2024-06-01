@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
@@ -59,7 +61,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     savedInstanceState: Bundle?,
   ): View {
     // Inflate the layout for this fragment
-    binding = FragmentMessageBinding.inflate(inflater)
+    binding = FragmentMessageBinding.inflate(inflater, container, false)
     val chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())
     Log.e(LOG_KEY, chat?.chatId.toString())
 
@@ -74,8 +76,9 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
 
     val messageListAdapter = BaseAdapter<MessageViewModel>()
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
-    binding.viewModel=messageListViewModel
-    binding.lifecycleOwner=this
+    binding.viewModel = messageListViewModel
+    binding.lifecycleOwner = viewLifecycleOwner
+
     binding.recyclerview.apply {
       adapter = messageListAdapter
       layoutManager = chatLayoutManager
@@ -83,10 +86,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
 
     messageListViewModel.messageList.observe(viewLifecycleOwner) {
       messageListAdapter.itemList = it as MutableList<MessageViewModel>
-    }
-
-    messageListViewModel.messageList.observe(viewLifecycleOwner) {
-      messageListAdapter.itemList = it as MutableList<MessageViewModel>
+      binding.recyclerview.scrollToPosition(it.size - 1)
     }
 
     messageListAdapter.expressionGetViewType = { messageViewModel ->
@@ -145,8 +145,6 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         }
       }
   }
-
-
 
   override fun onLongPress(message: Message) {
     TODO("Not yet implemented")

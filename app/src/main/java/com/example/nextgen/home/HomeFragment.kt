@@ -76,6 +76,7 @@ class HomeFragment : BaseFragment() {
     val homeViewModel =
       HomeViewModel(chatController, userId!!, activity as ChatSummaryClickListener)
     val chatAdapter = BaseAdapter<HomeItemViewModel>()
+
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.chatsRecyclerview.apply {
       adapter = chatAdapter
