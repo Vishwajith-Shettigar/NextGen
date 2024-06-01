@@ -21,7 +21,7 @@ class MessageActivity : BaseActivity() {
     setContentView(R.layout.activity_message)
     val args = intent.getProtoExtra(MESSAGEACTIVITY_INTENT_EXTRAS_KEY, Chat.getDefaultInstance())
     supportFragmentManager.beginTransaction()
-      .add(R.id.frame_layout, MessageFragment.newInstance(args!!))
+      .replace(R.id.frame_layout, MessageFragment.newInstance(args!!))
       .commit()
   }
 
@@ -29,6 +29,17 @@ class MessageActivity : BaseActivity() {
     activityComponent.inject(this)
   }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    Log.e(LOG_KEY,"destroyed activty ---------------->")
+    finish()
+  }
+
+  override fun onBackPressed() {
+    super.onBackPressed()
+    Log.e(LOG_KEY,"back pressed activty ---------------->")
+
+  }
   companion object {
 
     /** Key for MessageActivity extras */

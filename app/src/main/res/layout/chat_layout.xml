@@ -7,6 +7,7 @@
         <variable
             name="viewModel"
             type="com.example.nextgen.home.ChatViewModel" />
+        <import type="android.view.View"/>
     </data>
 
     <RelativeLayout
@@ -81,7 +82,18 @@
                 android:layout_alignEnd="@+id/parentOf_username_message"
                 android:text="@{viewModel.time}"
                 android:textColor="#454141"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:text="@{viewModel.unReadMessage}"
+                android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE}"
+                android:background="@drawable/new_messsage_alert_background"
+                android:layout_alignEnd="@+id/parentOf_username_message"
+                android:layout_alignBottom="@+id/time_stamp"
+                />
+
         </RelativeLayout>
 
     </RelativeLayout>

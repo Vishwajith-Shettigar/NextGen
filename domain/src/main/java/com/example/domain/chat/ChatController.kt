@@ -6,6 +6,7 @@ import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
+import com.example.model.LastMessageInfo
 import com.example.model.Message
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import java.util.Date
 import javax.inject.Singleton
@@ -43,14 +45,14 @@ class ChatController @Inject constructor(
     val user1ChatData = hashMapOf(
       user2ID to hashMapOf(
         "chatId" to chatId,
-        "lastMessage" to ""
+        "lastMessage" to emptyMap<String, Any>()
       )
     )
 
     val user2ChatData = hashMapOf(
       user1ID to hashMapOf(
         "chatId" to chatId,
-        "lastMessage" to ""
+        "lastMessage" to emptyMap<String, Any>()
       )
     )
     try {
@@ -99,6 +101,25 @@ class ChatController @Inject constructor(
     return null
   }
 
+  fun updateSeenAndUnreadMessage(
+    senderId: String,
+    receiverId: String,
+  ) {
+Log.e(LOG_KEY,senderId+ "  "+ receiverId)
+    CoroutineScope(Dispatchers.IO).launch {
+      val UnreadMessageField = "chats.$senderId.unreadMessage"
+      val seenChatField = "chats.$senderId.lastMessage.seen"
+
+      firestore.collection(USERS_COLLECTION).document(receiverId)
+        .update(
+          UnreadMessageField, 0,
+          seenChatField, true
+        )
+        .await()
+    }
+
+  }
+
   // Saves last message sent by users
   private suspend fun saveLastMessage(
     senderId: String,
@@ -112,14 +133,24 @@ class ChatController @Inject constructor(
       val senderChatField = "chats.$receiverId.lastMessage"
       val receiverChatField = "chats.$senderId.lastMessage"
 
+      val receiverUnreadMessageField = "chats.$senderId.unreadMessage"
+
       val lastMessageTimeSender = "chats.$receiverId.time"
       val lastMessageTimeReceiver = "chats.$senderId.time"
 
+      val lastMessageInfoSender = hashMapOf(
+        "text" to text,
+        "seen" to true
+      )
 
+      val lastMessageInfoReceiver = hashMapOf(
+        "text" to text,
+        "seen" to false
+      )
       // Update the sender's document
       firestore.collection(USERS_COLLECTION).document(senderId)
         .update(
-          senderChatField, text,
+          senderChatField, lastMessageInfoSender,
           lastMessageTimeSender, curTime
         )
         .await()
@@ -127,10 +158,12 @@ class ChatController @Inject constructor(
       // Update the receiver's document
       firestore.collection(USERS_COLLECTION).document(receiverId)
         .update(
-          receiverChatField, text,
-          lastMessageTimeReceiver, curTime
+          receiverChatField, lastMessageInfoReceiver,
+          lastMessageTimeReceiver, curTime,
+          receiverUnreadMessageField, FieldValue.increment(1)
         )
         .await()
+
 
       Log.e(LOG_KEY, "Last message saved successfully")
     } catch (e: Exception) {
@@ -157,10 +190,11 @@ class ChatController @Inject constructor(
           "timestamp" to curTime
         )
         // Use await() to ensure the operation completes
+        saveLastMessage(senderId, receiverId, text, curTime)
+
         messageRef.setValue(messageData).await()
 
         // Save the last message
-        saveLastMessage(senderId, receiverId, text, curTime)
 
         // Invoke the callback with success result on the main thread
         withContext(Dispatchers.Main) {
@@ -204,9 +238,9 @@ class ChatController @Inject constructor(
                   val chatId = child.get("chatId")
                   var imageUrl: String? = null
                   var username: String? = null
-                  val lastMessage: String = child.get("lastMessage") as String
+                  val lastMessageInfo = child.get("lastMessage") as Map<*, *>
                   val timeStamp: Long? = child.get("time") as Long?
-
+                  val unreadMessage = child.get("unreadMessage") as Long
                   // Get user profile
                   val userProfileResult = profileController.getUserProfile(userId)
                   when (userProfileResult) {
@@ -220,13 +254,18 @@ class ChatController @Inject constructor(
                     }
                   }
 
+
                   Chat.newBuilder().apply {
                     this.chatId = chatId as String?
                     this.userId = userId
                     this.imageUrl = imageUrl ?: ""
                     this.userName = username ?: ""
-                    this.lastMessage = lastMessage
+                    this.lastMessage = LastMessageInfo.newBuilder().apply {
+                      this.text = lastMessageInfo.get("text") as String
+                      this.seen = lastMessageInfo.get("seen") as Boolean
+                    }.build()
                     this.timestamp = timeStamp ?: 0
+                    this.unreadMessage = unreadMessage
                   }.build()
                 }
               }

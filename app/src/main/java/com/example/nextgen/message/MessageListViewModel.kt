@@ -33,9 +33,12 @@ class MessageListViewModel(
   val messageText = ObservableField<String>()
 
   init {
+    chatController.updateSeenAndUnreadMessage(chat.userId,userId)
+
     chatController.retrieveMessages(chat.chatId) { result ->
       if (result is com.example.utility.Result.Success) {
         processData(result.data)
+
       }
     }
 
@@ -66,10 +69,12 @@ class MessageListViewModel(
   }
 
   fun processData(data: List<Message>) {
+    Log.e(LOG_KEY,"yyyyyyyyyyyyyyyyyyyyeeeee "+ userId)
     val messageViewModelList: MutableList<MessageViewModel> = mutableListOf()
     data.forEach {
       messageViewModelList.add(MessageViewModel(userId, it, messageOnLongPressListener))
     }
+    chatController.updateSeenAndUnreadMessage(chat.userId,userId)
     _messageList.value = messageViewModelList
   }
 }

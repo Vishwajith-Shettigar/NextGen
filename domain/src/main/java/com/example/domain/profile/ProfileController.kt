@@ -70,8 +70,6 @@ class ProfileController @Inject constructor(
          document.addSnapshotListener { snapShot, e ->
            if (snapShot != null) {
              if (snapShot.exists()) {
-               Log.e(LOG_KEY, snapShot.get("status").toString()+ userId)
-
                  callback(com.example.utility.Result.Success(snapShot.get("status").toString()))
 
              }

@@ -24,7 +24,15 @@ class ChatViewModel(
   }
 
   val lastMessage by lazy {
-    chat.lastMessage
+    chat.lastMessage.text
+  }
+
+  val isSeen by lazy {
+    chat.lastMessage.seen
+  }
+
+  val unReadMessage by lazy {
+    chat.unreadMessage.toString()
   }
 
   val now = System.currentTimeMillis()
@@ -32,7 +40,7 @@ class ChatViewModel(
     DateUtils.getRelativeTimeSpanString(chat.timestamp, now, DateUtils.DAY_IN_MILLIS);
   }
 
- fun onClickChat(view:View){
+  fun onClickChat(view: View) {
     chatSummaryClickListener.onChatSummaryClicked(chat)
   }
 }

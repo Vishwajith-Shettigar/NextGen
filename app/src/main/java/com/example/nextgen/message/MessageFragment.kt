@@ -52,6 +52,8 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     profileController.getUserId()
   }
 
+  lateinit var chat: Chat
+
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
@@ -60,24 +62,25 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View {
+    retainInstance = false
     // Inflate the layout for this fragment
     binding = FragmentMessageBinding.inflate(inflater, container, false)
-    val chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())
-    Log.e(LOG_KEY, chat?.chatId.toString())
+    chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())!!
+    Log.e(LOG_KEY, chat.chatId.toString())
 
     val messageListViewModel =
       MessageListViewModel(
         userId!!,
         chatController,
-        chat!!,
-        fragment as MessageOnLongPressListener,
+        chat,
+        this as MessageOnLongPressListener,
         profileController
       )
 
     val messageListAdapter = BaseAdapter<MessageViewModel>()
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.viewModel = messageListViewModel
-    binding.lifecycleOwner = viewLifecycleOwner
+    binding.lifecycleOwner = this
 
     binding.recyclerview.apply {
       adapter = messageListAdapter
@@ -133,6 +136,11 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     }
     return binding.root
   }
+  override fun onDestroy() {
+    super.onDestroy()
+    Log.e(LOG_KEY,"destroyed fragment ---------------->")
+    activity.finish()
+  }
 
   companion object {
 
@@ -145,6 +153,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         }
       }
   }
+
 
   override fun onLongPress(message: Message) {
     TODO("Not yet implemented")
