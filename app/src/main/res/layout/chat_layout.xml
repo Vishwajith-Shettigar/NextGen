@@ -94,6 +94,7 @@
                 android:layout_alignEnd="@+id/time_stamp"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
+                android:textColor="@color/white"
                 android:layout_alignBottom="@id/parentOf_username_message"
                 />
 

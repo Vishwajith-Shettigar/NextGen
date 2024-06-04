@@ -11,14 +11,18 @@ import com.example.domain.post.PostController
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
+import com.example.nextgen.databinding.FragmentProfileBinding
 import java.util.Random
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
   @Inject
   lateinit var postController: PostController
+
   @Inject
   lateinit var chatController: ChatController
+
+  lateinit var binding: FragmentProfileBinding
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
   }
@@ -31,10 +35,8 @@ class ProfileFragment : BaseFragment() {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
-    // Inflate the layout for this fragment
-    val view= inflater.inflate(R.layout.fragment_profile, container, false)
-    return view
-
+    binding = FragmentProfileBinding.inflate(inflater, container, false)
+    return binding.root
   }
 
   companion object {

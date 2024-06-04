@@ -36,8 +36,8 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
- 
-    buildFeatures{
+
+    buildFeatures {
         buildConfig true
         dataBinding = true
         viewBinding = true
@@ -72,7 +72,7 @@ dependencies {
         exclude module: 'protobuf-java'
     }
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
@@ -100,13 +100,15 @@ dependencies {
     implementation 'com.firebase:geofire-android:3.1.0'
 
 
-
-
     // Maps SDK for Android
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-location:21.2.0'
 
     //picasso
-implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'com.squareup.picasso:picasso:2.8'
+
+
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 
 }
