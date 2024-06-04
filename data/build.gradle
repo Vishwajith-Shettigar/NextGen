@@ -1,0 +1,39 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdkVersion 34
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 34
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+apply plugin: 'kotlin-kapt'
+
+
+dependencies {
+    implementation project(':model')
+
+    implementation("com.google.protobuf:protobuf-javalite:4.26.1") {
+        exclude module: 'protobuf-java'
+    }
+    implementation "androidx.room:room-runtime:2.6.1"
+    implementation 'androidx.core:core-ktx:1.13.1'
+    kapt "androidx.room:room-compiler:2.6.1"
+    implementation "androidx.room:room-ktx:2.6.1"
+
+}
