@@ -10,5 +10,8 @@ data class UserEntity(
   val userName:String,
   val imageUrl: String,
   val name: String,
-  val bio: String
+  val bio: String,
+  val disableProfilePicture:Boolean,
+  val disableLocation:Boolean,
+  val disableChat:Boolean
 )

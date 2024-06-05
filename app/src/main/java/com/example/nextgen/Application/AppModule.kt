@@ -1,6 +1,10 @@
 package com.example.nextgen.Application
 
 import android.content.Context
+import androidx.room.Room
+import com.example.data.dao.UserDao
+import com.example.data.db.AppDatabase
+import com.example.data.repository.UserRepo
 import com.firebase.geofire.GeoFire
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -23,20 +27,43 @@ class AppModule(private val context: Context) {
 
   @Provides
   @Singleton
-  fun provideFirebaseFirestore():FirebaseFirestore{
+  fun provideFirebaseFirestore(): FirebaseFirestore {
     return FirebaseFirestore.getInstance()
   }
 
   @Provides
   @Singleton
-  fun provideFirebaseAuth():FirebaseAuth{
+  fun provideFirebaseAuth(): FirebaseAuth {
     return Firebase.auth
   }
 
   @Provides
   @Singleton
-  fun provideFirebaseDatabase():FirebaseDatabase{
+  fun provideFirebaseDatabase(): FirebaseDatabase {
     return FirebaseDatabase.getInstance()
+  }
+
+  @Provides
+  @Singleton
+  fun provideRoomDatabase(context: Context): AppDatabase {
+    return Room.databaseBuilder(
+      context,
+      AppDatabase::class.java,
+      "app_database"
+    ).build()
+  }
+
+  @Singleton
+  @Provides
+  fun provideUserDao(database: AppDatabase): UserDao {
+    return database.userDao()
+
+  }
+
+  @Singleton
+  @Provides
+  fun provideUserRepository(userDao: UserDao): UserRepo {
+    return UserRepo(userDao)
   }
 
 }
