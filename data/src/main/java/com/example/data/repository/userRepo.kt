@@ -17,6 +17,7 @@ class UserRepo(private val userDao: UserDao) {
       imageUrl = user.imageUrl,
       name = user.firstName,
       bio = user.bio,
+      rating=user.rating,
       disableProfilePicture = user.privacy.disableProfilePicture,
       disableLocation = user.privacy.disableLocation,
       disableChat = user.privacy.disableChat
@@ -39,6 +40,7 @@ class UserRepo(private val userDao: UserDao) {
         this.firstName = it.name
         this.imageUrl = it.imageUrl
         this.bio = it.bio
+        this.rating=it.rating
         this.userName = it.userName
         this.privacy = privacy
       }.build()

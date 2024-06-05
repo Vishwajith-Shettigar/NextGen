@@ -19,7 +19,7 @@ message Profile{
   GeoPoint location = 5;
   string imageUrl = 6;
   string bio = 7;
-  int32 rating = 8;
+  float rating = 8;
   Privacy privacy = 9;
 }
 

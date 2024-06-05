@@ -1,5 +1,6 @@
 package com.example.nextgen.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import com.example.data.repository.UserRepo
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.post.PostController
+import com.example.domain.profile.ProfileController
+import com.example.model.Privacy
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
@@ -23,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : BaseFragment() {
   @Inject
-  lateinit var postController: PostController
+  lateinit var profileController: ProfileController
 
   @Inject
   lateinit var chatController: ChatController
@@ -32,6 +35,7 @@ class ProfileFragment : BaseFragment() {
   lateinit var userRepo: UserRepo
 
   lateinit var binding: FragmentProfileBinding
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
   }
@@ -45,6 +49,42 @@ class ProfileFragment : BaseFragment() {
     savedInstanceState: Bundle?,
   ): View? {
     binding = FragmentProfileBinding.inflate(inflater, container, false)
+    val userId = profileController.getUserId()
+
+    val p = Profile.newBuilder().apply {
+      this.userId = "hellogrger1232"
+      this.userName = "Dark"
+      this.firstName = "Vish"
+      this.imageUrl = "https://avatars.githubusercontent.com/u/76042077?v=4"
+      this.bio = "Yenna pannitringe"
+      this.rating = 4.5F
+      this.privacy = Privacy.newBuilder().apply {
+        this.disableProfilePicture = false
+        this.disableChat = false
+        this.disableLocation = false
+      }.build()
+    }.build()
+    CoroutineScope(Dispatchers.IO).launch {
+
+      profileController.setLocalUserProfile(profile = p)
+
+    }
+    val profileViewModel =
+      ProfileViewModel(
+        userId = "hellogrger1232", profileController = profileController
+      )
+    binding.viewModel = profileViewModel
+
+    profileViewModel.profile.observe(viewLifecycleOwner) {
+      Log.e(LOG_KEY,it.toString())
+      binding.apply {
+        this.username.text = it.userName
+        this.bio.text = it.bio
+        this.profilePic.setImageURI(Uri.parse(it.imageUrl))
+        this.ratingText.text = it.rating.toString()
+      }
+    }
+
     return binding.root
   }
 

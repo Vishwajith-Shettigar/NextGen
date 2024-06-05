@@ -1,6 +1,7 @@
 package com.example.domain.profile
 
 import android.util.Log
+import com.example.data.repository.UserRepo
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
@@ -21,10 +22,22 @@ import kotlinx.coroutines.*
 class ProfileController @Inject constructor(
   private val firestore: FirebaseFirestore,
   private val firebaseAuth: FirebaseAuth,
+  private val userRepo: UserRepo,
 ) {
 
   fun getUserId(): String? {
     return firebaseAuth.currentUser?.uid
+  }
+
+   suspend fun getLocalUserProfile(userId: String): Profile {
+    return userRepo.getUser(userId)!!
+
+  }
+
+  suspend fun setLocalUserProfile(profile: Profile) {
+    return withContext(Dispatchers.IO) {
+      userRepo.insertUser(profile)
+    }
   }
 
   fun saveUsers(profile: Profile) {
@@ -64,18 +77,18 @@ class ProfileController @Inject constructor(
 
   fun getUserStatus(userId: String, callback: (com.example.utility.Result<String>) -> Unit) {
     try {
-       CoroutineScope(Dispatchers.IO).launch {
-         Log.e(LOG_KEY, userId)
-         val document = firestore.collection(USERS_COLLECTION).document(userId)
-         document.addSnapshotListener { snapShot, e ->
-           if (snapShot != null) {
-             if (snapShot.exists()) {
-                 callback(com.example.utility.Result.Success(snapShot.get("status").toString()))
+      CoroutineScope(Dispatchers.IO).launch {
+        Log.e(LOG_KEY, userId)
+        val document = firestore.collection(USERS_COLLECTION).document(userId)
+        document.addSnapshotListener { snapShot, e ->
+          if (snapShot != null) {
+            if (snapShot.exists()) {
+              callback(com.example.utility.Result.Success(snapShot.get("status").toString()))
 
-             }
-           }
-         }
-       }
+            }
+          }
+        }
+      }
     } catch (e: Exception) {
       com.example.utility.Result.Failure(e.message ?: "Failed to retrieve user profile")
     }

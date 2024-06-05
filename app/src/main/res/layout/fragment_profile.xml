@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+<variable
+    name="viewModel"
+    type="com.example.nextgen.profile.ProfileViewModel" />
     </data>
 
     <LinearLayout
@@ -31,7 +33,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/profile_placeholder"
-
                     />
             </androidx.cardview.widget.CardView>
 
@@ -45,7 +46,6 @@
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dark Vish"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -53,11 +53,9 @@
                     android:id="@+id/bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Darkness"
                     android:textSize="13sp" />
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -68,15 +66,16 @@
                 android:layout_gravity="center_vertical">
 
                 <ImageView
+                    android:id="@+id/rating_image"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/half_star" />
 
                 <TextView
+                    android:id="@+id/rating_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="4.5"
                     android:textSize="16sp" />
             </LinearLayout>
 
