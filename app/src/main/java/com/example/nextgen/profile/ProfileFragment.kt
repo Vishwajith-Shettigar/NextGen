@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.example.data.repository.UserRepo
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
@@ -18,6 +19,7 @@ import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentProfileBinding
+import com.example.nextgen.editprofile.RouteToEditProfileActivity
 import java.util.Random
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +35,9 @@ class ProfileFragment : BaseFragment() {
 
   @Inject
   lateinit var userRepo: UserRepo
+
+  @Inject
+  lateinit var activity: AppCompatActivity
 
   lateinit var binding: FragmentProfileBinding
 
@@ -76,13 +81,20 @@ class ProfileFragment : BaseFragment() {
     binding.viewModel = profileViewModel
 
     profileViewModel.profile.observe(viewLifecycleOwner) {
-      Log.e(LOG_KEY,it.toString())
+      Log.e(LOG_KEY, it.toString())
       binding.apply {
         this.username.text = it.userName
         this.bio.text = it.bio
         this.profilePic.setImageURI(Uri.parse(it.imageUrl))
         this.ratingText.text = it.rating.toString()
       }
+    }
+
+    binding.parentProfileInfo.setOnClickListener {
+      (activity as RouteToEditProfileActivity).routeToEditProfileActivity(
+        profileViewModel
+          .profile.value!!
+      )
     }
 
     return binding.root
