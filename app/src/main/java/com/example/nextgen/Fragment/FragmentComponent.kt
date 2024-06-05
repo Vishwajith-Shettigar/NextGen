@@ -1,5 +1,6 @@
 package com.example.nextgen.Fragment
 
+import com.example.nextgen.editprofile.EditProfileFragment
 import com.example.nextgen.home.HomeFragment
 import com.example.nextgen.message.MessageFragment
 import com.example.nextgen.nearby.NearByFragment
@@ -17,5 +18,5 @@ interface FragmentComponent {
   fun inject(fragment: SignupFragment)
   fun inject(fragment: SignInFragment)
   fun inject(fragment: MessageFragment)
-
+  fun inject(fragment: EditProfileFragment)
 }

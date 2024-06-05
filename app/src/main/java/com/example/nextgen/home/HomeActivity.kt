@@ -11,10 +11,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.post.PostController
 import com.example.model.Chat
+import com.example.model.Profile
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ActivityHomeBinding
+import com.example.nextgen.editprofile.EditProfileActivity
+import com.example.nextgen.editprofile.RouteToEditProfileActivity
 import com.example.nextgen.message.MessageActivity
 import com.example.nextgen.nearby.NearByFragment
 import com.example.nextgen.notification.NotificationFragment
@@ -22,7 +25,7 @@ import com.example.nextgen.profile.ProfileFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
-class HomeActivity : BaseActivity(),ChatSummaryClickListener {
+class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -30,8 +33,6 @@ class HomeActivity : BaseActivity(),ChatSummaryClickListener {
   lateinit var firebaseFirestore: FirebaseFirestore
 
   lateinit var binding: ActivityHomeBinding
-
-  lateinit var viewPagerAdapter: ViewPagerAdapter
 
   @Inject
   lateinit var postController: PostController
@@ -99,7 +100,10 @@ class HomeActivity : BaseActivity(),ChatSummaryClickListener {
   }
 
   override fun onChatSummaryClicked(chat: Chat) {
-    Log.e(LOG_KEY,"clicked")
-    startActivity(MessageActivity.createMessageActivity(this,chat))
+    startActivity(MessageActivity.createMessageActivity(this, chat))
+  }
+
+  override fun routeToEditProfileActivity(profile: Profile) {
+    startActivity(EditProfileActivity.createEditProfileActivity(this, profile))
   }
 }

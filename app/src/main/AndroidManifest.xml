@@ -17,6 +17,9 @@
         android:theme="@style/Theme.NextGen"
         tools:targetApi="31">
         <activity
+            android:name=".editprofile.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".message.MessageActivity"
             android:exported="false" />
         <activity
@@ -42,7 +45,7 @@
 
         <activity
             android:name=".home.HomeActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>

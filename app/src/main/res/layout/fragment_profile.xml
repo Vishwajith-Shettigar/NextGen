@@ -16,6 +16,7 @@
 
         <!-- Top Row with Profile Picture and Username -->
         <LinearLayout
+            android:id="@+id/parent_profileInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
