@@ -1,5 +1,6 @@
 package com.example.domain.profile
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.example.data.repository.UserRepo
 import com.example.domain.constants.LOG_KEY
@@ -16,6 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
+import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.*
 
 @Singleton
@@ -29,7 +31,7 @@ class ProfileController @Inject constructor(
     return firebaseAuth.currentUser?.uid
   }
 
-   suspend fun getLocalUserProfile(userId: String): Profile {
+  suspend fun getLocalUserProfile(userId: String): Profile {
     return userRepo.getUser(userId)!!
 
   }
@@ -37,6 +39,33 @@ class ProfileController @Inject constructor(
   suspend fun setLocalUserProfile(profile: Profile) {
     return withContext(Dispatchers.IO) {
       userRepo.insertUser(profile)
+    }
+  }
+
+
+  fun updateUserProfile(profile: Profile, callback: (Result<String>) -> Unit) {
+    try {
+      val updates = hashMapOf<String, Any>(
+        "username" to profile.userName,
+        "firstName" to profile.firstName,
+        "lastName" to profile.lastName,
+        "bio" to profile.bio,
+        "imageUrl" to profile.imageUrl
+      )
+      CoroutineScope(Dispatchers.IO).launch {
+        firestore.collection(USERS_COLLECTION).document(profile.userId)
+          .update(
+            updates
+          )
+          .addOnSuccessListener {
+            callback(com.example.utility.Result.Success("Success"))
+          }.addOnFailureListener {
+            callback(com.example.utility.Result.Failure("Failed"))
+
+          }
+      }
+    } catch (e: Exception) {
+      callback(com.example.utility.Result.Failure("Failed"))
     }
   }
 
@@ -94,6 +123,32 @@ class ProfileController @Inject constructor(
     }
 
   }
+
+//Todo: Store image in firebase storage
+
+//  private fun uploadImageToStorage(bitmap: Bitmap) {
+//    val baos = ByteArrayOutputStream()
+//    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+//    val data = baos.toByteArray()
+//
+//    val imagesRef = storageReference.child("profile_images").child("${profile.userId}.jpg")
+//
+//    val uploadTask = imagesRef.putBytes(data)
+//    uploadTask.addOnSuccessListener { taskSnapshot ->
+//      taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+//        // Update the Profile object with the image URL
+//        val imageUrl = uri.toString()
+//        profile = profile.toBuilder().setProfilePic(imageUrl).build()
+//
+//      }.addOnFailureListener { e ->
+//        println("Error getting download URL: $e")
+//      }
+//    }.addOnFailureListener { e ->
+//      println("Error uploading image: $e")
+//    }
+//  }
+
+
 }
 
 
