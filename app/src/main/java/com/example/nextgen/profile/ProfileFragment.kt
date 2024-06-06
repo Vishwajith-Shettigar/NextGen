@@ -24,6 +24,7 @@ import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentProfileBinding
 import com.example.nextgen.editprofile.RouteToEditProfileActivity
+import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.squareup.picasso.Picasso
 import java.util.Random
 import javax.inject.Inject
@@ -46,7 +47,7 @@ class ProfileFragment : BaseFragment() {
 
   lateinit var binding: FragmentProfileBinding
 
-  lateinit var profileViewModel:ProfileViewModel
+  lateinit var profileViewModel: ProfileViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -55,6 +56,7 @@ class ProfileFragment : BaseFragment() {
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
+
   override fun onResume() {
     super.onResume()
     profileViewModel.loadProfile()
@@ -67,7 +69,7 @@ class ProfileFragment : BaseFragment() {
     binding = FragmentProfileBinding.inflate(inflater, container, false)
     val userId = profileController.getUserId()
 
-     profileViewModel =
+    profileViewModel =
       ProfileViewModel(
         userId = userId!!, profileController = profileController
       )
@@ -97,6 +99,10 @@ class ProfileFragment : BaseFragment() {
         profileViewModel
           .profile.value!!
       )
+    }
+
+    binding.privacy.setOnClickListener {
+      (activity as RouteToPrivacyActivity).routeToPrivacyActivity(profileViewModel.profile.value!!)
     }
 
     return binding.root

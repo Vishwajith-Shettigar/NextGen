@@ -21,11 +21,14 @@ import com.example.nextgen.editprofile.RouteToEditProfileActivity
 import com.example.nextgen.message.MessageActivity
 import com.example.nextgen.nearby.NearByFragment
 import com.example.nextgen.notification.NotificationFragment
+import com.example.nextgen.privacy.PrivacyActivity
+import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
-class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity {
+class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity,
+  RouteToPrivacyActivity {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -105,5 +108,9 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   override fun routeToEditProfileActivity(profile: Profile) {
     startActivity(EditProfileActivity.createEditProfileActivity(this, profile))
+  }
+
+  override fun routeToPrivacyActivity(profile: Profile) {
+    startActivity(PrivacyActivity.createPrivacyActivity(this, profile = profile))
   }
 }
