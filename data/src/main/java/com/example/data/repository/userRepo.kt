@@ -1,5 +1,7 @@
 package com.example.data.repository
 
+import android.speech.RecognizerResultsIntent
+import android.util.Log
 import com.example.data.dao.UserDao
 import com.example.data.entity.UserEntity
 import com.example.model.Privacy
@@ -9,20 +11,24 @@ class UserRepo(private val userDao: UserDao) {
 
   suspend fun insertUser(
     user:
-    Profile,
+    Profile
   ) {
-    val userEntity = UserEntity(
-      userId = user.userId,
-      userName = user.userName,
-      imageUrl = user.imageUrl,
-      name = user.firstName,
-      bio = user.bio,
-      rating=user.rating,
-      disableProfilePicture = user.privacy.disableProfilePicture,
-      disableLocation = user.privacy.disableLocation,
-      disableChat = user.privacy.disableChat
-    )
-    userDao.insertUser(userEntity)
+    try {
+      val userEntity = UserEntity(
+        userId = user.userId,
+        userName = user.userName,
+        imageUrl = user.imageUrl,
+        firstName = user.firstName,
+        lastName = user.lastName,
+        bio = user.bio,
+        rating = user.rating,
+        disableProfilePicture = user.privacy.disableProfilePicture,
+        disableLocation = user.privacy.disableLocation,
+        disableChat = user.privacy.disableChat
+      )
+      userDao.insertUser(userEntity)
+    } catch (e: java.lang.Exception) {
+    }
   }
 
   suspend fun getUser(userId: String): Profile? {
@@ -37,10 +43,11 @@ class UserRepo(private val userDao: UserDao) {
 
       Profile.newBuilder().apply {
         this.userId = it.userId
-        this.firstName = it.name
+        this.firstName = it.firstName
+        this.lastName = it.lastName
         this.imageUrl = it.imageUrl
         this.bio = it.bio
-        this.rating=it.rating
+        this.rating = it.rating
         this.userName = it.userName
         this.privacy = privacy
       }.build()

@@ -9,6 +9,9 @@
     type="com.example.nextgen.editprofile.EditProfileViewModel" />
     </data>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -171,5 +174,24 @@
             android:textColor="@android:color/white"
             android:backgroundTint="@color/colorPrimary"
             android:layout_marginTop="24dp"/>
+
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/loading_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#918A92"
+        android:alpha="0.5"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:progressTint="@color/purple_200"
+            />
+    </LinearLayout>
+    </FrameLayout>
 </layout>

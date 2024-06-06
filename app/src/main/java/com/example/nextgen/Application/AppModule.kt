@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -41,6 +42,12 @@ class AppModule(private val context: Context) {
   @Singleton
   fun provideFirebaseDatabase(): FirebaseDatabase {
     return FirebaseDatabase.getInstance()
+  }
+
+  @Provides
+  @Singleton
+  fun provideFirebaseStorage(): FirebaseStorage {
+    return FirebaseStorage.getInstance()
   }
 
   @Provides

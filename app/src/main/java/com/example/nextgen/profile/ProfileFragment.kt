@@ -46,7 +46,7 @@ class ProfileFragment : BaseFragment() {
 
   lateinit var binding: FragmentProfileBinding
 
-  private const val REQUEST_IMAGE_CAPTURE = 1
+  lateinit var profileViewModel:ProfileViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -54,6 +54,10 @@ class ProfileFragment : BaseFragment() {
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
+  }
+  override fun onResume() {
+    super.onResume()
+    profileViewModel.loadProfile()
   }
 
   override fun onCreateView(
@@ -63,27 +67,9 @@ class ProfileFragment : BaseFragment() {
     binding = FragmentProfileBinding.inflate(inflater, container, false)
     val userId = profileController.getUserId()
 
-//    val p = Profile.newBuilder().apply {
-//      this.userId = "hellogrger1232"
-//      this.userName = "Dark"
-//      this.firstName = "Vish"
-//      this.imageUrl = "https://avatars.githubusercontent.com/u/76042077?v=4"
-//      this.bio = "Yenna pannitringe"
-//      this.rating = 4.5F
-//      this.privacy = Privacy.newBuilder().apply {
-//        this.disableProfilePicture = false
-//        this.disableChat = false
-//        this.disableLocation = false
-//      }.build()
-//    }.build()
-//    CoroutineScope(Dispatchers.IO).launch {
-//
-//      profileController.setLocalUserProfile(profile = p)
-//
-//    }
-    val profileViewModel =
+     profileViewModel =
       ProfileViewModel(
-        userId = "hellogrger1232", profileController = profileController
+        userId = userId!!, profileController = profileController
       )
     binding.viewModel = profileViewModel
     binding.lifecycleOwner = this
@@ -91,17 +77,19 @@ class ProfileFragment : BaseFragment() {
     profileViewModel.profile.observe(viewLifecycleOwner) {
       Log.e(LOG_KEY, it.toString())
       binding.apply {
-        this.username.text = it.userName
-        this.bio.text = it.bio
-        Picasso.get().load(it.imageUrl)
-          .error(R.drawable.profile_placeholder).into(this.profilePic)
-        this.ratingText.text = it.rating.toString()
-      }
-    }
+        try {
 
-    binding.profilePic.setOnClickListener {
-      val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+
+          this.username.text = it.userName
+          this.bio.text = it.bio
+          if (!it.imageUrl.isBlank())
+            Picasso.get().load(it.imageUrl)
+              .error(R.drawable.profile_placeholder).into(this.profilePic)
+          this.ratingText.text = it.rating.toString()
+        } catch (e: java.lang.Exception) {
+          Log.e(LOG_KEY, e.toString())
+        }
+      }
     }
 
     binding.parentProfileInfo.setOnClickListener {
@@ -114,16 +102,6 @@ class ProfileFragment : BaseFragment() {
     return binding.root
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-      // Update UI to display the new profile picture
-      val imageBitmap = data?.extras?.get("data") as Bitmap
-      binding.profilePic.setImageBitmap(imageBitmap)
-         // Todo: Store image in firebase
-
-    }
-  }
   companion object {
 
     const val TAG = "ProfileFragment"

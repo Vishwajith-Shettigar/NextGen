@@ -17,13 +17,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
+import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Singleton
 class ProfileController @Inject constructor(
   private val firestore: FirebaseFirestore,
   private val firebaseAuth: FirebaseAuth,
+  private val firebaseStorage: FirebaseStorage,
   private val userRepo: UserRepo,
 ) {
 
@@ -33,15 +37,21 @@ class ProfileController @Inject constructor(
 
   suspend fun getLocalUserProfile(userId: String): Profile {
     return userRepo.getUser(userId)!!
-
   }
 
-  suspend fun setLocalUserProfile(profile: Profile) {
-    return withContext(Dispatchers.IO) {
-      userRepo.insertUser(profile)
+  suspend fun setLocalUserProfile(
+    profile: Profile,
+    callback: (com.example.utility.Result<String>) -> Unit,
+  ) {
+    try {
+      withContext(Dispatchers.IO) {
+        userRepo.insertUser(profile)
+      }
+      callback(com.example.utility.Result.Success("Success"))
+    } catch (e: java.lang.Exception) {
+      callback(com.example.utility.Result.Failure("Failed"))
     }
   }
-
 
   fun updateUserProfile(profile: Profile, callback: (Result<String>) -> Unit) {
     try {
@@ -84,7 +94,7 @@ class ProfileController @Inject constructor(
       "geohash" to geoHash
     )
 
-// Add the user data to Firestore
+    // Add the user data to Firestore
     firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
       .set(userData)
       .addOnSuccessListener {
@@ -113,7 +123,6 @@ class ProfileController @Inject constructor(
           if (snapShot != null) {
             if (snapShot.exists()) {
               callback(com.example.utility.Result.Success(snapShot.get("status").toString()))
-
             }
           }
         }
@@ -121,34 +130,31 @@ class ProfileController @Inject constructor(
     } catch (e: Exception) {
       com.example.utility.Result.Failure(e.message ?: "Failed to retrieve user profile")
     }
-
   }
 
-//Todo: Store image in firebase storage
+  fun uploadImageToStorage(
+    bitmap: Bitmap,
+    userId: String,
+    callback: (Result<String>) -> Unit,
+  ) {
+    val baos = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+    val data = baos.toByteArray()
 
-//  private fun uploadImageToStorage(bitmap: Bitmap) {
-//    val baos = ByteArrayOutputStream()
-//    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-//    val data = baos.toByteArray()
-//
-//    val imagesRef = storageReference.child("profile_images").child("${profile.userId}.jpg")
-//
-//    val uploadTask = imagesRef.putBytes(data)
-//    uploadTask.addOnSuccessListener { taskSnapshot ->
-//      taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-//        // Update the Profile object with the image URL
-//        val imageUrl = uri.toString()
-//        profile = profile.toBuilder().setProfilePic(imageUrl).build()
-//
-//      }.addOnFailureListener { e ->
-//        println("Error getting download URL: $e")
-//      }
-//    }.addOnFailureListener { e ->
-//      println("Error uploading image: $e")
-//    }
-//  }
+    val imagesRef = firebaseStorage.reference.child("profile_images").child("${userId}.jpg")
 
+    val uploadTask = imagesRef.putBytes(data)
+    uploadTask.addOnSuccessListener { taskSnapshot ->
+      taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+        val imageUrl = uri.toString()
+        callback(com.example.utility.Result.Success(imageUrl))
+      }.addOnFailureListener { e ->
+        callback(com.example.utility.Result.Failure(e.toString()))
 
+      }
+    }.addOnFailureListener { e ->
+      callback(com.example.utility.Result.Failure(e.toString()))
+
+    }
+  }
 }
-
-
