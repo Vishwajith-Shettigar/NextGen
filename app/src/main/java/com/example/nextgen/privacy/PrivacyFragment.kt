@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.profile.DISABLE_CHAT_ID
+import com.example.domain.profile.DISABLE_LOCATION_ID
+import com.example.domain.profile.DISABLE_PROFILE_PICTURE
 import com.example.domain.profile.ProfileController
 import com.example.model.Privacy
 import com.example.model.PrivacyItem
@@ -17,6 +22,7 @@ import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.ChatLayoutBinding
+import com.example.nextgen.databinding.DialogYesNoOptionsBinding
 import com.example.nextgen.databinding.FragmentPrivacyBinding
 import com.example.nextgen.databinding.PrivacyItemsLayoutBinding
 import com.example.nextgen.home.ChatViewModel
@@ -43,7 +49,9 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
   @Inject
   lateinit var profileController: ProfileController
 
-  val privacyAdapter = BaseAdapter<PrivacyItemsViewModel>()
+  private val privacyAdapter = BaseAdapter<PrivacyItemsViewModel>()
+
+  private lateinit var privacyViewModel: PrivacyViewModel
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
@@ -53,17 +61,19 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ): View? {
+  ): View {
     // Inflate the layout for this fragment
     binding = FragmentPrivacyBinding.inflate(inflater, container, false)
     profile = arguments?.getProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
-    val privacyViewModel =
+    privacyViewModel =
       PrivacyViewModel(profile, fragment, profileController, (fragment as OnPrivacyItemClicked))
     val layoutManager = LinearLayoutManager(activity.applicationContext)
     binding.privacyRecyclerView.apply {
       this.adapter = privacyAdapter
       this.layoutManager = layoutManager
     }
+
+    binding.lifecycleOwner = this
 
     privacyViewModel.privacyitemsList.observe(viewLifecycleOwner) {
       privacyAdapter.itemList = it as MutableList<PrivacyItemsViewModel>
@@ -92,7 +102,9 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
     privacyAdapter.expressionViewHolderBinding = { viewModel, viewtype, viewBinding ->
 
       val itemBinding = viewBinding as PrivacyItemsLayoutBinding
-      itemBinding.viewModel = viewModel as PrivacyItemsViewModel?
+      itemBinding.viewModel = viewModel
+      itemBinding.lifecycleOwner = this
+
     }
 
     return binding.root
@@ -111,7 +123,80 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
       }
   }
 
-  override fun onPrivacyItemClicked(privacyItem: PrivacyItem, status: Boolean) {
-    Log.e(LOG_KEY, "Clicked")
+  override fun onPrivacyItemClicked(privacyItem: PrivacyItem, status: Boolean, index: Int) {
+    showCustomDialog(privacyItem, status, index)
+  }
+
+  private fun showCustomDialog(privacyItem: PrivacyItem, status: Boolean, index: Int) {
+    // Inflate the dialog layout
+    val dialogbinding = DialogYesNoOptionsBinding.inflate(layoutInflater)
+
+    // Build the AlertDialog
+    val builder = AlertDialog.Builder(activity)
+    builder.setView(dialogbinding.root)
+
+    var choice = status
+
+    // Create the AlertDialog
+    val alertDialog = builder.create()
+    if (status == true)
+      dialogbinding.rbYes.isChecked = true
+    else
+      dialogbinding.rbNo.isChecked = true
+
+    dialogbinding.tvDialogTitle.text = privacyItem.itemName.toString()
+
+    // Set button click listeners
+    dialogbinding.rbYes.setOnClickListener {
+      // Do something when Yes is clicked
+      dialogbinding.rbNo.isChecked = false
+      choice = true
+
+    }
+
+    dialogbinding.rbNo.setOnClickListener {
+      // Do something when No is clicked
+      dialogbinding.rbYes.isChecked = false
+      choice = false
+
+    }
+
+    dialogbinding.btnSave.setOnClickListener {
+      // Do something when Save is clicked
+      handleSave(privacyItem, choice, index)
+      alertDialog.dismiss()
+    }
+
+    dialogbinding.btnCancel.setOnClickListener {
+      // Do something when Cancel is clicked
+      alertDialog.dismiss()
+    }
+
+    // Display the dialog
+    alertDialog.show()
+  }
+
+  fun handleSave(privacyItem: PrivacyItem, choice: Boolean, index: Int) {
+
+    if (privacyItem.itemId == DISABLE_CHAT_ID) {
+      privacyViewModel.updateDisableChatStatus(choice) {
+        if (it is com.example.utility.Result.Success) {
+          privacyAdapter.itemList[index].status.set(choice)
+        }
+      }
+    } else if (privacyItem.itemId == DISABLE_LOCATION_ID) {
+      privacyViewModel.updatedisableLocationStatus(choice) {
+        if (it is com.example.utility.Result.Success) {
+          privacyAdapter.itemList[index].status.set(choice)
+        }
+      }
+    } else if (privacyItem.itemId == DISABLE_PROFILE_PICTURE) {
+      privacyViewModel.updatedisableProfilePicture(choice) {
+        if (it is com.example.utility.Result.Success) {
+          privacyAdapter.itemList[index].status.set(choice)
+        }
+      }
+    } else {
+    }
   }
 }

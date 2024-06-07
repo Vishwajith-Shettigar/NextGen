@@ -1,18 +1,29 @@
 package com.example.nextgen.privacy
 
+import android.util.Log
 import android.view.View
+import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.domain.constants.LOG_KEY
 import com.example.model.PrivacyItem
 import com.example.nextgen.viewmodel.ObservableViewModel
 
 class PrivacyItemsViewModel(
-private val privacyItem: PrivacyItem,
-private val onPrivacyItemClicked: OnPrivacyItemClicked
-) :ObservableViewModel() {
+  private val index: Int,
+  private val privacyItem: PrivacyItem,
+  private val onPrivacyItemClicked: OnPrivacyItemClicked,
+) : ObservableViewModel() {
 
-   val status by lazy{
-    privacyItem.itemStatus
+
+  var status = ObservableField<Boolean>(privacyItem.itemStatus)
+  init {
+    status.set(privacyItem.itemStatus)
+    Log.e(LOG_KEY, "Shinchan -> "+ privacyItem.itemStatus)
+    Log.e(LOG_KEY, "here  " + status.get())
   }
-   val itemName by lazy {
+
+  val itemName by lazy {
     privacyItem.itemName
   }
 
@@ -20,7 +31,11 @@ private val onPrivacyItemClicked: OnPrivacyItemClicked
     privacyItem.itemId
   }
 
-  fun onClick(view:View){
-    onPrivacyItemClicked.onPrivacyItemClicked(privacyItem = privacyItem,status=status)
+  fun onClick(view: View) {
+    onPrivacyItemClicked.onPrivacyItemClicked(
+      privacyItem = privacyItem,
+      status = status.get()!!,
+      index
+    )
   }
 }

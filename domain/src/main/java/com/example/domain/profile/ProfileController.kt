@@ -208,14 +208,14 @@ class ProfileController @Inject constructor(
               if (it == true) {
                 callback(com.example.utility.Result.Success(true))
               } else {
-                callback(com.example.utility.Result.Success(false))
+                callback(com.example.utility.Result.Failure("Failed"))
               }
             }
           }
         }
     } catch (e: Exception) {
 
-      callback(com.example.utility.Result.Success(false))
+      callback(com.example.utility.Result.Failure("Failed"))
 
     }
   }
