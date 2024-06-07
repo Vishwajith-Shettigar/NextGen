@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
+import com.example.model.Privacy
 import com.example.model.PrivacyItem
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
@@ -27,7 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PrivacyFragment : BaseFragment() {
+class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
 
   lateinit var binding: FragmentPrivacyBinding
 
@@ -56,7 +57,8 @@ class PrivacyFragment : BaseFragment() {
     // Inflate the layout for this fragment
     binding = FragmentPrivacyBinding.inflate(inflater, container, false)
     profile = arguments?.getProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
-    val privacyViewModel = PrivacyViewModel(profile, fragment, profileController)
+    val privacyViewModel =
+      PrivacyViewModel(profile, fragment, profileController, (fragment as OnPrivacyItemClicked))
     val layoutManager = LinearLayoutManager(activity.applicationContext)
     binding.privacyRecyclerView.apply {
       this.adapter = privacyAdapter
@@ -107,5 +109,9 @@ class PrivacyFragment : BaseFragment() {
           putProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, profile)
         }
       }
+  }
+
+  override fun onPrivacyItemClicked(privacyItem: PrivacyItem, status: Boolean) {
+    Log.e(LOG_KEY, "Clicked")
   }
 }

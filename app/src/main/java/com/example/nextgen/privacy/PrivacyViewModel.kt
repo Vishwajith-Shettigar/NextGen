@@ -12,7 +12,8 @@ import com.example.nextgen.viewmodel.ObservableViewModel
 class PrivacyViewModel(
    private val profile: Profile,
    fragment: Fragment,
-private val  profileController: ProfileController
+private val  profileController: ProfileController,
+   private val onPrivacyItemClicked: OnPrivacyItemClicked
 ):ObservableViewModel() {
 
   private var _privacyitemsList = MutableLiveData<List<PrivacyItemsViewModel>>()
@@ -27,7 +28,7 @@ loadPrivacyItems()
     val privacyItems= profileController.getPrivacyItems(profile.privacy)
    val data = mutableListOf<PrivacyItemsViewModel>()
     privacyItems.forEach {
-      val privacyItemsViewModel= PrivacyItemsViewModel(it)
+      val privacyItemsViewModel= PrivacyItemsViewModel(it,onPrivacyItemClicked)
       data.add(privacyItemsViewModel)
     }
     _privacyitemsList.value=data
