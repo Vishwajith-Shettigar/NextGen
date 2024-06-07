@@ -28,3 +28,9 @@ message Privacy{
   bool disable_location = 2;
   bool disable_chat = 3;
 }
+
+message PrivacyItem{
+  string item_id=1;
+  string item_name=2;
+  bool item_status=3;
+}

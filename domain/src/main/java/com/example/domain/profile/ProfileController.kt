@@ -6,6 +6,7 @@ import com.example.data.repository.UserRepo
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
+import com.example.model.PrivacyItem
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
@@ -22,6 +23,12 @@ import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+val DISABLE_CHAT_ID = "disableChat.id"
+
+val DISABLE_LOCATION_ID = "disableLocation.id"
+
+val DISABLE_PROFILE_PICTURE = "disableProfilePicture.id"
 
 @Singleton
 class ProfileController @Inject constructor(
@@ -154,6 +161,115 @@ class ProfileController @Inject constructor(
       }
     }.addOnFailureListener { e ->
       callback(com.example.utility.Result.Failure(e.toString()))
+
+    }
+  }
+
+  fun getPrivacyItems(profile: Profile): MutableList<PrivacyItem> {
+    val privacyItemsList: MutableList<PrivacyItem> = mutableListOf()
+    val privacy = profile.privacy
+    val disableChat = PrivacyItem.newBuilder().apply {
+      this.itemId = DISABLE_CHAT_ID
+      this.itemName = "Disable Chat"
+      this.itemStatus = privacy.disableChat
+    }.build()
+
+    val disableLocation = PrivacyItem.newBuilder().apply {
+      this.itemId = DISABLE_LOCATION_ID
+      this.itemName = "Disable Location"
+      this.itemStatus = privacy.disableLocation
+    }.build()
+
+    val disableProfilePicture = PrivacyItem.newBuilder().apply {
+      this.itemId = DISABLE_PROFILE_PICTURE
+      this.itemName = "Disable Profile Picture"
+      this.itemStatus = privacy.disableProfilePicture
+    }.build()
+
+    privacyItemsList.add(disableChat)
+    privacyItemsList.add(disableLocation)
+    privacyItemsList.add(disableProfilePicture)
+
+    return privacyItemsList
+  }
+
+  suspend fun updateDisableChatStatus(
+    userId: String,
+    status: Boolean,
+    callback: (Result<Boolean>) -> Unit,
+  ) {
+
+    try {
+      val userDoc = firestore.collection("users").document(userId)
+      userDoc.update("disableChat", status)
+        .addOnSuccessListener {
+          CoroutineScope(Dispatchers.IO).launch {
+            userRepo.updateDisableChatStatus(userId, status) {
+              if (it == true) {
+                callback(com.example.utility.Result.Success(true))
+              } else {
+                callback(com.example.utility.Result.Success(false))
+              }
+            }
+          }
+        }
+    } catch (e: Exception) {
+
+      callback(com.example.utility.Result.Success(false))
+
+    }
+  }
+
+  suspend fun updatedisableLocationStatus(
+    userId: String,
+    status: Boolean,
+    callback: (Result<Boolean>) -> Unit,
+  ) {
+
+    try {
+      val userDoc = firestore.collection("users").document(userId)
+      userDoc.update("disableChat", status)
+        .addOnSuccessListener {
+          CoroutineScope(Dispatchers.IO).launch {
+            userRepo.updatedisableLocationStatus(userId, status) {
+              if (it == true) {
+                callback(com.example.utility.Result.Success(true))
+              } else {
+                callback(com.example.utility.Result.Success(false))
+              }
+            }
+          }
+        }
+    } catch (e: Exception) {
+
+      callback(com.example.utility.Result.Success(false))
+
+    }
+  }
+
+  suspend fun updatedisableProfilePicture(
+    userId: String,
+    status: Boolean,
+    callback: (Result<Boolean>) -> Unit,
+  ) {
+
+    try {
+      val userDoc = firestore.collection("users").document(userId)
+      userDoc.update("disableChat", status)
+        .addOnSuccessListener {
+          CoroutineScope(Dispatchers.IO).launch {
+            userRepo.updatedisableProfilePicture(userId, status) {
+              if (it == true) {
+                callback(com.example.utility.Result.Success(true))
+              } else {
+                callback(com.example.utility.Result.Success(false))
+              }
+            }
+          }
+        }
+    } catch (e: Exception) {
+
+      callback(com.example.utility.Result.Success(false))
 
     }
   }

@@ -11,7 +11,7 @@ class UserRepo(private val userDao: UserDao) {
 
   suspend fun insertUser(
     user:
-    Profile
+    Profile,
   ) {
     try {
       val userEntity = UserEntity(
@@ -51,6 +51,51 @@ class UserRepo(private val userDao: UserDao) {
         this.userName = it.userName
         this.privacy = privacy
       }.build()
+    }
+  }
+
+  suspend fun updateDisableChatStatus(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
+
+    try {
+      val rowUpdated = userDao.updateDisableChatStatus(userId, status)
+      if (rowUpdated != 0) {
+        updated(true)
+      } else {
+        updated(false)
+      }
+    } catch (e: Exception) {
+      updated(false)
+
+    }
+  }
+
+  suspend fun updatedisableLocationStatus(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
+
+    try {
+      val rowUpdated = userDao.updatedisableLocationStatus(userId, status)
+      if (rowUpdated != 0) {
+        updated(true)
+      } else {
+        updated(false)
+      }
+    } catch (e: Exception) {
+      updated(false)
+
+    }
+  }
+
+  suspend fun updatedisableProfilePicture(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
+
+    try {
+      val rowUpdated = userDao.updatedisableProfilePicture(userId, status)
+      if (rowUpdated != 0) {
+        updated(true)
+      } else {
+        updated(false)
+      }
+    } catch (e: Exception) {
+      updated(false)
+
     }
   }
 }

@@ -5,12 +5,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.model.Profile
+import com.example.nextgen.Activity.ActivityComponent
+import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.message.MessageActivity
 import com.example.utility.getProtoExtra
 import com.example.utility.putProtoExtra
 
-class PrivacyActivity : AppCompatActivity() {
+class PrivacyActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_privacy)
@@ -19,6 +21,10 @@ class PrivacyActivity : AppCompatActivity() {
     supportFragmentManager.beginTransaction()
       .replace(R.id.frame_layout, PrivacyFragment.newInstance(profile))
       .commit()
+  }
+
+  override fun injectDependencies(activityComponent: ActivityComponent) {
+    activityComponent.inject(this)
   }
 
   companion object {

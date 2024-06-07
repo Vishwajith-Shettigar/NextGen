@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.profile.ProfileController
+import com.example.model.Privacy
 import com.example.model.Profile
 import com.example.utility.Result
 import com.google.firebase.auth.EmailAuthProvider
@@ -65,9 +66,22 @@ class SignUpLogInController @Inject constructor(
               saveUser(username, email, password) { result ->
                 when (result) {
                   is com.example.utility.Result.Success -> {
+
+                    val privacy = Privacy.newBuilder().apply {
+                      this.disableProfilePicture = false
+                      this.disableLocation = false
+                      this.disableChat = false
+                    }.build()
+
                     val profile = Profile.newBuilder().apply {
                       this.userId = result.data
                       this.userName = username
+                      this.firstName = ""
+                      this.lastName = ""
+                      this.imageUrl = ""
+                      this.bio = ""
+                      this.rating = 0F
+                      this.privacy = privacy
                     }.build()
 
                     Log.e(LOG_KEY, profile.toString())
