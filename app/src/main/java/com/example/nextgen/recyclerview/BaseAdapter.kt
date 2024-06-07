@@ -64,6 +64,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
   enum class ViewType {
     CHAT,
     SENDER_MESSAGE,
-    RECEIVER_MESSAGE
+    RECEIVER_MESSAGE,
+    PRIVACY_ITEM
   }
 }

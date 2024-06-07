@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:padding="6dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="60dp"
-        android:padding="15dp"
-        android:src="@drawable/person_search_ic"
-        android:layout_height="60dp"/>
-    <TextView
-        android:id="@+id/item_textView"
+    <data>
+<variable
+    name="viewModel"
+    type="com.example.nextgen.privacy.PrivacyItemsViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Disable location"
-        android:textStyle="bold"
-        android:paddingStart="20dp"
-        android:textSize="16sp"
-        android:gravity="center_vertical"/>
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="60dp"
+            android:padding="15dp"
+            android:src="@drawable/person_search_ic"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:id="@+id/item_textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Disable location"
+            android:textStyle="bold"
+            android:paddingStart="20dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical" />
 
 
-</LinearLayout>
+    </LinearLayout>
+</layout>

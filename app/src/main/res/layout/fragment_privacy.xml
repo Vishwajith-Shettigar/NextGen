@@ -15,8 +15,7 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#FFFFFF">
+            android:layout_height="50dp">
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -6,6 +6,7 @@ import com.example.data.repository.UserRepo
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
+import com.example.model.Privacy
 import com.example.model.PrivacyItem
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
@@ -165,9 +166,8 @@ class ProfileController @Inject constructor(
     }
   }
 
-  fun getPrivacyItems(profile: Profile): MutableList<PrivacyItem> {
+  fun getPrivacyItems(privacy: Privacy): MutableList<PrivacyItem> {
     val privacyItemsList: MutableList<PrivacyItem> = mutableListOf()
-    val privacy = profile.privacy
     val disableChat = PrivacyItem.newBuilder().apply {
       this.itemId = DISABLE_CHAT_ID
       this.itemName = "Disable Chat"
@@ -228,7 +228,7 @@ class ProfileController @Inject constructor(
 
     try {
       val userDoc = firestore.collection("users").document(userId)
-      userDoc.update("disableChat", status)
+      userDoc.update("disableLocation", status)
         .addOnSuccessListener {
           CoroutineScope(Dispatchers.IO).launch {
             userRepo.updatedisableLocationStatus(userId, status) {
@@ -255,7 +255,7 @@ class ProfileController @Inject constructor(
 
     try {
       val userDoc = firestore.collection("users").document(userId)
-      userDoc.update("disableChat", status)
+      userDoc.update("disableProfilePicture", status)
         .addOnSuccessListener {
           CoroutineScope(Dispatchers.IO).launch {
             userRepo.updatedisableProfilePicture(userId, status) {
