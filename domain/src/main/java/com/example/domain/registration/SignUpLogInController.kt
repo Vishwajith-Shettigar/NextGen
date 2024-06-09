@@ -156,7 +156,8 @@ class SignUpLogInController @Inject constructor(
       "disableProfilePicture" to false,
       "disableLocation" to false,
       "disableChat" to false,
-      "chats" to mutableMapOf<String, String>()
+      "chats" to mutableMapOf<String, String>(),
+      "ratings" to mutableMapOf<String, String>()
     )
     firestore.collection(USERS_COLLECTION).document(auth.currentUser!!.uid)
       .set(user).addOnSuccessListener {

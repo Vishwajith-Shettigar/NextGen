@@ -133,10 +133,10 @@
             android:layout_below="@id/icons_row"
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
-            android:drawableStart="@drawable/baseline_bubble_chart_24"
             android:gravity="center_vertical"
-            android:text="This is the bio section."
+            android:text="No bio."
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:drawableStartCompat="@drawable/baseline_bubble_chart_24" />
     </RelativeLayout>
 </layout>

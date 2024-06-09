@@ -19,6 +19,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.*
@@ -87,6 +88,9 @@ class ProfileController @Inject constructor(
     }
   }
 
+
+  // nearBysaveusers
+  // todo: merge with general user collection
   fun saveUsers(profile: Profile) {
     val latitude = profile.location.latitude
     val longitude = profile.location.longitude
@@ -271,6 +275,28 @@ class ProfileController @Inject constructor(
 
       callback(com.example.utility.Result.Success(false))
 
+    }
+  }
+
+  fun updateUserRating(ratingUserId:String, ratedUserId:String,rating:Float){
+      val ratingUserDoc=firestore.collection(USERS_COLLECTION).document(ratingUserId)
+        .collection("ratings").document(ratedUserId)
+    val data= hashMapOf(
+      "youRated" to rating
+    )
+
+    ratingUserDoc.set(data, SetOptions.merge()).addOnSuccessListener {
+      Log.e(LOG_KEY,"successful")
+    }
+
+    val ratedUserDoc=firestore.collection(USERS_COLLECTION).document(ratedUserId)
+      .collection("ratings").document(ratingUserId)
+    val data2= hashMapOf(
+      "rating" to rating
+    )
+
+    ratedUserDoc.set(data2, SetOptions.merge()).addOnSuccessListener {
+      Log.e(LOG_KEY,"successful")
     }
   }
 }

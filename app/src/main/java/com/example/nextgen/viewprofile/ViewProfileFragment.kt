@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.profile.ProfileController
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
@@ -22,6 +23,9 @@ import com.example.utility.getProto
 import com.example.utility.getProtoExtra
 import com.example.utility.putProto
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ViewProfileFragment : BaseFragment() {
 
@@ -29,6 +33,9 @@ class ViewProfileFragment : BaseFragment() {
 
   @Inject
   lateinit var activity: AppCompatActivity
+
+  @Inject
+  lateinit var profileController: ProfileController
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
@@ -44,11 +51,18 @@ class ViewProfileFragment : BaseFragment() {
     binding = FragmentViewProfileBinding.inflate(inflater, container, false)
     binding.ratingBar.setOnTouchListener { view, motionEvent ->
 
-      when(motionEvent.action){
+      when (motionEvent.action) {
 
-        MotionEvent.ACTION_UP ->{
+        MotionEvent.ACTION_UP -> {
 
-          Log.e(LOG_KEY,"rate user "+ binding.ratingBar.rating)
+          Log.e(LOG_KEY, "rate user " + binding.ratingBar.rating)
+          CoroutineScope(Dispatchers.IO).launch {
+            profileController.updateUserRating(
+              profile!!.userId,
+              "Du1sIlaq3QhA484QKfQ9R9XsEfn2",
+              binding.ratingBar.rating
+            )
+          }
           true
         }
         else -> {
