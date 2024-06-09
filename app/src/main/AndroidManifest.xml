@@ -18,6 +18,9 @@
         android:theme="@style/Theme.NextGen"
         tools:targetApi="31">
         <activity
+            android:name=".viewprofile.ViewProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".privacy.PrivacyActivity"
             android:exported="false" />
         <activity

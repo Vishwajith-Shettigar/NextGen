@@ -8,6 +8,7 @@ import com.example.nextgen.privacy.PrivacyFragment
 import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.signup.SignInFragment
 import com.example.nextgen.signup.SignupFragment
+import com.example.nextgen.viewprofile.ViewProfileFragment
 import dagger.Subcomponent
 
 @FragmentScope
@@ -21,4 +22,6 @@ interface FragmentComponent {
   fun inject(fragment: MessageFragment)
   fun inject(fragment: EditProfileFragment)
   fun inject(fragment: PrivacyFragment)
+  fun inject(fragment: ViewProfileFragment)
+
 }
