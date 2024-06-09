@@ -7,6 +7,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
+import com.example.domain.profile.ProfileController
+import com.example.model.Privacy
+import com.example.model.Profile
 import com.example.utility.Result
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -22,8 +25,8 @@ import kotlinx.coroutines.withContext
 class SignUpLogInController @Inject constructor(
   private val firestore: FirebaseFirestore,
   private val auth: FirebaseAuth,
+  private val profileController: ProfileController,
 ) {
-
   fun logIn(
     activity: AppCompatActivity, email: String, password: String,
     callback: (com.example.utility.Result<*>) -> Unit,
@@ -39,8 +42,6 @@ class SignUpLogInController @Inject constructor(
           // If sign in fails, display a message to the user.
           Log.w(LOG_KEY, "signInWithEmail:failure", task.exception)
           callback(com.example.utility.Result.Failure(task.exception?.message.toString()))
-
-
         }
       }
   }
@@ -64,10 +65,30 @@ class SignUpLogInController @Inject constructor(
 
               saveUser(username, email, password) { result ->
                 when (result) {
-                  is com.example.utility.Result.Success<*> -> {
+                  is com.example.utility.Result.Success -> {
 
+                    val privacy = Privacy.newBuilder().apply {
+                      this.disableProfilePicture = false
+                      this.disableLocation = false
+                      this.disableChat = false
+                    }.build()
+
+                    val profile = Profile.newBuilder().apply {
+                      this.userId = result.data
+                      this.userName = username
+                      this.firstName = ""
+                      this.lastName = ""
+                      this.imageUrl = ""
+                      this.bio = ""
+                      this.rating = 0F
+                      this.privacy = privacy
+                    }.build()
+
+                    Log.e(LOG_KEY, profile.toString())
+                    CoroutineScope(Dispatchers.IO).launch {
+                      profileController.setLocalUserProfile(profile = profile) {}
+                    }
                     callback(com.example.utility.Result.Success("Saved"))
-
                   }
                   is com.example.utility.Result.Failure -> {
                     if (auth.currentUser != null) {
@@ -79,7 +100,6 @@ class SignUpLogInController @Inject constructor(
                   }
                   else -> {}
                 }
-
               }
             }
           } else {
@@ -120,7 +140,7 @@ class SignUpLogInController @Inject constructor(
     username: String,
     email: String,
     password: String,
-    callback: (com.example.utility.Result<*>) -> Unit,
+    callback: (com.example.utility.Result<String>) -> Unit,
   ) {
     val user = hashMapOf(
       "userId" to auth.currentUser!!.uid,
@@ -130,15 +150,21 @@ class SignUpLogInController @Inject constructor(
       "name" to null,
       "imageUrl" to null,
       "status" to "online",
-      "chats" to mutableMapOf<String,String>()
+      "firstName" to null,
+      "lastName" to null,
+      "rating" to 0,
+      "disableProfilePicture" to false,
+      "disableLocation" to false,
+      "disableChat" to false,
+      "chats" to mutableMapOf<String, String>(),
+      "ratings" to mutableMapOf<String, String>()
     )
     firestore.collection(USERS_COLLECTION).document(auth.currentUser!!.uid)
       .set(user).addOnSuccessListener {
-        callback(com.example.utility.Result.Success("Saved"))
+        callback(com.example.utility.Result.Success(auth.currentUser!!.uid.toString()))
       }
       .addOnFailureListener {
         callback(com.example.utility.Result.Failure(it.message.toString()))
-
       }
   }
 }

@@ -12,7 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="26dp">
 
         <!-- Top Row with Profile Picture and Username -->
         <LinearLayout
@@ -20,6 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -90,11 +99,14 @@
 
         <!-- Privacy Row -->
         <LinearLayout
+            android:id="@+id/privacy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingVertical="16dp">
@@ -115,11 +127,14 @@
 
         <!-- Account Row -->
         <LinearLayout
+            android:id="@+id/account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="20dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingVertical="16dp">
@@ -140,11 +155,14 @@
 
         <!-- Help Row -->
         <LinearLayout
+            android:id="@+id/help"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
+            android:layout_marginTop="20dp"
             android:focusable="true"
+            android:padding="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingVertical="16dp">
@@ -181,4 +199,5 @@
         </LinearLayout>
 
     </LinearLayout>
+</LinearLayout>
 </layout>

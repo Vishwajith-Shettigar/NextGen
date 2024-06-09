@@ -28,3 +28,20 @@ message Privacy{
   bool disable_location = 2;
   bool disable_chat = 3;
 }
+
+message PrivacyItem{
+  string item_id=1;
+  string item_name=2;
+  bool item_status=3;
+}
+
+message ViewProfile{
+  string user_id = 1;
+  string user_name = 2;
+  string full_name = 3;
+  string imageUrl = 6;
+  string bio = 7;
+  float rating = 8;
+  Privacy privacy = 9;
+  float existing_rating=10;
+}

@@ -18,6 +18,10 @@ class ProfileViewModel(
   private val _profile = MutableLiveData<Profile>()
   val profile: LiveData<Profile> get() = _profile
 
+  override fun onCleared() {
+    super.onCleared()
+    Log.e(LOG_KEY,"ProfileViewModel cleared")
+  }
   init {
       loadProfile()
   }
@@ -28,10 +32,8 @@ class ProfileViewModel(
           val profile= profileController.getLocalUserProfile(userId)
         Log.e(LOG_KEY,profile.toString())
         _profile.postValue(profile)
-
       }
       catch (e:java.lang.Exception){}
     }
   }
-
 }

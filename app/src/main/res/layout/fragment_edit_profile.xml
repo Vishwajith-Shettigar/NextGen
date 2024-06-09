@@ -4,9 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+<variable
+    name="viewModel"
+    type="com.example.nextgen.editprofile.EditProfileViewModel" />
     </data>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,8 +41,8 @@
                 android:id="@+id/imageViewProfile"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/profile_placeholder"
                 android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel.imageUrl}"
                 android:contentDescription="@null" />
         </androidx.cardview.widget.CardView>
 
@@ -80,6 +85,7 @@
                 android:background="@drawable/edittext_background"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
+                android:text="@{viewModel.userName}"
                 android:textColorHint="@color/hint_color"
                 android:textColor="@color/text_color"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -98,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:gravity="end"
+                android:text="@{viewModel.firstName}"
                 android:drawableStart="@drawable/ic_edit"
                 android:drawableEnd="@drawable/outline_person_ic"
                 android:drawablePadding="8dp"
@@ -121,6 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:text="@{viewModel.lastName}"
                 android:drawableStart="@drawable/ic_edit"
                 android:drawableEnd="@drawable/person_search_ic"
                 android:drawablePadding="8dp"
@@ -146,6 +154,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:minLines="1"
+                android:text="@{viewModel.bio}"
                 android:drawableStart="@drawable/ic_edit"
                 android:gravity="end"
                 android:drawableEnd="@drawable/baseline_bubble_chart_24"
@@ -165,5 +174,24 @@
             android:textColor="@android:color/white"
             android:backgroundTint="@color/colorPrimary"
             android:layout_marginTop="24dp"/>
+
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/loading_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#918A92"
+        android:alpha="0.5"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:progressTint="@color/purple_200"
+            />
+    </LinearLayout>
+    </FrameLayout>
 </layout>

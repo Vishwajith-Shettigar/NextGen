@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.post.PostController
+import com.example.domain.profile.ProfileController
 import com.example.model.Chat
 import com.example.model.Profile
 import com.example.nextgen.Activity.ActivityComponent
@@ -21,11 +22,18 @@ import com.example.nextgen.editprofile.RouteToEditProfileActivity
 import com.example.nextgen.message.MessageActivity
 import com.example.nextgen.nearby.NearByFragment
 import com.example.nextgen.notification.NotificationFragment
+import com.example.nextgen.privacy.PrivacyActivity
+import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
+import com.example.nextgen.viewprofile.ViewProfileActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity {
+class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity,
+  RouteToPrivacyActivity {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -34,13 +42,17 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   lateinit var binding: ActivityHomeBinding
 
-  @Inject
-  lateinit var postController: PostController
+  lateinit var profile: Profile
 
+  @Inject
+  lateinit var profileController: ProfileController
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
+    CoroutineScope(Dispatchers.IO).launch {
+      profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
+    }
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
@@ -54,7 +66,8 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           true
         }
         R.id.notification -> {
-          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
+//          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
+          startActivity(ViewProfileActivity.createViewProfileActivity(this,profile))
           true
         }
         R.id.profile -> {
@@ -105,5 +118,9 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   override fun routeToEditProfileActivity(profile: Profile) {
     startActivity(EditProfileActivity.createEditProfileActivity(this, profile))
+  }
+
+  override fun routeToPrivacyActivity(profile: Profile) {
+    startActivity(PrivacyActivity.createPrivacyActivity(this, profile = profile))
   }
 }
