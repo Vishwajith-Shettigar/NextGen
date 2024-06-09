@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.example.nextgen.viewprofile.ViewProfileViewModel" />
     </data>
 
     <RelativeLayout
@@ -30,7 +33,8 @@
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
                 android:shape="oval"
-                android:src="@drawable/profile_placeholder" />
+                app:imageUrl="@{viewModel.viewProfile.imageUrl}"
+                app:isDisabled="@{viewModel.viewProfile.privacy.disableProfilePicture}" />
 
         </androidx.cardview.widget.CardView>
 
@@ -42,7 +46,7 @@
             android:layout_below="@id/profile_picture_cardview"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
-            android:text="Username"
+            android:text="@{viewModel.viewProfile.userName}"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -52,13 +56,12 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_below="@id/profile_picture_cardview"
-            android:layout_toEndOf="@id/username"
-            android:drawableEnd="@drawable/star_half"
-            android:text="3.4"
-            android:gravity="center_vertical"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
-            />
+            android:layout_toEndOf="@id/username"
+            android:drawableEnd="@drawable/star_half"
+            android:gravity="center_vertical"
+            android:text="@{viewModel.rating}" />
         <!-- Full Name -->
         <TextView
             android:id="@+id/full_name"
@@ -67,7 +70,7 @@
             android:layout_below="@id/username"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
-            android:text="Full Name"
+            android:text="@{viewModel.viewProfile.fullName}"
             android:textColor="@android:color/darker_gray"
             android:textSize="16sp" />
 
@@ -83,9 +86,8 @@
             android:isIndicator="false"
             android:numStars="5"
             android:progressTint="#745FC8"
-            android:rating="0"
+            android:rating="@{viewModel.existingRating}"
             android:stepSize="0.5" />
-
         <!-- Icons Row -->
         <LinearLayout
             android:id="@+id/icons_row"
@@ -103,6 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="26dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:enabled="@{viewModel.viewProfile.privacy.disableChat?false:true}"
                 android:padding="16dp"
                 android:src="@drawable/chaticon" />
 
@@ -134,7 +137,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
-            android:text="No bio."
+            android:text="@{viewModel.viewProfile.bio}"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             app:drawableStartCompat="@drawable/baseline_bubble_chart_24" />

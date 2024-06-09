@@ -10,14 +10,20 @@ import com.example.domain.profile.DISABLE_CHAT_ID
 import com.example.domain.profile.DISABLE_LOCATION_ID
 import com.example.domain.profile.DISABLE_PROFILE_PICTURE
 import com.example.nextgen.R
+import com.google.errorprone.annotations.InlineMeValidationDisabled
 import com.squareup.picasso.Picasso
 
 class BindingAdapters {
 
   companion object {
+
     @JvmStatic
-    @BindingAdapter("imageUrl")
-    fun loadImage(view: ImageView, url: String?) {
+    @BindingAdapter(value=["imageUrl","isDisabled"], requireAll = false)
+    fun loadImage(view: ImageView, url: String?,isDisabled: Boolean) {
+      if (isDisabled){
+        Picasso.get().load(R.drawable.profile_placeholder).into(view)
+        return
+      }
       try {
         Log.e(LOG_KEY, url.toString())
         if (url == null || url.isBlank() == true)

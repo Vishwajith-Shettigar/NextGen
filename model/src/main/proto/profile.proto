@@ -38,8 +38,7 @@ message PrivacyItem{
 message ViewProfile{
   string user_id = 1;
   string user_name = 2;
-  string first_name = 3;
-  string last_name = 4;
+  string full_name = 3;
   string imageUrl = 6;
   string bio = 7;
   float rating = 8;
