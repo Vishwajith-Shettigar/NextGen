@@ -22,19 +22,23 @@ const val NEAEBY_USERS_COLLECTION = "nearby_users"
 class NearByController @Inject constructor(
   private val firestore: FirebaseFirestore,
 ) {
-  private val _nearbyUsers = MutableLiveData<List<Profile>>()
-  val nearbyUsers: LiveData<List<Profile>> get() = _nearbyUsers
   private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+  val nearbyUsers = mutableListOf<Profile>()
+  private var activeListeners = mutableListOf<ListenerRegistration>()
 
+  // Todo: 1. For dynamic changing center parameter, to listen to new center, remove old listener, create new one.
+  // Todo: 1. Completed-->Pending Testing
   fun listenToNearbyUsers(
     center: GeoLocation,
     radiusInMeter: Double,
-    updateNearbyUsers: (List<Profile>) -> Unit,
+    updateNearbyUsers: (Profile) -> Unit,
   ) {
+    // Cancel any existing listeners.
+    activeListeners.forEach { it.remove() }
+    activeListeners.clear()
     ioScope.launch {
       val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter)
       val queries = mutableListOf<Query>()
-
       for (bound in bounds) {
         val query = firestore.collection(NEAEBY_USERS_COLLECTION)
           .orderBy("geohash")
@@ -42,38 +46,57 @@ class NearByController @Inject constructor(
           .endAt(bound.endHash)
         queries.add(query)
       }
-
-      Log.e(LOG_KEY, bounds.size.toString())
-
-      val nearbyUsers = mutableListOf<Profile>()
       queries.forEach { query ->
-
-        query.addSnapshotListener { snapShot, e ->
+        val listener = query.addSnapshotListener { snapShot, e ->
           if (e != null) {
             Log.e(LOG_KEY, e.toString())
             return@addSnapshotListener
           }
-
-          Log.e(LOG_KEY, snapShot?.size().toString())
-
           snapShot?.documents?.forEach { document ->
-
             val location = document.getGeoPoint("location") ?: return@forEach
-
             val lat = location.latitude
             val lng = location.longitude
             val docLocation = GeoLocation(lat, lng)
             val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
             if (distanceMeter <= radiusInMeter) {
               val profile = getProfile(document)
-              nearbyUsers.add(profile)
+              Log.e(LOG_KEY, profile.userId + "--> reasult-id")
+              val iterator = nearbyUsers.iterator()
+
+              // Indicator whether new profile is already in list or not
+              var found = false
+
+              // If profile exists in list and if location also same,
+              // dont callback, otherwise replce old profile with new profile and callback
+              while (iterator.hasNext()) {
+                val existingProfile = iterator.next()
+                if (existingProfile.userId == profile.userId) {
+                  found = true
+                  if (existingProfile.location.latitude == profile.location.latitude &&
+                    existingProfile.location.longitude == profile.location.longitude
+                  ) {
+                    // Location matches so no need to update list or callback.
+                    break
+                  } else {
+                    // Location does not match, so replce old profile
+                    // with new profile and callback.
+                    iterator.remove()
+                    nearbyUsers.add(profile)
+                    updateNearbyUsers(profile)
+                    break
+                  }
+                }
+              }
+              // Add profile to list and callback.
+              if (!found) {
+                nearbyUsers.add(profile)
+                updateNearbyUsers(profile)
+              }
             } else
               Log.e(LOG_KEY, "out of range" + document.getString("userName")!!)
           }
         }
-      }
-      withContext(Dispatchers.Main) {
-        _nearbyUsers.value = nearbyUsers
+        activeListeners.add(listener)
       }
     }
   }

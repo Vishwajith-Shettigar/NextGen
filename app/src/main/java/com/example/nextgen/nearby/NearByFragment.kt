@@ -120,7 +120,7 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
           val currentLocation = LatLng(it.latitude, it.longitude)
 
           nearByController.listenToNearbyUsers(GeoLocation(it.latitude,it.longitude),100.0){
-
+              Log.e(LOG_KEY,it.userId + " result ppp")
           }
           // Add a marker at the user's current location
           mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here")
