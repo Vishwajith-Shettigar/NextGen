@@ -27,11 +27,11 @@ class NearByController @Inject constructor(
   private var activeListeners = mutableListOf<ListenerRegistration>()
 
   // Todo: 1. For dynamic changing center parameter, to listen to new center, remove old listener, create new one.
-  // Todo: 1. Completed-->Pending Testing
+  // Todo: 1. Completed-->Pending Testing.
   fun listenToNearbyUsers(
     center: GeoLocation,
     radiusInMeter: Double,
-    updateNearbyUsers: (Profile) -> Unit,
+    updateNearbyUsers: (Profile, Boolean) -> Unit,
   ) {
     // Cancel any existing listeners.
     activeListeners.forEach { it.remove() }
@@ -58,8 +58,9 @@ class NearByController @Inject constructor(
             val lng = location.longitude
             val docLocation = GeoLocation(lat, lng)
             val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
+            val profile = getProfile(document)
             if (distanceMeter <= radiusInMeter) {
-              val profile = getProfile(document)
+
               Log.e(LOG_KEY, profile.userId + "--> reasult-id")
               val iterator = nearbyUsers.iterator()
 
@@ -82,7 +83,7 @@ class NearByController @Inject constructor(
                     // with new profile and callback.
                     iterator.remove()
                     nearbyUsers.add(profile)
-                    updateNearbyUsers(profile)
+                    updateNearbyUsers(profile,false)
                     break
                   }
                 }
@@ -90,10 +91,21 @@ class NearByController @Inject constructor(
               // Add profile to list and callback.
               if (!found) {
                 nearbyUsers.add(profile)
-                updateNearbyUsers(profile)
+                updateNearbyUsers(profile,false)
               }
-            } else
+            } else {
+              var flag:Boolean=false
+              nearbyUsers.mapIndexed { index, it ->
+                if(profile.userId==it.userId){
+                  flag=true
+                  nearbyUsers.removeAt(index)
+                }
+              }
+              if (flag)
+                updateNearbyUsers(profile,true)
+
               Log.e(LOG_KEY, "out of range" + document.getString("userName")!!)
+            }
           }
         }
         activeListeners.add(listener)
@@ -113,4 +125,5 @@ class NearByController @Inject constructor(
       }.build()
     }.build()
   }
+
 }

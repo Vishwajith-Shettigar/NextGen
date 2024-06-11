@@ -14,12 +14,15 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
+import com.example.model.Profile
 import com.example.utility.GeoUtils
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
+import com.example.nextgen.databinding.FragmentNearByBinding
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -36,14 +39,24 @@ import javax.inject.Inject
  * Use the [NearByFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NearByFragment : BaseFragment() , OnMapReadyCallback {
+class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
 
   @Inject
   lateinit var nearByController: NearByController
 
+  @Inject
+  lateinit var fragment: Fragment
+
   private lateinit var mMap: GoogleMap
   private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+  private lateinit var nearByViewModel: NearByViewModel
+  private lateinit var binding: FragmentNearByBinding
+
+  lateinit var currentLocation: LatLng
+
+  private val userMarkers: MutableMap<String, Marker> = mutableMapOf<String, Marker>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -58,18 +71,15 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
-    return inflater.inflate(R.layout.fragment_near_by, container, false)
+    binding = FragmentNearByBinding.inflate(inflater, container, false)
+    nearByViewModel =
+      NearByViewModel(viewLifecycleOwner, nearByController, (fragment as UpdateMapListener))
+    return binding.root
 
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
-    val latitude = 13.689798
-    val longitude = 74.659269
-
-    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
-    Log.e("#","GeoHash for the location: $geoHash")
 
     // Get the SupportMapFragment and request notification when the map is ready to be used.
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -77,6 +87,50 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
 
     // Initialize the FusedLocationProviderClient to get the user's location
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
+    if (ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        requireActivity(),
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+      return
+    }
+    fusedLocationClient.lastLocation.addOnSuccessListener {
+      currentLocation = LatLng(it.latitude, it.longitude)
+      nearByViewModel.location.value = currentLocation
+    }
+
+
+  }
+
+  private fun locationPermissionCheck() {
+
+    if (ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        requireActivity(),
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+      return
+    }
   }
 
   companion object {
@@ -108,58 +162,72 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
       )
       return
     }
-
     // Enable the My Location layer on the map
     mMap.isMyLocationEnabled = true
+//    mMap.setOnMarkerClickListener { marker ->
+//      Log.e(LOG_KEY,marker.toString())
+//      true
+//    }
 
-    // Get the user's last known location
-    fusedLocationClient.lastLocation
-      .addOnSuccessListener { location: Location? ->
-        location?.let {
-          // Create a LatLng object with the user's current location
-          val currentLocation = LatLng(it.latitude, it.longitude)
+//     Move the camera to the user's current location with a zoom level to show 100 meters radius
+    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, getZoomLevel(100.0)))
 
-          nearByController.listenToNearbyUsers(GeoLocation(it.latitude,it.longitude),100.0){
-              Log.e(LOG_KEY,it.userId + " result ppp")
-          }
-          // Add a marker at the user's current location
-          mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here")
-            .icon(bitmapDescriptorFromVector(R.drawable.nearby_24)))
-           // Replace with your drawable resource
-
-
-          // Move the camera to the user's current location with a zoom level to show 100 meters radius
-          mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, getZoomLevel(100.0)))
-
-          // Add a circle with a 100-meter radius around the user's current location
-          mMap.addCircle(
-            CircleOptions()
-              .center(currentLocation)
-              .radius(100.0)
-              .strokeColor(R.color.black) // Transparent Blue Border
-              .fillColor(R.color.teal_200)
-          ) // Transparent Blue Fill
-
-          // Define the other user's location (50 meters to the north)
-          var otherUserLocation = LatLng(13.689798, 74.659269)
-
-          // Add a marker at the other user's location
-          mMap.addMarker(MarkerOptions().position(otherUserLocation).title("Other User")
-            .icon(bitmapDescriptorFromVector(R.drawable.home_24)))
-           otherUserLocation = LatLng(13.689794, 74.659269)
-
-          // Add a marker at the other user's location
-          mMap.addMarker(MarkerOptions().position(otherUserLocation).title(" User 3")
-            .icon(bitmapDescriptorFromVector(R.drawable.notifications_24)))
-
-          mMap.setOnMarkerClickListener { marker ->
-              Log.e(LOG_KEY,marker.toString())
-            true
-          }
-
-        }
-      }
+    // Add a circle with a 100-meter radius around the user's current location
+    mMap.addCircle(
+      CircleOptions()
+        .center(currentLocation)
+        .radius(100.0)
+        .strokeColor(R.color.black) // Transparent Blue Border
+        .fillColor(R.color.teal_200)
+    ) // Transparent Blue Fill
   }
+
+
+  // Get the user's last known location
+//    fusedLocationClient.lastLocation
+//      .addOnSuccessListener { location: Location? ->
+//        location?.let {
+//          // Create a LatLng object with the user's current location
+//          val currentLocation = LatLng(it.latitude, it.longitude)
+//
+//          nearByController.listenToNearbyUsers(GeoLocation(it.latitude,it.longitude),100.0){
+//              Log.e(LOG_KEY,it.userId + " result ppp")
+//          }
+//          // Add a marker at the user's current location
+//          mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here")
+//            .icon(bitmapDescriptorFromVector(R.drawable.nearby_24)))
+//           // Replace with your drawable resource
+//
+//
+//          // Move the camera to the user's current location with a zoom level to show 100 meters radius
+//          mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, getZoomLevel(100.0)))
+//
+//          // Add a circle with a 100-meter radius around the user's current location
+//          mMap.addCircle(
+//            CircleOptions()
+//              .center(currentLocation)
+//              .radius(100.0)
+//              .strokeColor(R.color.black) // Transparent Blue Border
+//              .fillColor(R.color.teal_200)
+//          ) // Transparent Blue Fill
+//
+//          // Define the other user's location (50 meters to the north)
+//          var otherUserLocation = LatLng(13.689798, 74.659269)
+//
+//          // Add a marker at the other user's location
+//          mMap.addMarker(MarkerOptions().position(otherUserLocation).title("Other User")
+//            .icon(bitmapDescriptorFromVector(R.drawable.home_24)))
+//           otherUserLocation = LatLng(13.689794, 74.659269)
+//
+//          // Add a marker at the other user's location
+//          mMap.addMarker(MarkerOptions().position(otherUserLocation).title(" User 3")
+//            .icon(bitmapDescriptorFromVector(R.drawable.notifications_24)))
+//
+//
+//
+//        }
+//      }
+
   // Calculate the appropriate zoom level for the specified radius in meters
   private fun getZoomLevel(radius: Double): Float {
     val scale = radius / 500.0
@@ -168,7 +236,11 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
 
   // Handle the result of the permission request
   @Deprecated("Deprecated in Java")
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray,
+  ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     if (requestCode == 1) {
       if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -176,13 +248,38 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
       }
     }
   }
+
   // Function to convert a vector drawable to a BitmapDescriptor
   private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor? {
     val vectorDrawable: Drawable? = ContextCompat.getDrawable(requireContext(), vectorResId)
     vectorDrawable?.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
-    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val bitmap = Bitmap.createBitmap(
+      vectorDrawable!!.intrinsicWidth,
+      vectorDrawable.intrinsicHeight,
+      Bitmap.Config.ARGB_8888
+    )
     val canvas = Canvas(bitmap)
     vectorDrawable.draw(canvas)
     return BitmapDescriptorFactory.fromBitmap(bitmap)
+  }
+
+  override fun updateMap(profile: Profile, outOfBound: Boolean) {
+
+    if (outOfBound) {
+      Log.e(LOG_KEY, profile.userId + " out")
+      val existingMarker = userMarkers.remove(profile.userId)
+      existingMarker?.remove()
+      return
+    }
+    val otherUserLocation = LatLng(profile.location.latitude, profile.location.longitude)
+
+    val existingMarker = userMarkers.remove(profile.userId)
+    existingMarker?.remove() // Remove marker from the map if it exists
+
+    // Add a marker at the other user's location
+    val newMarker =
+      mMap.addMarker(MarkerOptions().position(otherUserLocation).title(profile.userId))
+    userMarkers[profile.userId] = newMarker!!
+
   }
 }
