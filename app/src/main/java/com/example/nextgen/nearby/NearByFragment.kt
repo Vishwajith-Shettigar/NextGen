@@ -12,10 +12,15 @@ import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.location.LocationRequest
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
+import com.example.domain.constants.CIRCLE_RADIUS
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.MAX_UPDATE
 import com.example.domain.nearby.NearByController
 import com.example.model.Profile
 import com.example.utility.GeoUtils
@@ -26,6 +31,8 @@ import com.example.nextgen.databinding.FragmentNearByBinding
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -54,9 +61,11 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   private lateinit var nearByViewModel: NearByViewModel
   private lateinit var binding: FragmentNearByBinding
 
-  lateinit var currentLocation: LatLng
+  lateinit var locationUser: LatLng
 
   private val userMarkers: MutableMap<String, Marker> = mutableMapOf<String, Marker>()
+
+  private var userCicle: Circle? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -70,12 +79,80 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
+    if (ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        requireActivity(),
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+    }
     // Inflate the layout for this fragment
     binding = FragmentNearByBinding.inflate(inflater, container, false)
     nearByViewModel =
       NearByViewModel(viewLifecycleOwner, nearByController, (fragment as UpdateMapListener))
-    return binding.root
 
+    // Initialize the FusedLocationProviderClient to get the user's location
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
+    fusedLocationClient.lastLocation.addOnSuccessListener {
+      locationUser = LatLng(it.latitude, it.longitude)
+      nearByViewModel.location.value = locationUser
+
+    }
+
+    val locationRequest = com.google.android.gms.location.LocationRequest().apply {
+      interval = 1000 // Set desired update interval (e.g., 10 seconds)
+      fastestInterval = 1000  // Optional: Set minimum interval for faster updates (e.g., 5 seconds)
+      priority =
+        com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY  // Specify desired location accuracy
+    }
+
+
+    val locationCallback = object : LocationCallback() {
+      override fun onLocationResult(locationResult: LocationResult) {
+        super.onLocationResult(locationResult)
+        val currentLocation = locationResult.lastLocation
+        if (currentLocation != null) {
+          Log.e(
+            LOG_KEY,
+            "location updated -->" + currentLocation.latitude + currentLocation.longitude
+          )
+          val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
+
+          //Todo : Update user location in nearby collection
+
+          val lastGeoLocation = GeoLocation(locationUser.latitude, locationUser.longitude)
+          val newGeoLocation = GeoLocation(currentLocation.latitude, currentLocation.longitude)
+          val distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
+          Log.e(LOG_KEY, distance.toString() + "disnace")
+          if (MAX_UPDATE <= distance) {
+            moveCamera()
+            Log.e(
+              LOG_KEY,
+              "new radius -->" + currentLocation.latitude + currentLocation.longitude
+            )
+
+            Toast.makeText(requireActivity(), "New radius", Toast.LENGTH_SHORT).show()
+
+            locationUser = latLng
+            nearByViewModel.location.value = latLng
+          }
+
+        }
+      }
+    }
+
+    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,52 +162,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
     mapFragment?.getMapAsync(this)
 
-    // Initialize the FusedLocationProviderClient to get the user's location
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+    // TODO: Listen to user movement. Update user location but only call controller if user moves for x meters.
 
-    if (ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
-      ActivityCompat.requestPermissions(
-        requireActivity(),
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1
-      )
-      return
-    }
-    fusedLocationClient.lastLocation.addOnSuccessListener {
-      currentLocation = LatLng(it.latitude, it.longitude)
-      nearByViewModel.location.value = currentLocation
-    }
-
-
-  }
-
-  private fun locationPermissionCheck() {
-
-    if (ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
-      ActivityCompat.requestPermissions(
-        requireActivity(),
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1
-      )
-      return
-    }
   }
 
   companion object {
@@ -170,18 +204,34 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 //    }
 
 //     Move the camera to the user's current location with a zoom level to show 100 meters radius
-    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, getZoomLevel(100.0)))
+    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationUser, getZoomLevel(100.0)))
 
     // Add a circle with a 100-meter radius around the user's current location
-    mMap.addCircle(
+  userCicle=  mMap.addCircle(
       CircleOptions()
-        .center(currentLocation)
-        .radius(100.0)
+        .center(locationUser)
+        .radius(CIRCLE_RADIUS.toDouble())
         .strokeColor(R.color.black) // Transparent Blue Border
         .fillColor(R.color.teal_200)
     ) // Transparent Blue Fill
   }
 
+
+  fun moveCamera() {
+
+    userCicle?.remove()
+    //  Move the camera to the user's current location with a zoom level to show 100 meters radius
+    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationUser, getZoomLevel(100.0)))
+
+    // Add a circle with a 100-meter radius around the user's current location
+    userCicle = mMap.addCircle(
+      CircleOptions()
+        .center(locationUser)
+        .radius(CIRCLE_RADIUS.toDouble())
+        .strokeColor(R.color.black) // Transparent Blue Border
+        .fillColor(R.color.teal_200)
+    ) // Transparent Blue Fill
+  }
 
   // Get the user's last known location
 //    fusedLocationClient.lastLocation
@@ -281,5 +331,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
       mMap.addMarker(MarkerOptions().position(otherUserLocation).title(profile.userId))
     userMarkers[profile.userId] = newMarker!!
 
+    Log.e(LOG_KEY, userMarkers.size.toString() + ",--- size")
   }
+
 }

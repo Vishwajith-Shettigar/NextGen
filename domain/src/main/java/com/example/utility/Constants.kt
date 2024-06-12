@@ -5,3 +5,9 @@ const val USERS_COLLECTION="users"
 const val CHATS_NODE="chats"
 
 const val LOG_KEY="nextgen.logs"
+
+const val CIRCLE_RADIUS=20
+
+const val NEARBY_DISTANCE=20
+
+const val MAX_UPDATE=5

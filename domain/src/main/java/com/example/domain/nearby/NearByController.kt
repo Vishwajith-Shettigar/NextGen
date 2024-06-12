@@ -83,7 +83,7 @@ class NearByController @Inject constructor(
                     // with new profile and callback.
                     iterator.remove()
                     nearbyUsers.add(profile)
-                    updateNearbyUsers(profile,false)
+                    updateNearbyUsers(profile, false)
                     break
                   }
                 }
@@ -91,18 +91,18 @@ class NearByController @Inject constructor(
               // Add profile to list and callback.
               if (!found) {
                 nearbyUsers.add(profile)
-                updateNearbyUsers(profile,false)
+                updateNearbyUsers(profile, false)
               }
             } else {
-              var flag:Boolean=false
+              var flag: Boolean = false
               nearbyUsers.mapIndexed { index, it ->
-                if(profile.userId==it.userId){
-                  flag=true
+                if (profile.userId == it.userId) {
+                  flag = true
                   nearbyUsers.removeAt(index)
                 }
               }
               if (flag)
-                updateNearbyUsers(profile,true)
+                updateNearbyUsers(profile, true)
 
               Log.e(LOG_KEY, "out of range" + document.getString("userName")!!)
             }
@@ -126,4 +126,31 @@ class NearByController @Inject constructor(
     }.build()
   }
 
+  // nearBysaveusers
+  // todo: merge with general user collection
+  fun saveUsersLocation(profile: Profile) {
+    val latitude = profile.location.latitude
+    val longitude = profile.location.longitude
+
+    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+
+    val userData = hashMapOf(
+      "firstName" to profile.firstName,
+      "lastName" to profile.lastName,
+      "location" to GeoPoint(latitude, longitude),
+      "userId" to profile.userId,
+      "userName" to profile.userName,
+      "geohash" to geoHash
+    )
+
+    // Add the user data to Firestore
+    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
+      .set(userData)
+      .addOnSuccessListener {
+        Log.e(LOG_KEY, "User data added successfully")
+      }
+      .addOnFailureListener { e ->
+        Log.e(LOG_KEY, "Error adding user data: $e")
+      }
+  }
 }
