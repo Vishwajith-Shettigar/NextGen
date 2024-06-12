@@ -64,6 +64,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   lateinit var locationUser: LatLng
 
   private val userMarkers: MutableMap<String, Marker> = mutableMapOf<String, Marker>()
+  private var usermarker: Marker? = null
 
   private var userCicle: Circle? = null
 
@@ -99,6 +100,10 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     nearByViewModel =
       NearByViewModel(viewLifecycleOwner, nearByController, (fragment as UpdateMapListener))
 
+    // Get the SupportMapFragment and request notification when the map is ready to be used.
+    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+    mapFragment?.getMapAsync(this)
+
     // Initialize the FusedLocationProviderClient to get the user's location
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -106,7 +111,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     fusedLocationClient.lastLocation.addOnSuccessListener {
       locationUser = LatLng(it.latitude, it.longitude)
       nearByViewModel.location.value = locationUser
-
     }
 
     val locationRequest = com.google.android.gms.location.LocationRequest().apply {
@@ -114,6 +118,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
       fastestInterval = 1000  // Optional: Set minimum interval for faster updates (e.g., 5 seconds)
       priority =
         com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY  // Specify desired location accuracy
+      smallestDisplacement = 5f
     }
 
 
@@ -122,6 +127,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         super.onLocationResult(locationResult)
         val currentLocation = locationResult.lastLocation
         if (currentLocation != null) {
+          moveUser(currentLocation)
           Log.e(
             LOG_KEY,
             "location updated -->" + currentLocation.latitude + currentLocation.longitude
@@ -134,13 +140,16 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           val newGeoLocation = GeoLocation(currentLocation.latitude, currentLocation.longitude)
           val distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
           Log.e(LOG_KEY, distance.toString() + "disnace")
-          if (MAX_UPDATE <= distance) {
-            moveCamera()
+          if (MAX_UPDATE <= distance && currentLocation.accuracy<= MAX_UPDATE) {
+            Log.e(
+              LOG_KEY,
+              "old radius -->" + locationUser.latitude + locationUser.longitude
+            )
             Log.e(
               LOG_KEY,
               "new radius -->" + currentLocation.latitude + currentLocation.longitude
             )
-
+            moveCamera()
             Toast.makeText(requireActivity(), "New radius", Toast.LENGTH_SHORT).show()
 
             locationUser = latLng
@@ -150,7 +159,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         }
       }
     }
-
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     return binding.root
   }
@@ -158,9 +166,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    // Get the SupportMapFragment and request notification when the map is ready to be used.
-    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-    mapFragment?.getMapAsync(this)
+//    // Get the SupportMapFragment and request notification when the map is ready to be used.
+//    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+//    mapFragment?.getMapAsync(this)
 
 
     // TODO: Listen to user movement. Update user location but only call controller if user moves for x meters.
@@ -207,7 +215,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationUser, getZoomLevel(100.0)))
 
     // Add a circle with a 100-meter radius around the user's current location
-  userCicle=  mMap.addCircle(
+    userCicle = mMap.addCircle(
       CircleOptions()
         .center(locationUser)
         .radius(CIRCLE_RADIUS.toDouble())
@@ -222,6 +230,14 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     userCicle?.remove()
     //  Move the camera to the user's current location with a zoom level to show 100 meters radius
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationUser, getZoomLevel(100.0)))
+    usermarker?.remove()
+    val newUserMarker = mMap.addMarker(
+      MarkerOptions().position(locationUser).title("Your are here")
+        .icon(bitmapDescriptorFromVector(R.drawable.outline_person_ic))
+    )
+
+
+    usermarker = newUserMarker
 
     // Add a circle with a 100-meter radius around the user's current location
     userCicle = mMap.addCircle(
@@ -232,6 +248,19 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         .fillColor(R.color.teal_200)
     ) // Transparent Blue Fill
   }
+
+  fun moveUser(location:Location) {
+    val latlong=LatLng(location.latitude,location.longitude)
+    usermarker?.remove()
+    val newUserMarker = mMap.addMarker(
+      MarkerOptions().position(latlong).title("Your are here")
+        .icon(bitmapDescriptorFromVector(R.drawable.outline_person_ic))
+    )
+
+
+    usermarker = newUserMarker
+  }
+
 
   // Get the user's last known location
 //    fusedLocationClient.lastLocation
