@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.domain.constants.LOG_KEY
 import com.example.utility.GeoUtils
 import com.example.model.GeoPoint
+import com.example.model.Privacy
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
@@ -183,6 +184,88 @@ class NearByController @Inject constructor(
   // Refined nearby listener yet.
   // Todo: Create new field online, if not remove from map, if yes add to map.
 
+//  fun listenToNearbyUsers(
+//    center: GeoLocation,
+//    radiusInMeter: Double,
+//    updateNearbyUsers: (Profile, Boolean) -> Unit,
+//  ) {
+//    // Cancel any existing listeners.
+//    activeListeners.forEach { it.remove() }
+//    activeListeners.clear()
+//
+//    ioScope.launch {
+//      val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter)
+//      val queries = mutableListOf<Query>()
+//      for (bound in bounds) {
+//        val query = firestore.collection(com.example.domain.constants.NEAEBY_USERS_COLLECTION)
+//          .whereEqualTo("disableLocation", false)
+//          .orderBy("geohash")
+//          .startAt(bound.startHash)
+//          .endAt(bound.endHash)
+//        queries.add(query)
+//      }
+//
+//      queries.forEach { query ->
+//        val listener = query.addSnapshotListener { snapshot, e ->
+//          if (e != null) {
+//            Log.e(LOG_KEY, e.toString())
+//            return@addSnapshotListener
+//          }
+//
+//          if (snapshot != null) {
+//            val newNearbyUsers = ArrayList<Profile>()
+//            val usersToRemove = ArrayList<Profile>()
+//
+//            snapshot.documents.forEach { document ->
+//              val location = document.getGeoPoint("location") ?: return@forEach
+//              val lat = location.latitude
+//              val lng = location.longitude
+//              val docLocation = GeoLocation(lat, lng)
+//              val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
+//              val profile = getProfile(document)
+//
+//              Log.e(LOG_KEY,profile.privacy.disableLocation.toString())
+//              if (distanceMeter <= radiusInMeter && !profile.privacy.disableLocation ) {
+//                val existingProfile = nearbyUsers.find { it.userId == profile.userId }
+//                if (existingProfile != null) {
+//                  if (existingProfile.location.latitude == profile.location.latitude &&
+//                    existingProfile.location.longitude == profile.location.longitude) {
+//                    // Location matches so no need to update list or callback.
+//                    newNearbyUsers.add(existingProfile)
+//                  } else {
+//                    // Location does not match, update profile
+//                    newNearbyUsers.add(profile)
+//                  }
+//                } else {
+//                  newNearbyUsers.add(profile)
+//                }
+//              } else {
+//                usersToRemove.add(profile)
+//              }
+//            }
+//
+//            // Update the nearbyUsers list after iteration
+//            nearbyUsers.clear()
+//            nearbyUsers.addAll(newNearbyUsers)
+//
+//            // Notify about users out of range
+//            usersToRemove.forEach { profile ->
+//              nearbyUsers.removeAll { it.userId == profile.userId }
+//              updateNearbyUsers(profile, true)
+//              Log.e(LOG_KEY, "out of range: ${profile.userName}")
+//            }
+//
+//            // Notify about users in range
+//            newNearbyUsers.forEach { profile ->
+//              updateNearbyUsers(profile, false)
+//            }
+//          }
+//        }
+//        activeListeners.add(listener)
+//      }
+//    }
+//  }
+
   fun listenToNearbyUsers(
     center: GeoLocation,
     radiusInMeter: Double,
@@ -197,6 +280,7 @@ class NearByController @Inject constructor(
       val queries = mutableListOf<Query>()
       for (bound in bounds) {
         val query = firestore.collection(com.example.domain.constants.NEAEBY_USERS_COLLECTION)
+          .whereEqualTo("disableLocation", false)
           .orderBy("geohash")
           .startAt(bound.startHash)
           .endAt(bound.endHash)
@@ -206,7 +290,7 @@ class NearByController @Inject constructor(
       queries.forEach { query ->
         val listener = query.addSnapshotListener { snapshot, e ->
           if (e != null) {
-            Log.e(LOG_KEY, e.toString())
+            Log.e(LOG_KEY, "Listen failed: ", e)
             return@addSnapshotListener
           }
 
@@ -214,7 +298,8 @@ class NearByController @Inject constructor(
             val newNearbyUsers = ArrayList<Profile>()
             val usersToRemove = ArrayList<Profile>()
 
-            snapshot.documents.forEach { document ->
+            snapshot.documentChanges.forEach { documentChange ->
+              val document = documentChange.document
               val location = document.getGeoPoint("location") ?: return@forEach
               val lat = location.latitude
               val lng = location.longitude
@@ -222,40 +307,45 @@ class NearByController @Inject constructor(
               val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
               val profile = getProfile(document)
 
-              if (distanceMeter <= radiusInMeter) {
-                val existingProfile = nearbyUsers.find { it.userId == profile.userId }
-                if (existingProfile != null) {
-                  if (existingProfile.location.latitude == profile.location.latitude &&
-                    existingProfile.location.longitude == profile.location.longitude) {
-                    // Location matches so no need to update list or callback.
-                    newNearbyUsers.add(existingProfile)
-                  } else {
-                    // Location does not match, update profile
-                    newNearbyUsers.add(profile)
+              if (distanceMeter <= radiusInMeter && !profile.privacy.disableLocation) {
+                when (documentChange.type) {
+                  DocumentChange.Type.ADDED,
+                  DocumentChange.Type.MODIFIED -> {
+                    val existingProfile = nearbyUsers.find { it.userId == profile.userId }
+                    if (existingProfile != null) {
+                      if (existingProfile.location.latitude == profile.location.latitude &&
+                        existingProfile.location.longitude == profile.location.longitude) {
+                        // Location matches, no need to update list or callback.
+                        newNearbyUsers.add(existingProfile)
+                      } else {
+                        // Location does not match, update profile
+                        newNearbyUsers.add(profile)
+                        updateNearbyUsers(profile, false) // Notify update
+                      }
+                    } else {
+                      newNearbyUsers.add(profile)
+                      updateNearbyUsers(profile, false) // Notify new addition
+                    }
                   }
-                } else {
-                  newNearbyUsers.add(profile)
+                  DocumentChange.Type.REMOVED -> {
+                    usersToRemove.add(profile)
+                  }
                 }
               } else {
                 usersToRemove.add(profile)
               }
             }
 
-            // Update the nearbyUsers list after iteration
-            nearbyUsers.clear()
-            nearbyUsers.addAll(newNearbyUsers)
-
             // Notify about users out of range
             usersToRemove.forEach { profile ->
               nearbyUsers.removeAll { it.userId == profile.userId }
               updateNearbyUsers(profile, true)
-              Log.e(LOG_KEY, "out of range: ${profile.userName}")
+              Log.e(LOG_KEY, "Out of range: ${profile.userName}")
             }
 
-            // Notify about users in range
-            newNearbyUsers.forEach { profile ->
-              updateNearbyUsers(profile, false)
-            }
+            // Update the nearbyUsers list after iteration
+            nearbyUsers.clear()
+            nearbyUsers.addAll(newNearbyUsers)
           }
         }
         activeListeners.add(listener)
@@ -273,6 +363,9 @@ class NearByController @Inject constructor(
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude
         this.longitude = document.getGeoPoint("location")!!.longitude
+      }.build()
+      this.privacy= Privacy.newBuilder().apply {
+        this.disableLocation= document.getBoolean("disableLocation")?:false
       }.build()
     }.build()
   }

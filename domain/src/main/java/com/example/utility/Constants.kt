@@ -6,8 +6,8 @@ const val CHATS_NODE="chats"
 
 const val LOG_KEY="nextgen.logs"
 
-const val CIRCLE_RADIUS=100
+const val CIRCLE_RADIUS=500
 
-const val NEARBY_DISTANCE=100
+const val NEARBY_DISTANCE=500
 
 const val MAX_UPDATE=5
