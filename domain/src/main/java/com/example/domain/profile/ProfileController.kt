@@ -44,7 +44,7 @@ class ProfileController @Inject constructor(
     return firebaseAuth.currentUser?.uid
   }
 
-  suspend fun getLocalUserProfile(userId: String): Profile {
+  suspend fun getLocalUserProfile(userId: String): Profile? {
     return userRepo.getUser(userId)!!
   }
 
@@ -86,35 +86,6 @@ class ProfileController @Inject constructor(
     } catch (e: Exception) {
       callback(com.example.utility.Result.Failure("Failed"))
     }
-  }
-
-
-  // nearBysaveusers
-  // todo: merge with general user collection
-  fun saveUsers(profile: Profile) {
-    val latitude = profile.location.latitude
-    val longitude = profile.location.longitude
-
-    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
-
-    val userData = hashMapOf(
-      "firstName" to profile.firstName,
-      "lastName" to profile.lastName,
-      "location" to GeoPoint(latitude, longitude),
-      "userId" to profile.userId,
-      "userName" to profile.userName,
-      "geohash" to geoHash
-    )
-
-    // Add the user data to Firestore
-    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
-      .set(userData)
-      .addOnSuccessListener {
-        println("User data added successfully")
-      }
-      .addOnFailureListener { e ->
-        println("Error adding user data: $e")
-      }
   }
 
   suspend fun getUserProfile(userId: String): com.example.utility.Result<DocumentSnapshot> {

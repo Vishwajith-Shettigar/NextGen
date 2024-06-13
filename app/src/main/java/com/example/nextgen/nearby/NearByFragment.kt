@@ -9,41 +9,57 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import android.Manifest
-import android.graphics.Bitmap
-import android.graphics.Canvas
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.example.domain.constants.CIRCLE_RADIUS
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.MAX_UPDATE
 import com.example.domain.nearby.NearByController
-import com.example.utility.GeoUtils
+import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
+import com.example.nextgen.databinding.FragmentNearByBinding
+import com.example.utility.getProto
+import com.example.utility.putProto
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.RequestCreator
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-/**
- * A simple [Fragment] subclass.
- * Use the [NearByFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class NearByFragment : BaseFragment() , OnMapReadyCallback {
-
+class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
   @Inject
   lateinit var nearByController: NearByController
 
   private lateinit var mMap: GoogleMap
   private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+  private lateinit var nearByViewModel: NearByViewModel
+  private lateinit var binding: FragmentNearByBinding
+
+  private lateinit var locationUser: LatLng
+
+  private val userMarkers: MutableMap<String, Marker> = mutableMapOf()
+  private var usermarker: Marker? = null
+
+  private var userCircle: Circle? = null
+
+  private lateinit var profile: Profile
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -57,41 +73,97 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
-    // Inflate the layout for this fragment
-    return inflater.inflate(R.layout.fragment_near_by, container, false)
+    binding = FragmentNearByBinding.inflate(inflater, container, false)
+    profile = arguments?.getProto(NEARBYFRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
+      ?: Profile.getDefaultInstance()
+    nearByViewModel = NearByViewModel(viewLifecycleOwner, nearByController, this)
 
+    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+    mapFragment?.getMapAsync(this)
+
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+    checkLocationPermission()
+
+    return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    fusedLocationClient.lastLocation.addOnSuccessListener {
+      it?.let {
+        locationUser = LatLng(it.latitude, it.longitude)
+        nearByViewModel.location.value = locationUser
+      }
+    }
 
-    val latitude = 13.689798
-    val longitude = 74.659269
+    val locationRequest = LocationRequest.create().apply {
+      interval = 1000
+      fastestInterval = 1000
+      priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+      smallestDisplacement = 1f
+    }
 
-    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
-    Log.e("#","GeoHash for the location: $geoHash")
+    val locationCallback = object : LocationCallback() {
+      override fun onLocationResult(locationResult: LocationResult) {
+        val currentLocation = locationResult.lastLocation
+        currentLocation?.let {
+          val latLng = LatLng(it.latitude, it.longitude)
+          Log.e(LOG_KEY, latLng.toString() + "  update location")
 
-    // Get the SupportMapFragment and request notification when the map is ready to be used.
-    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-    mapFragment?.getMapAsync(this)
+          moveUser(latLng)
+          val lastGeoLocation = GeoLocation(locationUser.latitude, locationUser.longitude)
+          val newGeoLocation = GeoLocation(it.latitude, it.longitude)
+          val distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
+          if (MAX_UPDATE <= distance && it.accuracy <= MAX_UPDATE) {
+            Log.e(LOG_KEY, locationUser.toString() + "  old")
 
-    // Initialize the FusedLocationProviderClient to get the user's location
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            Log.e(LOG_KEY, latLng.toString() + "  new")
+            moveCamera(latLng)
+            Toast.makeText(requireActivity(), "New radius", Toast.LENGTH_SHORT).show()
+            locationUser = latLng
+            nearByViewModel.location.value = latLng
+          }
+        }
+      }
+    }
+    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+  }
+
+  private fun checkLocationPermission() {
+    if (ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        requireActivity(),
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+    }
   }
 
   companion object {
 
-    const val TAG = "NearByFragment"
+    const val NEARBYFRAGMENT_ARGUMENTS_KEY = "NearByFragment.arguments"
 
-    fun newInstance(): NearByFragment {
-      return NearByFragment()
+    const val TAG = "NearByFragment"
+    fun newInstance(profile: Profile): NearByFragment {
+      val nearByFragment = NearByFragment()
+      nearByFragment.arguments?.apply {
+        this.putProto(NEARBYFRAGMENT_ARGUMENTS_KEY, profile)
+      }
+      return nearByFragment
     }
   }
 
   override fun onMapReady(googleMap: GoogleMap) {
     mMap = googleMap
-
-    // Check if the location permissions are granted, if not, request them
     if (ActivityCompat.checkSelfPermission(
         requireContext(),
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -108,81 +180,177 @@ class NearByFragment : BaseFragment() , OnMapReadyCallback {
       )
       return
     }
-
-    // Enable the My Location layer on the map
     mMap.isMyLocationEnabled = true
-
-    // Get the user's last known location
-    fusedLocationClient.lastLocation
-      .addOnSuccessListener { location: Location? ->
-        location?.let {
-          // Create a LatLng object with the user's current location
-          val currentLocation = LatLng(it.latitude, it.longitude)
-
-          nearByController.listenToNearbyUsers(GeoLocation(it.latitude,it.longitude),100.0){
-              Log.e(LOG_KEY,it.userId + " result ppp")
-          }
-          // Add a marker at the user's current location
-          mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here")
-            .icon(bitmapDescriptorFromVector(R.drawable.nearby_24)))
-           // Replace with your drawable resource
-
-
-          // Move the camera to the user's current location with a zoom level to show 100 meters radius
-          mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, getZoomLevel(100.0)))
-
-          // Add a circle with a 100-meter radius around the user's current location
-          mMap.addCircle(
-            CircleOptions()
-              .center(currentLocation)
-              .radius(100.0)
-              .strokeColor(R.color.black) // Transparent Blue Border
-              .fillColor(R.color.teal_200)
-          ) // Transparent Blue Fill
-
-          // Define the other user's location (50 meters to the north)
-          var otherUserLocation = LatLng(13.689798, 74.659269)
-
-          // Add a marker at the other user's location
-          mMap.addMarker(MarkerOptions().position(otherUserLocation).title("Other User")
-            .icon(bitmapDescriptorFromVector(R.drawable.home_24)))
-           otherUserLocation = LatLng(13.689794, 74.659269)
-
-          // Add a marker at the other user's location
-          mMap.addMarker(MarkerOptions().position(otherUserLocation).title(" User 3")
-            .icon(bitmapDescriptorFromVector(R.drawable.notifications_24)))
-
-          mMap.setOnMarkerClickListener { marker ->
-              Log.e(LOG_KEY,marker.toString())
-            true
-          }
-
-        }
-      }
+    moveCamera(locationUser)
+    mMap.setOnMarkerClickListener { marker ->
+      val profile = marker.tag as Profile
+      Log.e(LOG_KEY, profile.toString())
+      true
+    }
   }
-  // Calculate the appropriate zoom level for the specified radius in meters
+
+  private fun moveUser(location: LatLng) {
+
+
+    CoroutineScope(Dispatchers.IO).launch {
+      // Load profile picture asynchronously using loadBitmapFromUrl
+      val bitmap = loadBitmapFromUrl(profile.imageUrl)
+      val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
+      val roundedBitmap = resizedBitmap?.let { getRoundedBitmap(it) }
+
+      withContext(Dispatchers.Main) {
+        usermarker?.remove()
+        val bitmapDescriptor = roundedBitmap?.let { BitmapDescriptorFactory.fromBitmap(it) }
+          ?: BitmapDescriptorFactory.defaultMarker()
+        usermarker = mMap.addMarker(
+          MarkerOptions().position(location).title("You are here")
+            .icon(bitmapDescriptor)
+        )
+        usermarker?.tag = profile
+      }
+    }
+  }
+
+  private fun moveCamera(location: LatLng) {
+    userCircle?.remove()
+    mMap.moveCamera(
+      CameraUpdateFactory.newLatLngZoom(
+        location,
+        getZoomLevel(CIRCLE_RADIUS.toDouble())
+      )
+    )
+    moveUser(location)
+    userCircle = mMap.addCircle(
+      CircleOptions()
+        .center(location)
+        .radius(CIRCLE_RADIUS.toDouble())
+        .strokeColor(R.color.black)
+        .fillColor(R.color.teal_200)
+    )
+  }
+
   private fun getZoomLevel(radius: Double): Float {
     val scale = radius / 500.0
     return (16 - Math.log(scale) / Math.log(2.0)).toFloat()
   }
 
-  // Handle the result of the permission request
   @Deprecated("Deprecated in Java")
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray,
+  ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode == 1) {
-      if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        onMapReady(mMap)
-      }
+    if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      onMapReady(mMap)
     }
   }
-  // Function to convert a vector drawable to a BitmapDescriptor
+
   private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor? {
-    val vectorDrawable: Drawable? = ContextCompat.getDrawable(requireContext(), vectorResId)
+    val context = context ?: return null
+    val vectorDrawable: Drawable? = ContextCompat.getDrawable(context, vectorResId)
     vectorDrawable?.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
-    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val bitmap = Bitmap.createBitmap(
+      vectorDrawable!!.intrinsicWidth,
+      vectorDrawable.intrinsicHeight,
+      Bitmap.Config.ARGB_8888
+    )
     val canvas = Canvas(bitmap)
     vectorDrawable.draw(canvas)
     return BitmapDescriptorFactory.fromBitmap(bitmap)
   }
+
+  override fun updateMap(profile: Profile, outOfBound: Boolean) {
+    CoroutineScope(Dispatchers.IO).launch {
+      if (outOfBound) {
+        // Remove marker if out of bound
+        userMarkers.remove(profile.userId)?.remove()
+      } else {
+
+
+        // Load profile picture asynchronously using loadBitmapFromUrl
+        val bitmap = loadBitmapFromUrl(profile.imageUrl)
+        val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
+        val roundedBitmap = resizedBitmap?.let { getRoundedBitmap(it) }
+
+        withContext(Dispatchers.Main) {
+
+          val otherUserLocation = LatLng(profile.location.latitude, profile.location.longitude)
+          userMarkers.remove(profile.userId)?.remove()
+
+          val bitmapDescriptor = roundedBitmap?.let { BitmapDescriptorFactory.fromBitmap(it) }
+            ?: BitmapDescriptorFactory.defaultMarker()
+
+          val newMarker = mMap.addMarker(
+            MarkerOptions()
+              .position(otherUserLocation)
+              .icon(bitmapDescriptor)
+              .title(profile.userId)
+          )!!
+          newMarker.tag = profile // Attach profile object as tag to the marker
+          userMarkers[profile.userId] = newMarker
+        }
+      }
+      Log.e(LOG_KEY, "${userMarkers.size} markers on map")
+    }
+  }
+
+  // Function to load bitmap from URL using Picasso
+  suspend fun loadBitmapFromUrl(url: String?): Bitmap? {
+    if (url.isNullOrEmpty()) return null
+
+    return withContext(Dispatchers.IO) {
+      try {
+        Log.e(LOG_KEY, url)
+        // Asynchronously load bitmap from URL using Picasso
+        val request: RequestCreator = Picasso.get().load(url)
+        request.get()
+      } catch (e: Exception) {
+        e.printStackTrace()
+        null
+      }
+    }
+  }
+
+  // Function to create a circular bitmap from a given bitmap
+  // Function to create a circular bitmap with border from a given bitmap
+  private fun getRoundedBitmap(bitmap: Bitmap): Bitmap {
+    val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(output)
+    val paint = Paint()
+    val rect = Rect(0, 0, bitmap.width, bitmap.height)
+
+    val halfBorderWidth = 5 / 2f
+
+    paint.isAntiAlias = true
+    canvas.drawARGB(0, 0, 0, 0)
+    paint.style = Paint.Style.FILL
+    canvas.drawCircle(
+      bitmap.width / 2f,
+      bitmap.height / 2f,
+      (bitmap.width / 2f),
+      paint
+    )
+
+    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+    canvas.drawBitmap(bitmap, rect, rect, paint)
+    paint.xfermode = null
+    paint.style = Paint.Style.STROKE
+    paint.color = Color.RED
+    paint.strokeWidth = 5F
+    canvas.drawCircle(
+      (bitmap.width / 2f),
+      (bitmap.height / 2f),
+      (bitmap.width / 2f) - halfBorderWidth,
+      paint
+    )
+    return output
+  }
+
+
+  // Function to resize a bitmap to the specified width and height
+  private fun resizeBitmap(bitmap: Bitmap, width: Int, height: Int): Bitmap {
+    return Bitmap.createScaledBitmap(bitmap, width, height, false)
+  }
+
 }

@@ -19,6 +19,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 @Singleton
@@ -36,7 +37,28 @@ class SignUpLogInController @Inject constructor(
         if (task.isSuccessful) {
           // Sign in success, update UI with the signed-in user's information
           Log.d(LOG_KEY, "signInWithEmail:success")
-          callback(com.example.utility.Result.Success("Successful"))
+          CoroutineScope(Dispatchers.IO).launch {
+            val doc =
+              firestore.collection(USERS_COLLECTION).document(auth.uid.toString()).get().await()
+
+
+            val profile = Profile.newBuilder().apply {
+              this.userId = doc.getString("userId")
+              this.userName = doc.getString("username")
+              this.firstName = ""
+              this.lastName = ""
+              this.imageUrl = ""
+              this.bio = ""
+              this.rating = 0F
+              this.privacy = privacy
+            }.build()
+
+              profileController.setLocalUserProfile(profile = profile) {
+                callback(com.example.utility.Result.Success("Successful"))
+              }
+
+
+          }
 
         } else {
           // If sign in fails, display a message to the user.

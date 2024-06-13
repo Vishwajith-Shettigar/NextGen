@@ -51,7 +51,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
     CoroutineScope(Dispatchers.IO).launch {
-      profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
+      profile = profileController.getLocalUserProfile(profileController.getUserId()!!)?: Profile.getDefaultInstance()
     }
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
@@ -62,7 +62,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           true
         }
         R.id.nearby -> {
-          loadFragment(NearByFragment.newInstance(), NearByFragment.TAG)
+          loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
           true
         }
         R.id.notification -> {
