@@ -360,6 +360,7 @@ class NearByController @Inject constructor(
       this.userName = document.getString("userName")
       this.firstName = document.getString("firstName")
       this.lastName = document.getString("lastName")
+      this.imageUrl= document.getString("imageUrl")
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude
         this.longitude = document.getGeoPoint("location")!!.longitude
