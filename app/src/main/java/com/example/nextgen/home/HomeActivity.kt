@@ -25,6 +25,7 @@ import com.example.nextgen.notification.NotificationFragment
 import com.example.nextgen.privacy.PrivacyActivity
 import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
+import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.nextgen.viewprofile.ViewProfileActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
@@ -33,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity,
-  RouteToPrivacyActivity {
+  RouteToPrivacyActivity,RouteToViewProfile {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -122,5 +123,9 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   override fun routeToPrivacyActivity(profile: Profile) {
     startActivity(PrivacyActivity.createPrivacyActivity(this, profile = profile))
+  }
+
+  override fun routeToViewProfile(profile: Profile) {
+    startActivity(ViewProfileActivity.createViewProfileActivity(this,profile))
   }
 }

@@ -51,7 +51,7 @@ class ViewProfileFragment : BaseFragment() {
   ): View? {
     // Inflate the layout for this fragment
     val profile =
-      arguments?.getProto(VIEWPROFILEFRAGMENT_INTENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
+      arguments?.getProto(VIEWPROFILEFRAGMENT_INTENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
     binding = FragmentViewProfileBinding.inflate(inflater, container, false)
 
     // Todo :Remove later

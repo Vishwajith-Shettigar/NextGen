@@ -9,10 +9,14 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.domain.constants.CIRCLE_RADIUS
 import com.example.domain.constants.LOG_KEY
@@ -23,6 +27,8 @@ import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentNearByBinding
+import com.example.nextgen.databinding.NearbyProfileDialogBinding
+import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.utility.getProto
 import com.example.utility.putProto
 import com.firebase.geofire.GeoFireUtils
@@ -45,6 +51,8 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
   @Inject
   lateinit var nearByController: NearByController
+  @Inject
+  lateinit var activity: AppCompatActivity
 
   private lateinit var mMap: GoogleMap
   private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -185,6 +193,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     mMap.setOnMarkerClickListener { marker ->
       val profile = marker.tag as Profile
       Log.e(LOG_KEY, profile.toString())
+      showNearByProfileDialog(profile)
       true
     }
   }
@@ -267,7 +276,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         userMarkers.remove(profile.userId)?.remove()
       } else {
 
-
         // Load profile picture asynchronously using loadBitmapFromUrl
         val bitmap = loadBitmapFromUrl(profile.imageUrl)
         val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
@@ -312,7 +320,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     }
   }
 
-  // Function to create a circular bitmap from a given bitmap
   // Function to create a circular bitmap with border from a given bitmap
   private fun getRoundedBitmap(bitmap: Bitmap): Bitmap {
     val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
@@ -351,6 +358,32 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   // Function to resize a bitmap to the specified width and height
   private fun resizeBitmap(bitmap: Bitmap, width: Int, height: Int): Bitmap {
     return Bitmap.createScaledBitmap(bitmap, width, height, false)
+  }
+
+  fun showNearByProfileDialog(profile: Profile) {
+    val dialog = Dialog(requireContext())
+    val layoutbinding = NearbyProfileDialogBinding.inflate(layoutInflater)
+    dialog.setContentView(layoutbinding.root)
+    dialog.window?.setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT)
+    if (profile.imageUrl.isNullOrBlank() || profile.privacy.disableProfilePicture)
+      Picasso.get().load(R.drawable.profile_placeholder).into(layoutbinding.profilePicture)
+    else {
+      Picasso.get().load(profile.imageUrl).into(layoutbinding.profilePicture)
+    }
+
+    layoutbinding.username.text = profile.userName
+
+    if (profile.privacy.disableChat) {
+      layoutbinding.chatIcon.isEnabled = false
+      layoutbinding.chatIcon.alpha = 0.2F
+    }
+
+    layoutbinding.parentLayout.setOnClickListener {
+      Log.e(LOG_KEY,activity.toString())
+      (activity as RouteToViewProfile).routeToViewProfile(profile)
+    }
+
+    dialog.show()
   }
 
 }

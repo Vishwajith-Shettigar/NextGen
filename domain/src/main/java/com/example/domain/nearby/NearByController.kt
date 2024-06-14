@@ -310,11 +310,13 @@ class NearByController @Inject constructor(
               if (distanceMeter <= radiusInMeter && !profile.privacy.disableLocation) {
                 when (documentChange.type) {
                   DocumentChange.Type.ADDED,
-                  DocumentChange.Type.MODIFIED -> {
+                  DocumentChange.Type.MODIFIED,
+                  -> {
                     val existingProfile = nearbyUsers.find { it.userId == profile.userId }
                     if (existingProfile != null) {
                       if (existingProfile.location.latitude == profile.location.latitude &&
-                        existingProfile.location.longitude == profile.location.longitude) {
+                        existingProfile.location.longitude == profile.location.longitude
+                      ) {
                         // Location matches, no need to update list or callback.
                         newNearbyUsers.add(existingProfile)
                       } else {
@@ -360,13 +362,15 @@ class NearByController @Inject constructor(
       this.userName = document.getString("userName")
       this.firstName = document.getString("firstName")
       this.lastName = document.getString("lastName")
-      this.imageUrl= document.getString("imageUrl")
+      this.imageUrl = document.getString("imageUrl")
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude
         this.longitude = document.getGeoPoint("location")!!.longitude
       }.build()
-      this.privacy= Privacy.newBuilder().apply {
-        this.disableLocation= document.getBoolean("disableLocation")?:false
+      this.privacy = Privacy.newBuilder().apply {
+        this.disableLocation = document.getBoolean("disableLocation") ?: false
+        this.disableProfilePicture = document.getBoolean("disableProfilePicture") ?: false
+        this.disableChat = document.getBoolean("disableChat") ?: false
       }.build()
     }.build()
   }
