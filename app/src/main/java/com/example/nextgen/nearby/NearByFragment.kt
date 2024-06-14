@@ -18,16 +18,21 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.domain.chat.ChatController
 import com.example.domain.constants.CIRCLE_RADIUS
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.MAX_UPDATE
 import com.example.domain.nearby.NearByController
+import com.example.domain.profile.ProfileController
+import com.example.model.Chat
+import com.example.model.LastMessageInfo
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentNearByBinding
 import com.example.nextgen.databinding.NearbyProfileDialogBinding
+import com.example.nextgen.home.ChatSummaryClickListener
 import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.utility.getProto
 import com.example.utility.putProto
@@ -42,10 +47,7 @@ import com.google.android.gms.maps.model.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
@@ -53,6 +55,10 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   lateinit var nearByController: NearByController
   @Inject
   lateinit var activity: AppCompatActivity
+  @Inject
+  lateinit var chatController: ChatController
+  @Inject
+  lateinit var profileController: ProfileController
 
   private lateinit var mMap: GoogleMap
   private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -360,30 +366,91 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     return Bitmap.createScaledBitmap(bitmap, width, height, false)
   }
 
-  fun showNearByProfileDialog(profile: Profile) {
-    val dialog = Dialog(requireContext())
-    val layoutbinding = NearbyProfileDialogBinding.inflate(layoutInflater)
-    dialog.setContentView(layoutbinding.root)
-    dialog.window?.setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT)
-    if (profile.imageUrl.isNullOrBlank() || profile.privacy.disableProfilePicture)
-      Picasso.get().load(R.drawable.profile_placeholder).into(layoutbinding.profilePicture)
-    else {
-      Picasso.get().load(profile.imageUrl).into(layoutbinding.profilePicture)
+  fun showNearByProfileDialog(viewProfile: Profile) {
+
+    CoroutineScope(Dispatchers.IO).launch {
+      val isChatExists = chatController.isChatExists(profile.userId, viewProfile.userId)
+
+      withContext(Dispatchers.Main) {
+        val dialog = Dialog(requireContext())
+        val layoutbinding = NearbyProfileDialogBinding.inflate(layoutInflater)
+        dialog.setContentView(layoutbinding.root)
+        dialog.window?.setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT)
+        if (viewProfile.imageUrl.isNullOrBlank() || viewProfile.privacy.disableProfilePicture)
+          Picasso.get().load(R.drawable.profile_placeholder).into(layoutbinding.profilePicture)
+        else {
+          Picasso.get().load(viewProfile.imageUrl).into(layoutbinding.profilePicture)
+        }
+
+        layoutbinding.username.text = viewProfile.userName
+
+        if (viewProfile.privacy.disableChat) {
+          layoutbinding.chatIcon.isEnabled = false
+          layoutbinding.chatIcon.alpha = 0.2F
+        }
+
+        layoutbinding.parentLayout.setOnClickListener {
+          Log.e(LOG_KEY, activity.toString())
+          (activity as RouteToViewProfile).routeToViewProfile(viewProfile)
+        }
+
+        layoutbinding.chatIcon.setOnClickListener {
+          Log.e(LOG_KEY, isChatExists.toString()+ " chat Id")
+          if (isChatExists.isNullOrBlank())
+          {
+              layoutbinding.messageParent.visibility=View.VISIBLE
+          }else{
+            val chat=  Chat.newBuilder().apply {
+              this.chatId = chatId
+              this.userId = viewProfile.userId
+              this.imageUrl = viewProfile.imageUrl ?: ""
+              this.userName = viewProfile.userName ?: ""
+            }.build()
+            (activity as ChatSummaryClickListener).onChatSummaryClicked(chat)
+          }
+        }
+
+        layoutbinding.buttonNo.setOnClickListener {
+          layoutbinding.messageParent.visibility=View.GONE
+        }
+
+        layoutbinding.buttonYes.setOnClickListener {
+          if(isChatExists.isNullOrBlank()) {
+            Log.e(LOG_KEY,"is null")
+            chatController.initiateChat(profile.userId, viewProfile.userId) {
+              if (it is com.example.utility.Result.Success) {
+                Log.e(LOG_KEY,"succsss nitiate")
+                sendMesssage(viewProfile, it.data)
+              } else {
+                Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT)
+                  .show()
+              }
+            }
+          }
+        }
+
+        dialog.show()
+      }
     }
-
-    layoutbinding.username.text = profile.userName
-
-    if (profile.privacy.disableChat) {
-      layoutbinding.chatIcon.isEnabled = false
-      layoutbinding.chatIcon.alpha = 0.2F
-    }
-
-    layoutbinding.parentLayout.setOnClickListener {
-      Log.e(LOG_KEY,activity.toString())
-      (activity as RouteToViewProfile).routeToViewProfile(profile)
-    }
-
-    dialog.show()
   }
 
+  fun sendMesssage(viewProfile:Profile,chatId:String){
+    CoroutineScope(Dispatchers.IO).launch {
+      chatController.sendMessage(chatId,profile.userId,viewProfile.userId,"Hi!"){
+        if (it is com.example.utility.Result.Success){
+          Log.e(LOG_KEY,"succsss send message")
+
+          val chat=  Chat.newBuilder().apply {
+            this.chatId = chatId
+            this.userId = viewProfile.userId
+            this.imageUrl = viewProfile.imageUrl ?: ""
+            this.userName = viewProfile.userName ?: ""
+          }.build()
+          (activity as ChatSummaryClickListener).onChatSummaryClicked(chat)
+        }else{
+          Toast.makeText(requireContext(),"Something went wrong !",Toast.LENGTH_SHORT).show()
+        }
+      }
+    }
+  }
 }
