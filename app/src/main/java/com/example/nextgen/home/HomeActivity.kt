@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +26,7 @@ import com.example.nextgen.notification.NotificationFragment
 import com.example.nextgen.privacy.PrivacyActivity
 import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
+import com.example.nextgen.service.LocationService
 import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.nextgen.viewprofile.ViewProfileActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity,
-  RouteToPrivacyActivity,RouteToViewProfile {
+  RouteToPrivacyActivity, RouteToViewProfile {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -51,8 +53,14 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
+
+// Start foreground service
+    if (profileController.getUserId() != null)
+      ContextCompat.startForegroundService(this, Intent(this, LocationService::class.java))
+
     CoroutineScope(Dispatchers.IO).launch {
-      profile = profileController.getLocalUserProfile(profileController.getUserId()!!)?: Profile.getDefaultInstance()
+      profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
+        ?: Profile.getDefaultInstance()
     }
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
@@ -68,7 +76,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
         }
         R.id.notification -> {
 //          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
-          startActivity(ViewProfileActivity.createViewProfileActivity(this,profile))
+          startActivity(ViewProfileActivity.createViewProfileActivity(this, profile))
           true
         }
         R.id.profile -> {
@@ -80,7 +88,6 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     }
 
   }
-
 
   private fun loadFragment(fragment: Fragment, tag: String) {
     val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -126,6 +133,6 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
   }
 
   override fun routeToViewProfile(profile: Profile) {
-    startActivity(ViewProfileActivity.createViewProfileActivity(this,profile))
+    startActivity(ViewProfileActivity.createViewProfileActivity(this, profile))
   }
 }

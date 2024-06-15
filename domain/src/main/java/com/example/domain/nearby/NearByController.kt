@@ -1,9 +1,11 @@
 package com.example.domain.nearby
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.USERS_COLLECTION
 import com.example.utility.GeoUtils
 import com.example.model.GeoPoint
 import com.example.model.Privacy
@@ -11,7 +13,9 @@ import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.google.type.LatLng
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.ln
@@ -22,6 +26,7 @@ const val NEAEBY_USERS_COLLECTION = "nearby_users"
 @Singleton
 class NearByController @Inject constructor(
   private val firestore: FirebaseFirestore,
+  private val auth: FirebaseAuth
 ) {
   private val ioScope = CoroutineScope(Dispatchers.IO)
   val nearbyUsers = mutableListOf<Profile>()
@@ -267,6 +272,7 @@ class NearByController @Inject constructor(
 //  }
 
   fun listenToNearbyUsers(
+    userId: String,
     center: GeoLocation,
     radiusInMeter: Double,
     updateNearbyUsers: (Profile, Boolean) -> Unit,
@@ -279,9 +285,9 @@ class NearByController @Inject constructor(
       val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter)
       val queries = mutableListOf<Query>()
       for (bound in bounds) {
-        val query = firestore.collection(com.example.domain.constants.NEAEBY_USERS_COLLECTION)
-          .whereEqualTo("disableLocation", false)
-          .orderBy("geohash")
+        val query = firestore.collection(USERS_COLLECTION)
+          .whereEqualTo("disableLocation", false).whereNotEqualTo("userId",userId)
+          .orderBy("geoHash")
           .startAt(bound.startHash)
           .endAt(bound.endHash)
         queries.add(query)
@@ -299,6 +305,7 @@ class NearByController @Inject constructor(
             val usersToRemove = ArrayList<Profile>()
 
             snapshot.documentChanges.forEach { documentChange ->
+
               val document = documentChange.document
               val location = document.getGeoPoint("location") ?: return@forEach
               val lat = location.latitude
@@ -306,7 +313,7 @@ class NearByController @Inject constructor(
               val docLocation = GeoLocation(lat, lng)
               val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
               val profile = getProfile(document)
-
+Log.e(LOG_KEY,profile.userId)
               if (distanceMeter <= radiusInMeter && !profile.privacy.disableLocation) {
                 when (documentChange.type) {
                   DocumentChange.Type.ADDED,
@@ -359,7 +366,7 @@ class NearByController @Inject constructor(
   private fun getProfile(document: DocumentSnapshot): Profile {
     return Profile.newBuilder().apply {
       this.userId = document.getString("userId")
-      this.userName = document.getString("userName")
+      this.userName = document.getString("username")
       this.firstName = document.getString("firstName")
       this.lastName = document.getString("lastName")
       this.imageUrl = document.getString("imageUrl")
@@ -374,6 +381,43 @@ class NearByController @Inject constructor(
       }.build()
     }.build()
   }
+
+
+  fun updateLocation(userId: String, location: Location, oldLocation:Location?) {
+
+
+
+    if(auth.currentUser == null ) {
+      return
+    }
+
+//    if(oldGeoPoint!=null && )
+//    val oldGeoPoint=GeoLocation(oldLocation.latitude,oldLocation.longitude)
+//    val newGeoPoint=GeoLocation(location.latitude,location.longitude)
+
+
+    val latitude = location.latitude
+    val longitude = location.longitude
+
+    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+
+    val doc = firestore.collection(USERS_COLLECTION).document(userId)
+
+    doc.update("geoHash", geoHash)
+      .addOnSuccessListener {
+
+      }
+      .addOnFailureListener { exception ->
+      }
+
+    doc.update("location", GeoPoint(latitude, longitude))
+      .addOnSuccessListener {
+      }
+      .addOnFailureListener { exception ->
+        Log.e(LOG_KEY, "Error updating Location: ${exception.message}")
+      }
+  }
+
 
   // nearBysaveusers
   // todo: merge with general user collection

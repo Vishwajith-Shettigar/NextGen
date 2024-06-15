@@ -53,10 +53,13 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
   @Inject
   lateinit var nearByController: NearByController
+
   @Inject
   lateinit var activity: AppCompatActivity
+
   @Inject
   lateinit var chatController: ChatController
+
   @Inject
   lateinit var profileController: ProfileController
 
@@ -90,7 +93,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     binding = FragmentNearByBinding.inflate(inflater, container, false)
     profile = arguments?.getProto(NEARBYFRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
       ?: Profile.getDefaultInstance()
-    nearByViewModel = NearByViewModel(viewLifecycleOwner, nearByController, this)
+    nearByViewModel = NearByViewModel(profile.userId,viewLifecycleOwner, nearByController, this)
 
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
     mapFragment?.getMapAsync(this)
@@ -134,7 +137,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
             Log.e(LOG_KEY, latLng.toString() + "  new")
             moveCamera(latLng)
-            Toast.makeText(requireActivity(), "New radius", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "New radius", Toast.LENGTH_SHORT).show()
             locationUser = latLng
             nearByViewModel.location.value = latLng
           }
@@ -279,7 +282,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     CoroutineScope(Dispatchers.IO).launch {
       if (outOfBound) {
         // Remove marker if out of bound
-        userMarkers.remove(profile.userId)?.remove()
+        withContext(Dispatchers.Main) {
+          userMarkers.remove(profile.userId)?.remove()
+        }
       } else {
 
         // Load profile picture asynchronously using loadBitmapFromUrl
@@ -395,12 +400,11 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         }
 
         layoutbinding.chatIcon.setOnClickListener {
-          Log.e(LOG_KEY, isChatExists.toString()+ " chat Id")
-          if (isChatExists.isNullOrBlank())
-          {
-              layoutbinding.messageParent.visibility=View.VISIBLE
-          }else{
-            val chat=  Chat.newBuilder().apply {
+          Log.e(LOG_KEY, isChatExists.toString() + " chat Id")
+          if (isChatExists.isNullOrBlank()) {
+            layoutbinding.messageParent.visibility = View.VISIBLE
+          } else {
+            val chat = Chat.newBuilder().apply {
               this.chatId = chatId
               this.userId = viewProfile.userId
               this.imageUrl = viewProfile.imageUrl ?: ""
@@ -411,15 +415,15 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         }
 
         layoutbinding.buttonNo.setOnClickListener {
-          layoutbinding.messageParent.visibility=View.GONE
+          layoutbinding.messageParent.visibility = View.GONE
         }
 
         layoutbinding.buttonYes.setOnClickListener {
-          if(isChatExists.isNullOrBlank()) {
-            Log.e(LOG_KEY,"is null")
+          if (isChatExists.isNullOrBlank()) {
+            Log.e(LOG_KEY, "is null")
             chatController.initiateChat(profile.userId, viewProfile.userId) {
               if (it is com.example.utility.Result.Success) {
-                Log.e(LOG_KEY,"succsss nitiate")
+                Log.e(LOG_KEY, "succsss nitiate")
                 sendMesssage(viewProfile, it.data)
               } else {
                 Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT)
@@ -434,21 +438,21 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     }
   }
 
-  fun sendMesssage(viewProfile:Profile,chatId:String){
+  fun sendMesssage(viewProfile: Profile, chatId: String) {
     CoroutineScope(Dispatchers.IO).launch {
-      chatController.sendMessage(chatId,profile.userId,viewProfile.userId,"Hi!"){
-        if (it is com.example.utility.Result.Success){
-          Log.e(LOG_KEY,"succsss send message")
+      chatController.sendMessage(chatId, profile.userId, viewProfile.userId, "Hi!") {
+        if (it is com.example.utility.Result.Success) {
+          Log.e(LOG_KEY, "succsss send message")
 
-          val chat=  Chat.newBuilder().apply {
+          val chat = Chat.newBuilder().apply {
             this.chatId = chatId
             this.userId = viewProfile.userId
             this.imageUrl = viewProfile.imageUrl ?: ""
             this.userName = viewProfile.userName ?: ""
           }.build()
           (activity as ChatSummaryClickListener).onChatSummaryClicked(chat)
-        }else{
-          Toast.makeText(requireContext(),"Something went wrong !",Toast.LENGTH_SHORT).show()
+        } else {
+          Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT).show()
         }
       }
     }

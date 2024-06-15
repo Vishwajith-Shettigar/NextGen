@@ -45,7 +45,7 @@ class ProfileController @Inject constructor(
   }
 
   suspend fun getLocalUserProfile(userId: String): Profile? {
-    return userRepo.getUser(userId)!!
+    return userRepo.getUser(userId)
   }
 
   suspend fun setLocalUserProfile(
