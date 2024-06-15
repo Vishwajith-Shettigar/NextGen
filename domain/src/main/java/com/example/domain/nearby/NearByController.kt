@@ -280,7 +280,7 @@ class NearByController @Inject constructor(
     // Cancel any existing listeners.
     activeListeners.forEach { it.remove() }
     activeListeners.clear()
-
+Log.e(LOG_KEY,userId+"<____________________________")
     ioScope.launch {
       val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter)
       val queries = mutableListOf<Query>()
@@ -385,16 +385,16 @@ Log.e(LOG_KEY,profile.userId)
 
   fun updateLocation(userId: String, location: Location, oldLocation:Location?) {
 
-
-
     if(auth.currentUser == null ) {
       return
     }
 
-//    if(oldGeoPoint!=null && )
-//    val oldGeoPoint=GeoLocation(oldLocation.latitude,oldLocation.longitude)
-//    val newGeoPoint=GeoLocation(location.latitude,location.longitude)
-
+    if(oldLocation!=null) {
+      val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
+      val newGeoPoint = GeoLocation(location.latitude, location.longitude)
+      if (GeoFireUtils.getDistanceBetween(oldGeoPoint,newGeoPoint)<20)
+        return
+    }
 
     val latitude = location.latitude
     val longitude = location.longitude
@@ -419,31 +419,31 @@ Log.e(LOG_KEY,profile.userId)
   }
 
 
-  // nearBysaveusers
-  // todo: merge with general user collection
-  fun saveUsersLocation(profile: Profile) {
-    val latitude = profile.location.latitude
-    val longitude = profile.location.longitude
-
-    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
-
-    val userData = hashMapOf(
-      "firstName" to profile.firstName,
-      "lastName" to profile.lastName,
-      "location" to GeoPoint(latitude, longitude),
-      "userId" to profile.userId,
-      "userName" to profile.userName,
-      "geohash" to geoHash
-    )
-
-    // Add the user data to Firestore
-    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
-      .set(userData)
-      .addOnSuccessListener {
-        Log.e(LOG_KEY, "User data added successfully")
-      }
-      .addOnFailureListener { e ->
-        Log.e(LOG_KEY, "Error adding user data: $e")
-      }
-  }
+//  // nearBysaveusers
+//  // todo: merge with general user collection
+//  fun saveUsersLocation(profile: Profile) {
+//    val latitude = profile.location.latitude
+//    val longitude = profile.location.longitude
+//
+//    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+//
+//    val userData = hashMapOf(
+//      "firstName" to profile.firstName,
+//      "lastName" to profile.lastName,
+//      "location" to GeoPoint(latitude, longitude),
+//      "userId" to profile.userId,
+//      "userName" to profile.userName,
+//      "geohash" to geoHash
+//    )
+//
+//    // Add the user data to Firestore
+//    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
+//      .set(userData)
+//      .addOnSuccessListener {
+//        Log.e(LOG_KEY, "User data added successfully")
+//      }
+//      .addOnFailureListener { e ->
+//        Log.e(LOG_KEY, "Error adding user data: $e")
+//      }
+//  }
 }

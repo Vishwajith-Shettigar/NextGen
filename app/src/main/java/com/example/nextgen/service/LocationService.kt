@@ -77,7 +77,6 @@ class LocationService
       override fun onLocationResult(locationResult: LocationResult) {
         locationResult.lastLocation?.let {
 
-          Log.e(LOG_KEY,"updatingg..")
           nearByController.updateLocation(userId, it, oldLocation)
           oldLocation=it
         }

@@ -93,6 +93,8 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     binding = FragmentNearByBinding.inflate(inflater, container, false)
     profile = arguments?.getProto(NEARBYFRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
       ?: Profile.getDefaultInstance()
+
+
     nearByViewModel = NearByViewModel(profile.userId,viewLifecycleOwner, nearByController, this)
 
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -171,10 +173,13 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
     const val TAG = "NearByFragment"
     fun newInstance(profile: Profile): NearByFragment {
-      val nearByFragment = NearByFragment()
-      nearByFragment.arguments?.apply {
+      Log.e(LOG_KEY,"++++++++++++++ " + profile)
+      val nearByFragment = NearByFragment().apply {
+        arguments= Bundle().apply {
         this.putProto(NEARBYFRAGMENT_ARGUMENTS_KEY, profile)
       }
+      }
+
       return nearByFragment
     }
   }

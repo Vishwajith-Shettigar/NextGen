@@ -61,6 +61,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     CoroutineScope(Dispatchers.IO).launch {
       profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
         ?: Profile.getDefaultInstance()
+      Log.e(LOG_KEY,profile.toString()+"====================")
     }
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
