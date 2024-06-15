@@ -1,9 +1,11 @@
 package com.example.domain.nearby
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.USERS_COLLECTION
 import com.example.utility.GeoUtils
 import com.example.model.GeoPoint
 import com.example.model.Privacy
@@ -11,7 +13,9 @@ import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.google.type.LatLng
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.ln
@@ -22,6 +26,7 @@ const val NEAEBY_USERS_COLLECTION = "nearby_users"
 @Singleton
 class NearByController @Inject constructor(
   private val firestore: FirebaseFirestore,
+  private val auth: FirebaseAuth
 ) {
   private val ioScope = CoroutineScope(Dispatchers.IO)
   val nearbyUsers = mutableListOf<Profile>()
@@ -267,6 +272,7 @@ class NearByController @Inject constructor(
 //  }
 
   fun listenToNearbyUsers(
+    userId: String,
     center: GeoLocation,
     radiusInMeter: Double,
     updateNearbyUsers: (Profile, Boolean) -> Unit,
@@ -274,14 +280,14 @@ class NearByController @Inject constructor(
     // Cancel any existing listeners.
     activeListeners.forEach { it.remove() }
     activeListeners.clear()
-
+Log.e(LOG_KEY,userId+"<____________________________")
     ioScope.launch {
       val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter)
       val queries = mutableListOf<Query>()
       for (bound in bounds) {
-        val query = firestore.collection(com.example.domain.constants.NEAEBY_USERS_COLLECTION)
-          .whereEqualTo("disableLocation", false)
-          .orderBy("geohash")
+        val query = firestore.collection(USERS_COLLECTION)
+          .whereEqualTo("disableLocation", false).whereNotEqualTo("userId",userId)
+          .orderBy("geoHash")
           .startAt(bound.startHash)
           .endAt(bound.endHash)
         queries.add(query)
@@ -299,6 +305,7 @@ class NearByController @Inject constructor(
             val usersToRemove = ArrayList<Profile>()
 
             snapshot.documentChanges.forEach { documentChange ->
+
               val document = documentChange.document
               val location = document.getGeoPoint("location") ?: return@forEach
               val lat = location.latitude
@@ -306,15 +313,17 @@ class NearByController @Inject constructor(
               val docLocation = GeoLocation(lat, lng)
               val distanceMeter = GeoFireUtils.getDistanceBetween(docLocation, center)
               val profile = getProfile(document)
-
+Log.e(LOG_KEY,profile.userId)
               if (distanceMeter <= radiusInMeter && !profile.privacy.disableLocation) {
                 when (documentChange.type) {
                   DocumentChange.Type.ADDED,
-                  DocumentChange.Type.MODIFIED -> {
+                  DocumentChange.Type.MODIFIED,
+                  -> {
                     val existingProfile = nearbyUsers.find { it.userId == profile.userId }
                     if (existingProfile != null) {
                       if (existingProfile.location.latitude == profile.location.latitude &&
-                        existingProfile.location.longitude == profile.location.longitude) {
+                        existingProfile.location.longitude == profile.location.longitude
+                      ) {
                         // Location matches, no need to update list or callback.
                         newNearbyUsers.add(existingProfile)
                       } else {
@@ -357,45 +366,84 @@ class NearByController @Inject constructor(
   private fun getProfile(document: DocumentSnapshot): Profile {
     return Profile.newBuilder().apply {
       this.userId = document.getString("userId")
-      this.userName = document.getString("userName")
+      this.userName = document.getString("username")
       this.firstName = document.getString("firstName")
       this.lastName = document.getString("lastName")
-      this.imageUrl= document.getString("imageUrl")
+      this.imageUrl = document.getString("imageUrl")
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude
         this.longitude = document.getGeoPoint("location")!!.longitude
       }.build()
-      this.privacy= Privacy.newBuilder().apply {
-        this.disableLocation= document.getBoolean("disableLocation")?:false
+      this.privacy = Privacy.newBuilder().apply {
+        this.disableLocation = document.getBoolean("disableLocation") ?: false
+        this.disableProfilePicture = document.getBoolean("disableProfilePicture") ?: false
+        this.disableChat = document.getBoolean("disableChat") ?: false
       }.build()
     }.build()
   }
 
-  // nearBysaveusers
-  // todo: merge with general user collection
-  fun saveUsersLocation(profile: Profile) {
-    val latitude = profile.location.latitude
-    val longitude = profile.location.longitude
+
+  fun updateLocation(userId: String, location: Location, oldLocation:Location?) {
+
+    if(auth.currentUser == null ) {
+      return
+    }
+
+    if(oldLocation!=null) {
+      val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
+      val newGeoPoint = GeoLocation(location.latitude, location.longitude)
+      if (GeoFireUtils.getDistanceBetween(oldGeoPoint,newGeoPoint)<20)
+        return
+    }
+
+    val latitude = location.latitude
+    val longitude = location.longitude
 
     val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
 
-    val userData = hashMapOf(
-      "firstName" to profile.firstName,
-      "lastName" to profile.lastName,
-      "location" to GeoPoint(latitude, longitude),
-      "userId" to profile.userId,
-      "userName" to profile.userName,
-      "geohash" to geoHash
-    )
+    val doc = firestore.collection(USERS_COLLECTION).document(userId)
 
-    // Add the user data to Firestore
-    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
-      .set(userData)
+    doc.update("geoHash", geoHash)
       .addOnSuccessListener {
-        Log.e(LOG_KEY, "User data added successfully")
+
       }
-      .addOnFailureListener { e ->
-        Log.e(LOG_KEY, "Error adding user data: $e")
+      .addOnFailureListener { exception ->
+      }
+
+    doc.update("location", GeoPoint(latitude, longitude))
+      .addOnSuccessListener {
+      }
+      .addOnFailureListener { exception ->
+        Log.e(LOG_KEY, "Error updating Location: ${exception.message}")
       }
   }
+
+
+//  // nearBysaveusers
+//  // todo: merge with general user collection
+//  fun saveUsersLocation(profile: Profile) {
+//    val latitude = profile.location.latitude
+//    val longitude = profile.location.longitude
+//
+//    val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+//
+//    val userData = hashMapOf(
+//      "firstName" to profile.firstName,
+//      "lastName" to profile.lastName,
+//      "location" to GeoPoint(latitude, longitude),
+//      "userId" to profile.userId,
+//      "userName" to profile.userName,
+//      "geohash" to geoHash
+//    )
+//
+//    // Add the user data to Firestore
+//    firestore.collection(NEAEBY_USERS_COLLECTION).document(profile.userId)
+//      .set(userData)
+//      .addOnSuccessListener {
+//        Log.e(LOG_KEY, "User data added successfully")
+//      }
+//      .addOnFailureListener { e ->
+//        Log.e(LOG_KEY, "Error adding user data: $e")
+//      }
+//  }
 }

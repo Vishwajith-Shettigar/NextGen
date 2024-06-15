@@ -14,6 +14,7 @@ import com.firebase.geofire.GeoLocation
 import com.google.android.gms.maps.model.LatLng
 
 class NearByViewModel(
+  private val userId:String,
   private val lifecycleOwner: LifecycleOwner,
   nearByController: NearByController,
   updateMapListener: UpdateMapListener,
@@ -25,7 +26,7 @@ class NearByViewModel(
 
     location.observe(lifecycleOwner) {
       Log.e(LOG_KEY, it.toString() + "###")
-      nearByController.listenToNearbyUsers(GeoLocation(it.latitude, it.longitude), NEARBY_DISTANCE.toDouble()) {profile,outOfBound->
+      nearByController.listenToNearbyUsers(userId,GeoLocation(it.latitude, it.longitude), NEARBY_DISTANCE.toDouble()) {profile,outOfBound->
         Log.e(LOG_KEY,  "###"+ profile.userId)
         updateMapListener.updateMap(profile,outOfBound)
       }

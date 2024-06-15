@@ -20,6 +20,5 @@ interface ActivityComponent {
   fun inject(activity: PrivacyActivity)
   fun inject(activity: ViewProfileActivity)
 
-
   fun fragmentComponent(fragmentModule: FragmentModule): FragmentComponent
 }

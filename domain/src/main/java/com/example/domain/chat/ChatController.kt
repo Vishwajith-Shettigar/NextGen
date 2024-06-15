@@ -86,11 +86,11 @@ class ChatController @Inject constructor(
 
       if (userDocument.exists()) {
         val chats = userDocument.get("chats") as? Map<*, *>
+        Log.e(LOG_KEY,chats.toString())
         if (chats != null && user2ID in chats) {
-          val chatId = chats[user2ID] as? String
-          if (chatId != null) {
-            return chatId
-          }
+          val chat = chats[user2ID] as Map<*, *>
+          Log.e(LOG_KEY,chats[user2ID].toString())
+          return chat.get("chatId").toString()
         }
       } else {
         return null
@@ -242,7 +242,12 @@ class ChatController @Inject constructor(
                   var username: String? = null
                   val lastMessageInfo = child.get("lastMessage") as Map<*, *>
                   val timeStamp: Long? = child.get("time") as Long?
-                  val unreadMessage = child.get("unreadMessage") as Long
+
+                  val unreadMessage = if (child.get("unreadMessage") == null)
+                    0
+                  else
+                    child.get("unreadMessage") as Long
+
                   // Get user profile
                   val userProfileResult = profileController.getUserProfile(userId)
                   when (userProfileResult) {
@@ -263,8 +268,15 @@ class ChatController @Inject constructor(
                     this.imageUrl = imageUrl ?: ""
                     this.userName = username ?: ""
                     this.lastMessage = LastMessageInfo.newBuilder().apply {
-                      this.text = lastMessageInfo.get("text") as String
-                      this.seen = lastMessageInfo.get("seen") as Boolean
+                      this.text = if (lastMessageInfo.get("text") == null)
+                        ""
+                      else
+                        lastMessageInfo.get("text") as String
+
+                      this.seen = if (lastMessageInfo.get("seen") == null)
+                        true
+                      else
+                        lastMessageInfo.get("seen") as Boolean
                     }.build()
                     this.timestamp = timeStamp ?: 0
                     this.unreadMessage = unreadMessage
@@ -336,8 +348,10 @@ class ChatController @Inject constructor(
 
   }
 
-  fun deleteChat(message: Message, chatId: String, index: Int, totalSize: Int,
-  callback: (Result<String>) -> Unit) {
+  fun deleteChat(
+    message: Message, chatId: String, index: Int, totalSize: Int,
+    callback: (Result<String>) -> Unit,
+  ) {
     try {
       CoroutineScope(Dispatchers.IO).launch {
         val messageRef =
