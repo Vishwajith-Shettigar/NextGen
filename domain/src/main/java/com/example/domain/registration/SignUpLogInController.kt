@@ -54,10 +54,10 @@ class SignUpLogInController @Inject constructor(
               val profile = Profile.newBuilder().apply {
                 this.userId = doc.getString("userId")
                 this.userName = doc.getString("username")
-                this.firstName = doc.getString("firstName")
-                this.lastName = doc.getString("lastName")
-                this.imageUrl = doc.getString("imageUrl")
-                this.bio = doc.getString("bio")
+                this.firstName = doc?.getString("firstName")
+                this.lastName = doc?.getString("lastName")
+                this.imageUrl = doc?.getString("imageUrl")
+                this.bio = doc?.getString("bio")
                 this.rating = 0F
                 this.privacy = privacy
               }.build()

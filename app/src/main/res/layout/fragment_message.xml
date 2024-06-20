@@ -83,7 +83,18 @@
                     android:layout_marginRight="30dp"
                     android:src="@drawable/delete_icon"
                     android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/video_call_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_baseline_videocam_24"
+                    app:tint="#5C2A2A" />
             </RelativeLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
 
