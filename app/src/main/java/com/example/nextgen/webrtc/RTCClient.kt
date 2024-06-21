@@ -3,6 +3,7 @@ package com.example.videocallapp
 import android.app.Application
 import android.os.Build
 import android.util.Log
+import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.webrtc.WebSocketManager
 import org.webrtc.*
 import org.webrtc.audio.JavaAudioDeviceModule
@@ -10,7 +11,9 @@ import org.webrtc.audio.JavaAudioDeviceModule
 
 class RTCClient(
   private val application: Application,
-  private val username: String,
+  private val userId: String,
+  private val userName: String,
+  private val imageUrl: String?,
   private val webSocketManager: WebSocketManager,
   private val observer: PeerConnection.Observer,
 ) {
@@ -167,10 +170,9 @@ class RTCClient(
                 "sdp" to desc?.description,
                 "type" to desc?.type
               )
-
               webSocketManager.sendMessageToSocket(
                 MessageModel(
-                  TYPE.CREATE_OFFER, username, target, offer
+                  TYPE.CREATE_OFFER, userId, target, offer, null, null, imageUrl, userName
                 )
               )
             }
@@ -194,10 +196,9 @@ class RTCClient(
         override fun onSetFailure(p0: String?) {
         }
       }, mediaConstraints)
-      Log.e("vish", "createOffer Successful")
 
     } catch (e: Exception) {
-      Log.e("vish", e.toString())
+      Log.e(LOG_KEY, e.toString())
     }
   }
 
@@ -225,8 +226,6 @@ class RTCClient(
     constraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
 
     try {
-
-
       peerConnection?.createAnswer(object : SdpObserver {
         override fun onCreateSuccess(desc: SessionDescription?) {
           peerConnection?.setLocalDescription(object : SdpObserver {
@@ -241,7 +240,7 @@ class RTCClient(
               )
               webSocketManager.sendMessageToSocket(
                 MessageModel(
-                  TYPE.CREATE_ANSWER, username, target, answer
+                  TYPE.CREATE_ANSWER, userId, target, answer
                 )
               )
             }
@@ -264,10 +263,8 @@ class RTCClient(
         override fun onSetFailure(p0: String?) {
         }
       }, constraints)
-      Log.e("vish", "createAnswer Successful")
-
     } catch (e: Exception) {
-      Log.e("vish", e.toString())
+      Log.e(LOG_KEY, e.toString())
 
     }
   }

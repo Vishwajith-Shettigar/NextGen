@@ -10,59 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:cardElevation="20dp"
-            android:layout_marginStart="20dp"
-            app:strokeWidth="0dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:id="@+id/incomingCallLayout"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_alignParentTop="true"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                >
-
-                <TextView
-                    android:id="@+id/incomingName"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="6"
-                    android:gravity="center"
-                    android:text="someone is calling"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-
-                <ImageView
-                    android:id="@+id/acceptButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:padding="15dp"
-                    android:src="@drawable/ic_accept" />
-
-                <ImageView
-                    android:id="@+id/rejectButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:padding="15dp"
-                    android:src="@drawable/ic_reject" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:id="@+id/callLayout"

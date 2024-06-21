@@ -54,16 +54,33 @@ class SignUpLogInController @Inject constructor(
               val profile = Profile.newBuilder().apply {
                 this.userId = doc.getString("userId")
                 this.userName = doc.getString("username")
-                this.firstName = doc?.getString("firstName")
-                this.lastName = doc?.getString("lastName")
-                this.imageUrl = doc?.getString("imageUrl")
-                this.bio = doc?.getString("bio")
+
+                doc?.getString("firstName")?.let {
+                  this.firstName = it
+                }
+
+                doc?.getString("lastName")?.let {
+                  this.lastName = it
+                }
+
+
+
+                doc?.getString("imageUrl")?.let {
+                  this.imageUrl = it
+                }
+
+                doc?.getString("bio")?.let {
+                  this.bio = it
+                }
                 this.rating = 0F
                 this.privacy = privacy
               }.build()
 
               profileController.setLocalUserProfile(profile = profile) {
-                callback(com.example.utility.Result.Success("Successful"))
+                if (it is com.example.utility.Result.Success) {
+                  Log.e("ash", "Successs====")
+                  callback(com.example.utility.Result.Success("Successful"))
+                }
               }
 
 

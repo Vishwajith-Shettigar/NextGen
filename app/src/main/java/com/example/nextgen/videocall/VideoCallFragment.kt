@@ -11,15 +11,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.domain.profile.ProfileController
+import com.example.model.Profile
+import com.example.model.VideoCallScreenArguments
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentVideoCallBinding
 import com.example.nextgen.webrtc.WebSocketManager
+import com.example.utility.getProto
+import com.example.utility.putProto
 import com.example.videocallapp.*
 import com.google.gson.Gson
 import com.permissionx.guolindev.PermissionX
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +39,9 @@ class VideoCallFragment : BaseFragment() {
   @Inject
   lateinit var activity: AppCompatActivity
 
-  lateinit var uid: String
+  lateinit var userId: String
+  lateinit var imageUrl: String
+  lateinit var userName: String
   lateinit var targetUID: String
 
   private var rtcClient: RTCClient? = null
@@ -44,7 +51,7 @@ class VideoCallFragment : BaseFragment() {
   private val rtcAudioManager by lazy { RtcAudioManager.create(requireContext()) }
   private var isSpeakerMode = true
 
-  private lateinit var userRole: String
+  private lateinit var userRole: com.example.model.UserRole
 
   private lateinit var data: String
 
@@ -58,28 +65,35 @@ class VideoCallFragment : BaseFragment() {
     fragmentComponent.inject(this)
   }
 
-
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
     binding = FragmentVideoCallBinding.inflate(inflater, container, false)
-    uid = profileController.getUserId()!!
-    targetUID = arguments?.getString("targetName")!!
-    userRole = arguments?.getString("userRole")!!
-    data= arguments?.getString("data")!!
+
+
+    val args = requireArguments().getProto(
+      VIDEO_CALL_FRAGMENT_KEY,
+      VideoCallScreenArguments.getDefaultInstance()
+    )
+
+    targetUID = args.targetId
+    userRole = args.userRole
+    data = args.data
+    userId = args.userId
+    imageUrl = args?.imageUrl.toString()
+    userName = args.userName
+
     init()
 
     getPermissionsForVideoCall()
 
     webSocketManager.message.observe(activity) {
-
       onNewMessage(it)
     }
 
     return binding.root
-
   }
 
   private fun init() {
@@ -92,7 +106,6 @@ class VideoCallFragment : BaseFragment() {
     Calls initSocket on WebSocketManager with the user's ID (uid)
     if it is not null.
     */
-    Log.e("#", uid + "------------------->")
 
     /*
     Initializes an instance of RTCClient with the application context,
@@ -104,10 +117,13 @@ class VideoCallFragment : BaseFragment() {
     In onIceCandidate, sends ICE candidate information to the other
     party via WebSocket.
     */
+
     rtcClient = RTCClient(
-      activity?.application!!,
-      uid!!,
-      webSocketManager!!,
+      activity.application!!,
+      userId,
+      userName,
+      imageUrl,
+      webSocketManager,
       object : PeerConnectionObserver() {
         override fun onIceCandidate(p0: IceCandidate?) {
           super.onIceCandidate(p0)
@@ -119,7 +135,7 @@ class VideoCallFragment : BaseFragment() {
           )
 
           webSocketManager?.sendMessageToSocket(
-            MessageModel(TYPE.ICE_CANDIDATE, uid, targetUID, candidate)
+            MessageModel(TYPE.ICE_CANDIDATE, userId, targetUID, candidate)
           )
         }
 
@@ -180,15 +196,13 @@ class VideoCallFragment : BaseFragment() {
     }
 
     // End call button handling
-    binding?.endCallButton?.setOnClickListener {
-      binding?.callLayout?.visibility = View.GONE
-      binding?.incomingCallLayout?.visibility = View.GONE
-      rtcClient?.deinitializeSurfaceViews(binding.localView, binding.remoteView)
-      val message = MessageModel(TYPE.CALL_ENDED, uid, targetUID, null)
-      webSocketManager?.sendMessageToSocket(message)
+    binding.endCallButton.setOnClickListener {
+      val message = MessageModel(TYPE.CALL_ENDED, userId, targetUID, null)
+      webSocketManager.sendMessageToSocket(message)
+      exitFromActivity()
     }
 
-    if (userRole == "CALLER") {
+    if (userRole == com.example.model.UserRole.CALLER) {
       binding?.callLayout?.visibility = View.VISIBLE
       binding?.apply {
         rtcClient?.initializeSurfaceView(binding.localView)
@@ -224,7 +238,6 @@ class VideoCallFragment : BaseFragment() {
       ).request { allGranted, _, _ ->
         if (allGranted) {
 
-
         } else {
           Toast.makeText(requireContext(), "you should accept all permissions", Toast.LENGTH_LONG)
             .show()
@@ -248,11 +261,10 @@ class VideoCallFragment : BaseFragment() {
 
           try {
 
-
             targetUID = doctorUid
             webSocketManager?.sendMessageToSocket(
               MessageModel(
-                TYPE.START_CALL, uid, targetUID, null
+                TYPE.START_CALL, userId, targetUID, null
               )
             )
           } catch (e: Exception) {
@@ -272,39 +284,6 @@ class VideoCallFragment : BaseFragment() {
   */
   fun onNewMessage(message: MessageModel) {
     when (message.type) {
-//      TYPE.CALL_RESPONSE -> {
-//        if (!message.isOnline!!) {
-//          //user is not reachable
-//          lifecycleScope.launch {
-//            withContext(Dispatchers.Main) {
-//              Toast.makeText(requireContext(), "user is not reachable", Toast.LENGTH_LONG).show()
-//
-//            }
-//          }
-//        } else if (!message.isAvailable!!) {
-//          //user is not reachable
-//          lifecycleScope.launch {
-//            withContext(Dispatchers.Main) {
-//              Toast.makeText(requireContext(), message.data.toString(), Toast.LENGTH_LONG).show()
-//
-//            }
-//          }
-//        } else {
-//          //we are ready for call, we started a call
-//          lifecycleScope.launch {
-//            withContext(Dispatchers.Main) {
-//              binding?.callLayout?.visibility = View.VISIBLE
-//              binding?.apply {
-//                rtcClient?.initializeSurfaceView(binding.localView)
-//                rtcClient?.initializeSurfaceView(binding.remoteView)
-//                rtcClient?.startLocalVideo(binding.localView)
-//                rtcClient?.call(targetUID)
-//              }
-//
-//            }
-//          }
-//        }
-//      }
       TYPE.ANSWER_RECIEVED -> {
 
         val session = SessionDescription(
@@ -318,49 +297,6 @@ class VideoCallFragment : BaseFragment() {
           }
         }
       }
-
-      // Here we are handling the incoming call
-//      TYPE.OFFER_RECIEVED ->{
-//        Log.d("#","0ffer Recived----------------------->")
-//
-//        lifecycleScope.launch {
-//          withContext(Dispatchers.Main){
-//            binding?.incomingCallLayout?.visibility = View.VISIBLE
-//            binding?.incomingName?.text = "${message.name.toString()} is calling you"
-//
-//            // Accept button for accepting the call
-//            binding?.acceptButton?.setOnClickListener {
-//              binding?.incomingCallLayout?.visibility = View.GONE
-//              binding?.callLayout?.visibility = View.VISIBLE
-//              binding?.apply {
-//                rtcClient?.initializeSurfaceView(localView)
-//                rtcClient?.initializeSurfaceView(binding.remoteView)
-//                rtcClient?.startLocalVideo(localView)
-//              }
-//              val session = SessionDescription(
-//                SessionDescription.Type.OFFER,
-//                message.data.toString()
-//              )
-//              Log.d("OFEERWEBRTC","UID:- ${message.name}")
-//              rtcClient?.onRemoteSessionReceived(session)
-//              rtcClient?.answer(message.name!!)
-//              targetUID = message.name!!
-//              binding!!.remoteViewLoading.visibility = View.GONE
-//
-//            }
-//            /*
-//            If the user presses the reject button, a CALL_ENDED
-//            message is sent to the WebSocket, notifying the
-//            remote peer that the call has ended.
-//            */
-//            binding?.rejectButton?.setOnClickListener {
-//              binding?.incomingCallLayout?.visibility = View.GONE
-//              val message = MessageModel(TYPE.CALL_ENDED, uid, targetUID, null)
-//              webSocketManager?.sendMessageToSocket(message)
-//            }
-//          }
-//        }
-//      }
 
       // Parses and adds ICE candidates received via WebSocket.
       TYPE.ICE_CANDIDATE -> {
@@ -387,14 +323,10 @@ class VideoCallFragment : BaseFragment() {
         lifecycleScope.launch {
           withContext(Dispatchers.Main) {
             Toast.makeText(requireContext(), "The call has ended", Toast.LENGTH_LONG).show()
-            rtcClient?.deinitializeSurfaceViews(binding.localView, binding.remoteView)
-
-            binding.callLayout.visibility = View.GONE
-            binding?.incomingCallLayout?.visibility = View.GONE
+            exitFromActivity()
           }
         }
       }
-
       else -> {}
     }
   }
@@ -407,16 +339,21 @@ class VideoCallFragment : BaseFragment() {
     rtcClient = null
   }
 
+  fun exitFromActivity() {
+    rtcClient?.endCall() // Close any existing WebRTC connections
+    rtcClient?.deinitializeSurfaceViews(binding.localView, binding.remoteView)
+    activity.finish()
+  }
+
 
   companion object {
+    const val VIDEO_CALL_FRAGMENT_KEY = "VideoCallFragment.key"
 
     @JvmStatic
-    fun newInstance(name: String, data: String, userRole: String) =
+    fun newInstance(args: VideoCallScreenArguments) =
       VideoCallFragment().apply {
         arguments = Bundle().apply {
-          putString("targetName", name)
-          putString("data", data)
-          putString("userRole", userRole)
+          putProto(VIDEO_CALL_FRAGMENT_KEY, args)
         }
       }
   }

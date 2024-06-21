@@ -20,6 +20,7 @@ import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
 import com.example.model.Message
+import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.Fragment.FragmentScope
@@ -68,6 +69,9 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     profileController.getUserId()
   }
 
+  lateinit var profile: Profile
+
+
   lateinit var chat: Chat
 
   lateinit var viewModelFactory: MessageListViewModelFactory
@@ -87,6 +91,12 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     // Inflate the layout for this fragment
     binding = FragmentMessageBinding.inflate(inflater, container, false)
     chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())!!
+
+    lifecycleScope.launch {
+
+      profile = profileController.getLocalUserProfile(userId!!)!!
+
+    }
 
     viewModelFactory = MessageListViewModelFactory(
       userId!!,
@@ -161,29 +171,32 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         .permissions(
           Manifest.permission.RECORD_AUDIO,
           Manifest.permission.CAMERA
-        ).request{ allGranted, _ ,_ ->
-          if (allGranted){
+        ).request { allGranted, _, _ ->
+          if (allGranted) {
 
             try {
 
 
-             val targetUID = chat.userId
+              val targetUID = chat.userId
               webSocketManager?.sendMessageToSocket(
                 MessageModel(
                   TYPE.START_CALL, userId, targetUID, null
                 )
               )
-            }catch (e:Exception)
-            {
-              Log.e("vish",e.toString())
+            } catch (e: Exception) {
+              Log.e("vish", e.toString())
             }
           } else {
-            Toast.makeText(requireContext(),"you should accept all permissions", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "you should accept all permissions", Toast.LENGTH_LONG)
+              .show()
           }
         }
     }
 
     webSocketManager.message.observe(viewLifecycleOwner) { message ->
+      if (message?.type == null)
+        return@observe
+
       when (message.type) {
         TYPE.CALL_RESPONSE -> {
           if (!message.isOnline!!) {
@@ -207,7 +220,12 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
             lifecycleScope.launch {
               withContext(Dispatchers.Main) {
 
-                startActivity(VideoCallActivity.createVideoCallActivity(activity,chat.userId,"",UserRole.CALLER))
+                startActivity(
+                  VideoCallActivity.createVideoCallActivity(
+                    activity, chat.userId, "", UserRole.CALLER,
+                    profile.userId, profile.imageUrl, profile.userName
+                  )
+                )
 
 
               }

@@ -367,9 +367,23 @@ Log.e(LOG_KEY,profile.userId)
     return Profile.newBuilder().apply {
       this.userId = document.getString("userId")
       this.userName = document.getString("username")
-      this.firstName = document.getString("firstName")
-      this.lastName = document.getString("lastName")
-      this.imageUrl = document.getString("imageUrl")
+
+      document.getString("firstName")?.let {
+        this.firstName = it
+      }
+
+      document.getString("lastName")?.let {
+        this.lastName = it
+      }
+
+
+
+      document.getString("imageUrl")?.let {
+        this.imageUrl = it
+      }
+
+
+
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude
         this.longitude = document.getGeoPoint("location")!!.longitude

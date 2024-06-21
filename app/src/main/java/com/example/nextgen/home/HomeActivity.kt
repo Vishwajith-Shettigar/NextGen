@@ -1,11 +1,14 @@
 package com.example.nextgen.home
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -36,6 +39,8 @@ import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
 import com.example.videocallapp.UserRole
 import com.google.firebase.firestore.FirebaseFirestore
+import com.permissionx.guolindev.PermissionX
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,35 +78,62 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     webSocketManager.initSocket(profileController.getUserId()!!)
 
     webSocketManager.message.observe(this) { messageModel ->
-      when (messageModel.type) {
-        TYPE.OFFER_RECIEVED -> {
-          binding.callNotificationLayout.visibility = View.VISIBLE
-          binding.username.text = "Somone is calling you"
-          binding.acceptBtn.setOnClickListener {
+      if (messageModel?.type == null )
+        return@observe
+      else {
+        when (messageModel.type) {
+          TYPE.OFFER_RECIEVED -> {
+            binding.callNotificationLayout.visibility = View.VISIBLE
+            binding.username.text = "${messageModel.userName} is calling you"
 
-            startActivity(
-              VideoCallActivity.createVideoCallActivity(
-                this,
-                messageModel.name!!,
-                messageModel.data.toString()!!,
-                UserRole.CALLEE
-              )
-            )
+
+            if (!messageModel.imageUrl.isNullOrBlank())
+              Picasso.get().load(messageModel.imageUrl).into(binding.imageView)
+
+            binding.acceptBtn.setOnClickListener {
+              PermissionX.init(this)
+                .permissions(
+                  Manifest.permission.RECORD_AUDIO,
+                  Manifest.permission.CAMERA
+                ).request { allGranted, _, _ ->
+                  if (allGranted) {
+
+                    binding.callNotificationLayout.visibility = View.GONE
+                    startActivity(
+                      VideoCallActivity.createVideoCallActivity(
+                        this,
+                        messageModel.name!!,
+                        messageModel.data.toString()!!,
+                        UserRole.CALLEE,
+                        profile.userId,
+                        profile.imageUrl,
+                        profile.userName
+                      )
+                    )
+                  }
+                else
+                  {
+                    Toast.makeText(this, "you should accept all permissions", Toast.LENGTH_LONG)
+                      .show()
+                  }
+                }
+
+            }
+            binding.rejectBtn.setOnClickListener {
+              binding.callNotificationLayout.visibility = View.GONE
+              // Todo :changes name into targetuserId
+              val message = MessageModel(TYPE.CALL_ENDED, profile.userId, messageModel.name, null)
+              webSocketManager.sendMessageToSocket(message)
+
+            }
 
 
           }
-          binding.rejectBtn.setOnClickListener {
+          TYPE.CALL_ENDED -> {
             binding.callNotificationLayout.visibility = View.GONE
-            // Todo :changes name into targetuserId
-            val message = MessageModel(TYPE.CALL_ENDED, profile.userId, messageModel.name, null)
-            webSocketManager.sendMessageToSocket(message)
-
           }
-
-
+          else -> {}
         }
-
-        else -> {}
       }
     }
 

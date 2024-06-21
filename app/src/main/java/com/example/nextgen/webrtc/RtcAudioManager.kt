@@ -30,7 +30,7 @@ class RtcAudioManager(context: android.content.Context) {
   interface AudioManagerEvents {
     // Callback fired once audio device is changed or list of available audio devices changed.
     fun onAudioDeviceChanged(
-      selectedAudioDevice: AudioDevice?, availableAudioDevices: Set<AudioDevice?>?
+      selectedAudioDevice: AudioDevice?, availableAudioDevices: Set<AudioDevice?>?,
     )
   }
 
@@ -108,9 +108,7 @@ class RtcAudioManager(context: android.content.Context) {
       Log.e(TAG, "AudioManager is already active")
       return
     }
-//        else if (amState == AudioManagerState.UNINITIALIZED) {
-//            preInitAudio()
-//        }
+
     // TODO perhaps call new method called preInitAudio() here if UNINITIALIZED.
     Log.d(TAG, "AudioManager starts...")
     this.audioManagerEvents = audioManagerEvents
