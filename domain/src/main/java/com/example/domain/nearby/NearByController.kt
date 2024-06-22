@@ -363,26 +363,25 @@ Log.e(LOG_KEY,profile.userId)
   }
 
 
-  private fun getProfile(document: DocumentSnapshot): Profile {
+   fun getProfile(document: DocumentSnapshot): Profile {
     return Profile.newBuilder().apply {
       this.userId = document.getString("userId")
       this.userName = document.getString("username")
-
       document.getString("firstName")?.let {
         this.firstName = it
       }
-
       document.getString("lastName")?.let {
         this.lastName = it
       }
-
-
-
       document.getString("imageUrl")?.let {
         this.imageUrl = it
       }
 
+      // Todo :Here calculate ratings.
+      this.rating= document.getDouble("rating")?.toFloat() ?: 0F
 
+      //Todo : implement this
+      this.rated=4.5F
 
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude

@@ -72,7 +72,6 @@ class VideoCallFragment : BaseFragment() {
     // Inflate the layout for this fragment
     binding = FragmentVideoCallBinding.inflate(inflater, container, false)
 
-
     val args = requireArguments().getProto(
       VIDEO_CALL_FRAGMENT_KEY,
       VideoCallScreenArguments.getDefaultInstance()
@@ -190,9 +189,7 @@ class VideoCallFragment : BaseFragment() {
         isSpeakerMode = true
         binding!!.audioOutputButton.setImageResource(R.drawable.ic_baseline_speaker_up_24)
         rtcAudioManager.setDefaultAudioDevice(RtcAudioManager.AudioDevice.SPEAKER_PHONE)
-
       }
-
     }
 
     // End call button handling

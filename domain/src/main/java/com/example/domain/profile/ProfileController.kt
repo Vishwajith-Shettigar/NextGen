@@ -249,25 +249,25 @@ class ProfileController @Inject constructor(
     }
   }
 
-  fun updateUserRating(ratingUserId:String, ratedUserId:String,rating:Float){
-      val ratingUserDoc=firestore.collection(USERS_COLLECTION).document(ratingUserId)
-        .collection("ratings").document(ratedUserId)
-    val data= hashMapOf(
-      "youRated" to rating
+  fun updateUserRating(ratingUserId: String, ratedUserId: String, rating: Float) {
+    val ratingUserDoc = firestore.collection(USERS_COLLECTION).document(ratingUserId)
+
+    val data = hashMapOf(
+      "ratings.$ratedUserId.youRated" to rating
     )
 
-    ratingUserDoc.set(data, SetOptions.merge()).addOnSuccessListener {
-      Log.e(LOG_KEY,"successful")
+    ratingUserDoc.update("ratings.$ratedUserId.youRated", rating).addOnSuccessListener {
+      Log.e(LOG_KEY, "successful")
     }
 
-    val ratedUserDoc=firestore.collection(USERS_COLLECTION).document(ratedUserId)
-      .collection("ratings").document(ratingUserId)
-    val data2= hashMapOf(
-      "rating" to rating
+    val ratedUserDoc = firestore.collection(USERS_COLLECTION).document(ratedUserId)
+
+    val data2 = hashMapOf(
+      "ratings.$ratingUserId.rating" to rating
     )
 
-    ratedUserDoc.set(data2, SetOptions.merge()).addOnSuccessListener {
-      Log.e(LOG_KEY,"successful")
+    ratedUserDoc.update( "ratings.$ratingUserId.rating", rating).addOnSuccessListener {
+      Log.e(LOG_KEY, "successful")
     }
   }
 }

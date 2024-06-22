@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
 import com.example.model.Message
@@ -35,6 +36,7 @@ import com.example.nextgen.home.HomeItemViewModel
 import com.example.nextgen.home.HomeViewModel
 import com.example.nextgen.recyclerview.BaseAdapter
 import com.example.nextgen.videocall.VideoCallActivity
+import com.example.nextgen.viewprofile.ViewProfileActivity
 import com.example.nextgen.webrtc.WebSocketManager
 import com.example.utility.getProto
 import com.example.utility.putProto
@@ -63,6 +65,9 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
   lateinit var profileController: ProfileController
 
   @Inject
+  lateinit var nearByController: NearByController
+
+  @Inject
   lateinit var webSocketManager: WebSocketManager
 
   private val userId by lazy {
@@ -71,6 +76,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
 
   lateinit var profile: Profile
 
+  var viewProfile: Profile? = null
 
   lateinit var chat: Chat
 
@@ -103,10 +109,17 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
       chatController,
       chat,
       this as MessageOnLongPressListener,
-      profileController
+      profileController,
+      nearByController
     )
     messageListViewModel =
       ViewModelProvider(this, viewModelFactory)[MessageListViewModel::class.java]
+
+    messageListViewModel.getUserDetails {
+      if (it is com.example.utility.Result.Success) {
+        viewProfile = it.data
+      }
+    }
 
 
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -235,6 +248,12 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
         else -> {}
       }
     }
+
+    binding.topLayout.setOnClickListener {
+      if(viewProfile!=null)
+      startActivity(ViewProfileActivity.createViewProfileActivity(activity,viewProfile!!))
+    }
+
     return binding.root
   }
 

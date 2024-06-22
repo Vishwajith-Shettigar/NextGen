@@ -12,9 +12,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
-import com.example.model.Chat
-import com.example.model.Message
+import com.example.model.*
 import com.example.nextgen.viewmodel.ObservableViewModel
 import com.example.utility.Result
 import com.google.firebase.database.ValueEventListener
@@ -29,10 +29,31 @@ class MessageListViewModel(
   private val chatController: ChatController,
   private val chat: Chat,
   private val messageOnLongPressListener: MessageOnLongPressListener,
-  profileController: ProfileController,
+  private val profileController: ProfileController,
+  private val nearByController: NearByController,
 ) : ObservableViewModel() {
   private var _messageList = MutableLiveData<List<MessageViewModel>>()
   val messageList: LiveData<List<MessageViewModel>> get() = _messageList
+
+  fun getUserDetails(callback: (Result<Profile>) -> Unit) {
+
+    viewModelScope.launch {
+
+      val userProfileResult = profileController.getUserProfile(chat.userId)
+
+      when (userProfileResult) {
+        is Result.Success -> {
+          val document = userProfileResult.data
+          val userProfile = nearByController.getProfile(document)
+          callback(com.example.utility.Result.Success(userProfile))
+        }
+        is com.example.utility.Result.Failure -> {
+          // Handle failure if needed
+          callback(com.example.utility.Result.Failure("Failed"))
+        }
+      }
+    }
+  }
 
   private var valueEventListener: ValueEventListener? = null
 
@@ -87,9 +108,11 @@ class MessageListViewModel(
 
   }
 
-  fun deleteMessage(message: Message,index:Int,totalSize:Int
-  ,callback: (Result<String>) -> Unit) {
-    chatController.deleteChat(message, chat.chatId,index,totalSize){
+  fun deleteMessage(
+    message: Message, index: Int, totalSize: Int,
+    callback: (Result<String>) -> Unit,
+  ) {
+    chatController.deleteChat(message, chat.chatId, index, totalSize) {
       callback(it)
     }
   }

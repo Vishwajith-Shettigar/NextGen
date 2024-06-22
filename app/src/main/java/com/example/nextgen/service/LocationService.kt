@@ -41,6 +41,8 @@ class LocationService
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onCreate() {
     super.onCreate()
+    Log.e("ser","locaion service------------------------------->")
+
     (applicationContext as MyApplication).appComponent.inject(this)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     userId = profileController.getUserId().toString()

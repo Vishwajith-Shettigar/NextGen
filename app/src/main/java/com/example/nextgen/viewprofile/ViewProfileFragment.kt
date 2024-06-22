@@ -1,5 +1,6 @@
 package com.example.nextgen.viewprofile
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
@@ -11,16 +12,23 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
+import com.example.model.Chat
 import com.example.model.Privacy
 import com.example.model.Profile
 import com.example.model.ViewProfile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
 import com.example.nextgen.R
+import com.example.nextgen.databinding.DialogYesNoOptionsBinding
 import com.example.nextgen.databinding.FragmentViewProfileBinding
+import com.example.nextgen.home.ChatSummaryClickListener
+import com.example.nextgen.message.MessageActivity
 import com.example.utility.getProto
 import com.example.utility.getProtoExtra
 import com.example.utility.putProto
@@ -38,39 +46,32 @@ class ViewProfileFragment : BaseFragment() {
 
   @Inject
   lateinit var profileController: ProfileController
+  @Inject
+  lateinit var chatController: ChatController
 
   lateinit var viewProfileViewModel: ViewProfileViewModel
+
+  val userId by lazy {
+    profileController.getUserId()
+  }
+
+  lateinit var viewProfile:Profile
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
-    val profile =
+     viewProfile =
       arguments?.getProto(VIEWPROFILEFRAGMENT_INTENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
     binding = FragmentViewProfileBinding.inflate(inflater, container, false)
 
-    // Todo :Remove later
-    // Test data for debugging.
-    val viewProfile = ViewProfile.newBuilder().apply {
-      this.userId = "Du1sIlaq3QhA484QKfQ9R9XsEfn2"
-      this.userName = "pixel 4"
-      this.fullName = "Vishwajith Shettigar"
-      this.imageUrl = "https://miro.medium.com/v2/resize:fit:786/format:webp/0*vUlSsz1sMQ38o5gd.jpg"
-      this.bio = "Not your type"
-      this.privacy = Privacy.newBuilder().apply {
-        this.disableProfilePicture = false
-        this.disableChat = true
-      }.build()
-      this.rating = 4.4F
-      this.existingRating = 3.5F
-    }.build()
-
-    viewProfileViewModel = ViewProfileViewModel(profile!!.userId, viewProfile, profileController)
+    viewProfileViewModel = ViewProfileViewModel(userId!!, viewProfile, profileController,chatController)
     binding.ratingBar.setOnTouchListener { view, motionEvent ->
       when (motionEvent.action) {
         MotionEvent.ACTION_UP -> {
@@ -84,7 +85,6 @@ class ViewProfileFragment : BaseFragment() {
           false
         }
       }
-
     }
 
     binding.apply {
@@ -92,7 +92,82 @@ class ViewProfileFragment : BaseFragment() {
       lifecycleOwner = viewLifecycleOwner
     }
 
+    if (viewProfile.privacy.disableProfilePicture)
+//      binding.chatIcon.setImageDrawable(R.drawable.cha)
+
+    binding.chatIcon.setOnClickListener {
+      if(viewProfileViewModel.chatId==null){
+        showMessageDialog()
+      }else{
+        routeToMessageScreen(viewProfile, viewProfileViewModel.chatId!!)
+      }
+    }
+
     return binding.root
+  }
+
+  private fun showMessageDialog(){
+    val dialogbinding = DialogYesNoOptionsBinding.inflate(layoutInflater)
+
+    dialogbinding.tvDialogTitle.text="Say hi :) ?"
+    dialogbinding.rbYes.visibility=View.GONE
+    dialogbinding.rbNo.visibility=View.GONE
+    dialogbinding.btnSave.text="Send"
+    dialogbinding.btnCancel.text="Cancel"
+    // Build the AlertDialog
+    val builder = AlertDialog.Builder(activity)
+    builder.setView(dialogbinding.root)
+    val alertDialog = builder.create()
+    dialogbinding.btnSave.setOnClickListener {
+      if (viewProfileViewModel.chatId.isNullOrBlank()) {
+        Log.e(LOG_KEY, "is null")
+        chatController.initiateChat(userId!!, viewProfile.userId) {
+          if (it is com.example.utility.Result.Success) {
+            Log.e(LOG_KEY, "succsss nitiate")
+            sendMesssage(viewProfile, it.data)
+            alertDialog.dismiss()
+          } else {
+            Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT)
+              .show()
+          }
+        }
+      }
+    }
+
+    dialogbinding.btnCancel.setOnClickListener {
+      // Do something when Cancel is clicked
+      alertDialog.dismiss()
+    }
+
+    // Create the AlertDialog
+
+    alertDialog.show()
+  }
+
+
+  fun sendMesssage(viewProfile: Profile, chatId: String) {
+    CoroutineScope(Dispatchers.IO).launch {
+      chatController.sendMessage(chatId, userId!!, viewProfile.userId, "Hi!") {
+        if (it is com.example.utility.Result.Success) {
+          Log.e(LOG_KEY, "succsss send message")
+
+        routeToMessageScreen(viewProfile,chatId)
+        } else {
+          Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT).show()
+        }
+      }
+    }
+  }
+
+  fun routeToMessageScreen(viewProfile: Profile, chatId: String){
+    val chat = Chat.newBuilder().apply {
+      this.chatId = chatId
+      this.userId = viewProfile.userId
+      this.imageUrl = viewProfile.imageUrl ?: ""
+      this.userName = viewProfile.userName ?: ""
+    }.build()
+
+    startActivity(MessageActivity.createMessageActivity(activity, chat))
   }
 
   companion object {

@@ -5,7 +5,9 @@ import androidx.databinding.ObservableFloat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.domain.chat.ChatController
 import com.example.domain.profile.ProfileController
+import com.example.model.Profile
 import com.example.model.ViewProfile
 import com.example.nextgen.privacy.PrivacyItemsViewModel
 import com.example.nextgen.viewmodel.ObservableViewModel
@@ -13,18 +15,36 @@ import kotlinx.coroutines.launch
 
 class ViewProfileViewModel(
   private val userId: String,
-   val viewProfile: ViewProfile,
- private val profileController: ProfileController
+  val viewProfile: Profile,
+  private val profileController: ProfileController,
+  private val chatController: ChatController
 ) : ObservableViewModel() {
 
-  val existingRating: Float=viewProfile.existingRating
+  var chatId: String? = null
 
-  val rating:String= viewProfile.rating.toString()
+  init {
 
-fun updateRating(rating: Float){
-  viewModelScope.launch {
-    profileController.updateUserRating(userId, viewProfile.userId,rating)
+    viewModelScope.launch {
+      chatId = chatController.isChatExists(userId, viewProfile.userId)
+    }
   }
-}
+
+  val userName by lazy {
+    viewProfile.userName
+  }
+
+  val fullName: String by lazy {
+    viewProfile.firstName + " " + viewProfile.lastName
+  }
+
+  val existingRating: Float = viewProfile.rated
+
+  val rating: String = viewProfile.rating.toString()
+
+  fun updateRating(rating: Float) {
+    viewModelScope.launch {
+      profileController.updateUserRating(userId, viewProfile.userId, rating)
+    }
+  }
 
 }

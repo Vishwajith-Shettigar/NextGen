@@ -31,6 +31,7 @@ import com.example.nextgen.privacy.PrivacyActivity
 import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.service.LocationService
+import com.example.nextgen.service.VideoCallService
 import com.example.nextgen.videocall.VideoCallActivity
 import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.nextgen.viewprofile.ViewProfileActivity
@@ -58,9 +59,12 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   lateinit var profile: Profile
 
+  private val userId: String? by lazy {
+    profileController.getUserId()
+  }
+
   @Inject
   lateinit var webSocketManager: WebSocketManager
-
 
   @Inject
   lateinit var profileController: ProfileController
@@ -71,21 +75,18 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     CoroutineScope(Dispatchers.IO).launch {
       profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
         ?: Profile.getDefaultInstance()
-      Log.e(LOG_KEY, profile.toString() + "====================")
     }
-
 
     webSocketManager.initSocket(profileController.getUserId()!!)
 
     webSocketManager.message.observe(this) { messageModel ->
-      if (messageModel?.type == null )
+      if (messageModel?.type == null)
         return@observe
       else {
         when (messageModel.type) {
           TYPE.OFFER_RECIEVED -> {
             binding.callNotificationLayout.visibility = View.VISIBLE
             binding.username.text = "${messageModel.userName} is calling you"
-
 
             if (!messageModel.imageUrl.isNullOrBlank())
               Picasso.get().load(messageModel.imageUrl).into(binding.imageView)
@@ -110,14 +111,11 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
                         profile.userName
                       )
                     )
-                  }
-                else
-                  {
+                  } else {
                     Toast.makeText(this, "you should accept all permissions", Toast.LENGTH_LONG)
                       .show()
                   }
                 }
-
             }
             binding.rejectBtn.setOnClickListener {
               binding.callNotificationLayout.visibility = View.GONE
@@ -126,8 +124,6 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
               webSocketManager.sendMessageToSocket(message)
 
             }
-
-
           }
           TYPE.CALL_ENDED -> {
             binding.callNotificationLayout.visibility = View.GONE
@@ -137,11 +133,19 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
       }
     }
 
-
-// Start foreground service
-    if (profileController.getUserId() != null)
+// Start foreground service for location
+    if (userId != null)
       ContextCompat.startForegroundService(this, Intent(this, LocationService::class.java))
 
+
+    // Todo: Build call notification
+    // Start foreground service for video call
+//    if (userId != null) {
+//      Log.e("ser","starting intent service")
+//      val intent = Intent(this, VideoCallService::class.java)
+//      intent.putExtra("USER_ID", userId)
+//      ContextCompat.startForegroundService(this, intent)
+//    }
 
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
