@@ -44,7 +44,7 @@ class MessageListViewModel(
       when (userProfileResult) {
         is Result.Success -> {
           val document = userProfileResult.data
-          val userProfile = nearByController.getProfile(document)
+          val userProfile = nearByController.getProfile(userId,document)
           callback(com.example.utility.Result.Success(userProfile))
         }
         is com.example.utility.Result.Failure -> {
