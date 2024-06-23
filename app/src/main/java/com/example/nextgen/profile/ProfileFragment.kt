@@ -77,7 +77,7 @@ class ProfileFragment : BaseFragment() {
     binding.lifecycleOwner = this
 
     profileViewModel.profile.observe(viewLifecycleOwner) {
-      Log.e(LOG_KEY, it.toString())
+      Log.e(LOG_KEY, it?.toString()!!)
       binding.apply {
         try {
 

@@ -21,6 +21,7 @@ message Profile{
   string bio = 7;
   float rating = 8;
   Privacy privacy = 9;
+  float rated=10;
 }
 
 message Privacy{

@@ -70,7 +70,7 @@
             android:layout_below="@id/username"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
-            android:text="@{viewModel.viewProfile.fullName}"
+            android:text="@{viewModel.fullName}"
             android:textColor="@android:color/darker_gray"
             android:textSize="16sp" />
 

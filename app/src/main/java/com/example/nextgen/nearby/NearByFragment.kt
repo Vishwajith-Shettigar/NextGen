@@ -410,7 +410,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
             layoutbinding.messageParent.visibility = View.VISIBLE
           } else {
             val chat = Chat.newBuilder().apply {
-              this.chatId = chatId
+              this.chatId = isChatExists
               this.userId = viewProfile.userId
               this.imageUrl = viewProfile.imageUrl ?: ""
               this.userName = viewProfile.userName ?: ""

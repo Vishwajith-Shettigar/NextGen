@@ -11,15 +11,23 @@ import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.ActivityScope
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
+import com.example.nextgen.webrtc.WebSocketManager
 import com.example.utility.getProtoExtra
 import com.example.utility.putProtoExtra
+import javax.inject.Inject
 
 
 class MessageActivity : BaseActivity() {
+
+  @Inject
+  lateinit var webSocketManager: WebSocketManager
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_message)
     val args = intent.getProtoExtra(MESSAGEACTIVITY_INTENT_EXTRAS_KEY, Chat.getDefaultInstance())
+    Log.e("vish",webSocketManager.UID.toString())
+
     supportFragmentManager.beginTransaction()
       .replace(R.id.frame_layout, MessageFragment.newInstance(args!!))
       .commit()

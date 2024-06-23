@@ -1,10 +1,14 @@
 package com.example.nextgen.home
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -27,9 +31,17 @@ import com.example.nextgen.privacy.PrivacyActivity
 import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.service.LocationService
+import com.example.nextgen.service.VideoCallService
+import com.example.nextgen.videocall.VideoCallActivity
 import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.nextgen.viewprofile.ViewProfileActivity
+import com.example.nextgen.webrtc.WebSocketManager
+import com.example.videocallapp.MessageModel
+import com.example.videocallapp.TYPE
+import com.example.videocallapp.UserRole
 import com.google.firebase.firestore.FirebaseFirestore
+import com.permissionx.guolindev.PermissionX
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,22 +59,94 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   lateinit var profile: Profile
 
+  private val userId: String? by lazy {
+    profileController.getUserId()
+  }
+
+  @Inject
+  lateinit var webSocketManager: WebSocketManager
+
   @Inject
   lateinit var profileController: ProfileController
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
-
-// Start foreground service
-    if (profileController.getUserId() != null)
-      ContextCompat.startForegroundService(this, Intent(this, LocationService::class.java))
-
     CoroutineScope(Dispatchers.IO).launch {
       profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
         ?: Profile.getDefaultInstance()
-      Log.e(LOG_KEY,profile.toString()+"====================")
     }
+
+    webSocketManager.initSocket(profileController.getUserId()!!)
+
+    webSocketManager.message.observe(this) { messageModel ->
+      if (messageModel?.type == null)
+        return@observe
+      else {
+        when (messageModel.type) {
+          TYPE.OFFER_RECIEVED -> {
+            binding.callNotificationLayout.visibility = View.VISIBLE
+            binding.username.text = "${messageModel.userName} is calling you"
+
+            if (!messageModel.imageUrl.isNullOrBlank())
+              Picasso.get().load(messageModel.imageUrl).into(binding.imageView)
+
+            binding.acceptBtn.setOnClickListener {
+              PermissionX.init(this)
+                .permissions(
+                  Manifest.permission.RECORD_AUDIO,
+                  Manifest.permission.CAMERA
+                ).request { allGranted, _, _ ->
+                  if (allGranted) {
+
+                    binding.callNotificationLayout.visibility = View.GONE
+                    startActivity(
+                      VideoCallActivity.createVideoCallActivity(
+                        this,
+                        messageModel.name!!,
+                        messageModel.data.toString()!!,
+                        UserRole.CALLEE,
+                        profile.userId,
+                        profile.imageUrl,
+                        profile.userName
+                      )
+                    )
+                  } else {
+                    Toast.makeText(this, "you should accept all permissions", Toast.LENGTH_LONG)
+                      .show()
+                  }
+                }
+            }
+            binding.rejectBtn.setOnClickListener {
+              binding.callNotificationLayout.visibility = View.GONE
+              // Todo :changes name into targetuserId
+              val message = MessageModel(TYPE.CALL_ENDED, profile.userId, messageModel.name, null)
+              webSocketManager.sendMessageToSocket(message)
+
+            }
+          }
+          TYPE.CALL_ENDED -> {
+            binding.callNotificationLayout.visibility = View.GONE
+          }
+          else -> {}
+        }
+      }
+    }
+
+// Start foreground service for location
+    if (userId != null)
+      ContextCompat.startForegroundService(this, Intent(this, LocationService::class.java))
+
+
+    // Todo: Build call notification
+    // Start foreground service for video call
+//    if (userId != null) {
+//      Log.e("ser","starting intent service")
+//      val intent = Intent(this, VideoCallService::class.java)
+//      intent.putExtra("USER_ID", userId)
+//      ContextCompat.startForegroundService(this, intent)
+//    }
+
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
     binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
