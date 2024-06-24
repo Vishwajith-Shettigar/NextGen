@@ -250,8 +250,8 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     }
 
     binding.topLayout.setOnClickListener {
-      if(viewProfile!=null)
-      startActivity(ViewProfileActivity.createViewProfileActivity(activity,viewProfile!!))
+      if (viewProfile != null)
+        startActivity(ViewProfileActivity.createViewProfileActivity(activity, viewProfile!!))
     }
 
     return binding.root
