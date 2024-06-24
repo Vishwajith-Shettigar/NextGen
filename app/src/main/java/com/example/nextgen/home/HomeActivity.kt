@@ -3,11 +3,13 @@ package com.example.nextgen.home
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -71,7 +73,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-
+    checkLocationPermission()
     CoroutineScope(Dispatchers.IO).launch {
       profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
         ?: Profile.getDefaultInstance()
@@ -219,5 +221,23 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
   override fun routeToViewProfile(profile: Profile) {
     startActivity(ViewProfileActivity.createViewProfileActivity(this, profile))
+  }
+
+  private fun checkLocationPermission() {
+    if (ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        this,
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+    }
   }
 }
