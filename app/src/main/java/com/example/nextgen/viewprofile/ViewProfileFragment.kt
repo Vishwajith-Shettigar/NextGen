@@ -46,6 +46,7 @@ class ViewProfileFragment : BaseFragment() {
 
   @Inject
   lateinit var profileController: ProfileController
+
   @Inject
   lateinit var chatController: ChatController
 
@@ -55,7 +56,7 @@ class ViewProfileFragment : BaseFragment() {
     profileController.getUserId()
   }
 
-  lateinit var viewProfile:Profile
+  lateinit var viewProfile: Profile
 
   override fun injectDependencies(fragmentComponent: FragmentComponent) {
     fragmentComponent.inject(this)
@@ -67,11 +68,14 @@ class ViewProfileFragment : BaseFragment() {
     savedInstanceState: Bundle?,
   ): View? {
     // Inflate the layout for this fragment
-     viewProfile =
+    viewProfile =
       arguments?.getProto(VIEWPROFILEFRAGMENT_INTENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
     binding = FragmentViewProfileBinding.inflate(inflater, container, false)
 
-    viewProfileViewModel = ViewProfileViewModel(userId!!, viewProfile, profileController,chatController)
+    Log.e("pokemon", viewProfile.firstName + "^^^^^^^^^^^^^^")
+
+    viewProfileViewModel =
+      ViewProfileViewModel(userId!!, viewProfile, profileController, chatController)
     binding.ratingBar.setOnTouchListener { view, motionEvent ->
       when (motionEvent.action) {
         MotionEvent.ACTION_UP -> {
@@ -92,28 +96,24 @@ class ViewProfileFragment : BaseFragment() {
       lifecycleOwner = viewLifecycleOwner
     }
 
-    if (viewProfile.privacy.disableProfilePicture)
-//      binding.chatIcon.setImageDrawable(R.drawable.cha)
-
     binding.chatIcon.setOnClickListener {
-      if(viewProfileViewModel.chatId==null){
+      if (viewProfileViewModel.chatId == null) {
         showMessageDialog()
-      }else{
+      } else {
         routeToMessageScreen(viewProfile, viewProfileViewModel.chatId!!)
       }
     }
-
     return binding.root
   }
 
-  private fun showMessageDialog(){
+  private fun showMessageDialog() {
     val dialogbinding = DialogYesNoOptionsBinding.inflate(layoutInflater)
 
-    dialogbinding.tvDialogTitle.text="Say hi :) ?"
-    dialogbinding.rbYes.visibility=View.GONE
-    dialogbinding.rbNo.visibility=View.GONE
-    dialogbinding.btnSave.text="Send"
-    dialogbinding.btnCancel.text="Cancel"
+    dialogbinding.tvDialogTitle.text = "Say hi :) ?"
+    dialogbinding.rbYes.visibility = View.GONE
+    dialogbinding.rbNo.visibility = View.GONE
+    dialogbinding.btnSave.text = "Send"
+    dialogbinding.btnCancel.text = "Cancel"
     // Build the AlertDialog
     val builder = AlertDialog.Builder(activity)
     builder.setView(dialogbinding.root)
@@ -151,7 +151,7 @@ class ViewProfileFragment : BaseFragment() {
         if (it is com.example.utility.Result.Success) {
           Log.e(LOG_KEY, "succsss send message")
 
-        routeToMessageScreen(viewProfile,chatId)
+          routeToMessageScreen(viewProfile, chatId)
         } else {
           Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT).show()
         }
@@ -159,7 +159,7 @@ class ViewProfileFragment : BaseFragment() {
     }
   }
 
-  fun routeToMessageScreen(viewProfile: Profile, chatId: String){
+  fun routeToMessageScreen(viewProfile: Profile, chatId: String) {
     val chat = Chat.newBuilder().apply {
       this.chatId = chatId
       this.userId = viewProfile.userId

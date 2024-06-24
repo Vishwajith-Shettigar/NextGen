@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <data>
-
         <variable
             name="viewModel"
             type="com.example.nextgen.viewprofile.ViewProfileViewModel" />
@@ -12,9 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
-
-        <!-- Profile Picture -->
+        android:padding="16dp"
+        android:background="@color/home_screen_background">
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_picture_cardview"
             android:layout_width="wrap_content"
@@ -23,7 +20,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="100dp">
-
             <ImageView
                 android:id="@+id/profile_picture_imageview"
                 android:layout_width="100dp"
@@ -35,7 +31,6 @@
                 android:shape="oval"
                 app:imageUrl="@{viewModel.viewProfile.imageUrl}"
                 app:isDisabled="@{viewModel.viewProfile.privacy.disableProfilePicture}" />
-
         </androidx.cardview.widget.CardView>
 
         <!-- Username -->
@@ -47,9 +42,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
             android:text="@{viewModel.viewProfile.userName}"
-            android:textColor="@android:color/black"
+            android:textColor="@color/home_screen_text_color"
+            android:textStyle="bold"
             android:textSize="18sp" />
-
 
         <TextView
             android:id="@+id/rating_image"
@@ -85,7 +80,7 @@
             android:layout_marginBottom="24dp"
             android:isIndicator="false"
             android:numStars="5"
-            android:progressTint="#745FC8"
+            android:progressTint="#CBC966"
             android:rating="@{viewModel.existingRating}"
             android:stepSize="0.5" />
         <!-- Icons Row -->
@@ -137,9 +132,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
-            android:text="@{viewModel.viewProfile.bio}"
+            android:text="@{viewModel.bio}"
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
+            android:textSize="18sp"
             app:drawableStartCompat="@drawable/baseline_bubble_chart_24" />
     </RelativeLayout>
 </layout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -7,27 +8,32 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/home_screen_background"
         tools:context=".home.HomeFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:background="@color/home_screen_background">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/chat_searchView"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:iconifiedByDefault="false"
-                    app:layout_collapseMode="parallax" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="15dp"
+                    android:fontFamily="@font/lilitaone_regular"
+                    android:text="neXtgen"
+                    android:textColor="@color/home_screen_text_color"
+                    android:textSize="40dp">
+
+                </TextView>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -37,6 +43,7 @@
             android:id="@+id/chats_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

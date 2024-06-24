@@ -94,7 +94,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     profile = arguments?.getProto(NEARBYFRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
       ?: Profile.getDefaultInstance()
 
-
     nearByViewModel = NearByViewModel(profile.userId,viewLifecycleOwner, nearByController, this)
 
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -149,7 +148,8 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
   }
 
-  private fun checkLocationPermission() {
+  fun checkLocationPermission() {
+
     if (ActivityCompat.checkSelfPermission(
         requireContext(),
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -185,30 +185,20 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   }
 
   override fun onMapReady(googleMap: GoogleMap) {
-    mMap = googleMap
-    if (ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
-      ActivityCompat.requestPermissions(
-        requireActivity(),
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1
-      )
-      return
-    }
-    mMap.isMyLocationEnabled = true
-    moveCamera(locationUser)
-    mMap.setOnMarkerClickListener { marker ->
-      val profile = marker.tag as Profile
-      Log.e(LOG_KEY, profile.toString())
-      showNearByProfileDialog(profile)
-      true
+    try {
+      mMap = googleMap
+      checkLocationPermission()
+      mMap.isMyLocationEnabled = true
+      moveCamera(locationUser)
+      mMap.setOnMarkerClickListener { marker ->
+        val profile = marker.tag as Profile
+        Log.e(LOG_KEY, profile.toString())
+        showNearByProfileDialog(profile)
+        true
+      }
+    }catch (e:Exception)
+    {
+      Toast.makeText(activity,"Please give access to location to use this feature",Toast.LENGTH_LONG).show()
     }
   }
 

@@ -3,24 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-<variable
-    name="viewModel"
-    type="com.example.nextgen.message.MessageListViewModel" />
-
+        <variable
+            name="viewModel"
+            type="com.example.nextgen.message.MessageListViewModel" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F4F4F8">
+        android:background="@color/home_screen_background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_marginTop="0dp"
-            android:background="#FDF9F9F9"
-            >
+            android:background="@color/home_screen_background"
+            android:elevation="4dp">
 
             <RelativeLayout
                 android:id="@+id/top_layout"
@@ -33,18 +32,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/cardview"
-                    android:gravity="center_vertical"
-
-                    >
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.userName}"
-                        android:textColor="@color/black"
-                        android:textSize="20dp"
-                        />
+                        android:textColor="@color/home_screen_text_color"
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/status"
@@ -53,7 +49,7 @@
                         android:layout_below="@+id/username"
                         android:text="@{viewModel.status}"
                         android:textAllCaps="false"
-                        android:textColor="#211C1C" />
+                        android:textColor="@color/home_screen_text_color" />
                 </RelativeLayout>
 
                 <androidx.cardview.widget.CardView
@@ -67,33 +63,35 @@
 
                     <ImageView
                         android:id="@+id/userimage"
+                        imageUrl="@{viewModel.imageUrl}"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/ic_launcher_background"
-                        android:scaleType="centerCrop"
-                        imageUrl="@{viewModel.imageUrl}"
-                        />
+                        android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
 
                 <ImageView
                     android:id="@+id/deletechat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="30dp"
+                    android:layout_toStartOf="@id/video_call_btn"
                     android:src="@drawable/delete_icon"
                     android:visibility="gone" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/video_call_btn"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="20dp"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_baseline_videocam_24"
-                    app:tint="#5C2A2A" />
+                    app:tint="@color/home_screen_text_color"
+                    android:focusable="true" />
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -105,7 +103,8 @@
             android:layout_height="match_parent"
             android:layout_above="@id/message"
             android:layout_below="@+id/toolbar"
-            android:padding="5dp" />
+            android:padding="5dp"
+            />
 
 
         <androidx.cardview.widget.CardView
@@ -116,18 +115,18 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="-57dp"
-            android:layout_marginBottom="5dp"
-            app:cardCornerRadius="30dp"
-            android:focusable="true">
+            android:layout_marginBottom="10dp"
+            android:focusable="true"
+            app:cardCornerRadius="30dp">
 
             <ImageButton
                 android:id="@+id/send_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/flag_transparent"
-                android:padding="4dp"
                 android:clickable="true"
                 android:onClick="@{viewModel.onSendClick}"
+                android:padding="4dp"
                 android:src="@drawable/send_icon" />
         </androidx.cardview.widget.CardView>
 
@@ -139,15 +138,14 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="60dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/edittext_background"
             android:hint="Enter a message"
             android:padding="5dp"
-            android:text="@={viewModel.messageText}"
             android:paddingStart="20dp"
-            android:textColor="@color/black"
-            android:textColorHint="#6F6C6C"
-             />
+            android:text="@={viewModel.messageText}"
+            android:textColor="@color/home_screen_text_color"
+            android:textColorHint="#6F6C6C" />
 
     </RelativeLayout>
 </layout>

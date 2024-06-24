@@ -17,7 +17,7 @@ class ViewProfileViewModel(
   private val userId: String,
   val viewProfile: Profile,
   private val profileController: ProfileController,
-  private val chatController: ChatController
+  private val chatController: ChatController,
 ) : ObservableViewModel() {
 
   var chatId: String? = null
@@ -39,7 +39,10 @@ class ViewProfileViewModel(
 
   val existingRating: Float = viewProfile.rated
 
-  val rating: String = viewProfile.rating.toString()
+  val rating: String = String.format("%.1f", viewProfile.rating)
+
+  val bio: String =
+    if (!viewProfile.bio.isNullOrBlank()) viewProfile.bio else "neXtgen is awesome!"
 
   fun updateRating(rating: Float) {
     viewModelScope.launch {
