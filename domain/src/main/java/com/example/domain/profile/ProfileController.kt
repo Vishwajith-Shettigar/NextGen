@@ -5,21 +5,16 @@ import android.util.Log
 import com.example.data.repository.UserRepo
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
-import com.example.domain.nearby.NEAEBY_USERS_COLLECTION
 import com.example.model.Privacy
 import com.example.model.PrivacyItem
 import com.example.model.Profile
-import com.firebase.geofire.GeoFireUtils
-import com.firebase.geofire.GeoLocation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.*
@@ -251,23 +246,43 @@ class ProfileController @Inject constructor(
 
   fun updateUserRating(ratingUserId: String, ratedUserId: String, rating: Float) {
     val ratingUserDoc = firestore.collection(USERS_COLLECTION).document(ratingUserId)
-
-    val data = hashMapOf(
-      "ratings.$ratedUserId.youRated" to rating
-    )
-
     ratingUserDoc.update("ratings.$ratedUserId.youRated", rating).addOnSuccessListener {
       Log.e(LOG_KEY, "successful")
     }
 
     val ratedUserDoc = firestore.collection(USERS_COLLECTION).document(ratedUserId)
-
-    val data2 = hashMapOf(
-      "ratings.$ratingUserId.rating" to rating
-    )
-
-    ratedUserDoc.update( "ratings.$ratingUserId.rating", rating).addOnSuccessListener {
+    ratedUserDoc.update("ratings.$ratingUserId.rating", rating).addOnSuccessListener {
       Log.e(LOG_KEY, "successful")
     }
+  }
+
+  suspend fun getRating(userId: String): Float {
+    var rating = 0F
+    val job = CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val doc = firestore.collection(USERS_COLLECTION).document(userId).get().await()
+        val ratings = doc.get("ratings") as? Map<String, Map<String, Any>>
+
+        var totalRating = 0.0f
+        var numberOfRatings = 0
+
+        ratings?.forEach { (key, value) ->
+          val ratingValue = value["rating"] as? Double
+          if (ratingValue != null) {
+            if (key == userId) {
+              rating = ratingValue.toFloat()
+            }
+            totalRating += ratingValue.toFloat()
+            numberOfRatings++
+          }
+        }
+
+        rating = if (numberOfRatings > 0) totalRating / numberOfRatings else 0.0f
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
+    }
+    job.join()
+    return String.format("%.1f", rating).toFloat()
   }
 }

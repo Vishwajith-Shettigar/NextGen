@@ -376,6 +376,10 @@ class NearByController @Inject constructor(
         this.imageUrl = it
       }
 
+      document.getString("bio")?.let {
+        this.bio = it
+      }
+
       this.rated = 0F
 
       val ratings = document.get("ratings") as? Map<*, *>
@@ -399,8 +403,12 @@ class NearByController @Inject constructor(
           }
         }
       }
-
-      this.rating = if (numberOfRatings > 0) totalRating / numberOfRatings else 0.0f
+      this.rating =  if (numberOfRatings > 0) {
+        val averageRating = totalRating / numberOfRatings
+        String.format("%.1f", averageRating).toFloat()
+      } else {
+        0.0f
+      }
 
       this.location = GeoPoint.newBuilder().apply {
         this.latitude = document.getGeoPoint("location")!!.latitude

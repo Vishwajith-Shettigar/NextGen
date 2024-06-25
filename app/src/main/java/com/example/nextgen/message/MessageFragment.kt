@@ -89,6 +89,11 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     fragmentComponent.inject(this)
   }
 
+  override fun onResume() {
+    super.onResume()
+    getViewProfile()
+  }
+
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
@@ -99,9 +104,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     chat = arguments?.getProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, Chat.getDefaultInstance())!!
 
     lifecycleScope.launch {
-
       profile = profileController.getLocalUserProfile(userId!!)!!
-
     }
 
     viewModelFactory = MessageListViewModelFactory(
@@ -115,12 +118,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     messageListViewModel =
       ViewModelProvider(this, viewModelFactory)[MessageListViewModel::class.java]
 
-    messageListViewModel.getUserDetails {
-      if (it is com.example.utility.Result.Success) {
-        viewProfile = it.data
-      }
-    }
-
+    getViewProfile()
 
     val chatLayoutManager = LinearLayoutManager(activity.applicationContext)
     binding.viewModel = messageListViewModel
@@ -267,6 +265,14 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
           putProto(MESSAGEFRAGMENT_ARGUMENTS_KEY, chat)
         }
       }
+  }
+
+  private fun getViewProfile() {
+    messageListViewModel.getUserDetails {
+      if (it is com.example.utility.Result.Success) {
+        viewProfile = it.data
+      }
+    }
   }
 
   override fun onLongPress(message: Message, index: Int) {

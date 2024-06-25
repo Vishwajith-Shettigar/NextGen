@@ -135,12 +135,9 @@ class ViewProfileFragment : BaseFragment() {
     }
 
     dialogbinding.btnCancel.setOnClickListener {
-      // Do something when Cancel is clicked
       alertDialog.dismiss()
     }
-
     // Create the AlertDialog
-
     alertDialog.show()
   }
 

@@ -21,12 +21,16 @@ class ViewProfileViewModel(
 ) : ObservableViewModel() {
 
   var chatId: String? = null
+  private val _rating = MutableLiveData<Float>()
+  val rating: LiveData<Float> get() = _rating
 
   init {
 
     viewModelScope.launch {
       chatId = chatController.isChatExists(userId, viewProfile.userId)
     }
+
+    _rating.value=viewProfile.rating
   }
 
   val userName by lazy {
@@ -38,8 +42,6 @@ class ViewProfileViewModel(
   }
 
   val existingRating: Float = viewProfile.rated
-
-  val rating: String = String.format("%.1f", viewProfile.rating)
 
   val bio: String =
     if (!viewProfile.bio.isNullOrBlank()) viewProfile.bio else "neXtgen is awesome!"
