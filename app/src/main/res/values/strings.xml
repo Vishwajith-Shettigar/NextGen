@@ -6,6 +6,7 @@
     <string name="profile_label">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nextgen">neXtGen</string>
 
 
 </resources>

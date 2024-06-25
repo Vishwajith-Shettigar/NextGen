@@ -1,6 +1,9 @@
 package com.example.nextgen.profile
 
 import android.util.Log
+import androidx.databinding.Observable
+import androidx.databinding.ObservableField
+import androidx.databinding.ObservableFloat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,29 +14,36 @@ import com.example.nextgen.viewmodel.ObservableViewModel
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-  private val userId:String,
-  private val profileController: ProfileController
-):ObservableViewModel() {
+  private val userId: String,
+  private val profileController: ProfileController,
+) : ObservableViewModel() {
 
   private val _profile = MutableLiveData<Profile>()
   val profile: LiveData<Profile> get() = _profile
 
+  private val _rating = MutableLiveData<Float>()
+  val rating: LiveData<Float> get() = _rating
+
   override fun onCleared() {
     super.onCleared()
-    Log.e(LOG_KEY,"ProfileViewModel cleared")
-  }
-  init {
-      loadProfile()
+    Log.e(LOG_KEY, "ProfileViewModel cleared")
   }
 
-  fun loadProfile(){
+  init {
+    loadProfile()
+    viewModelScope.launch {
+      _rating.value=( profileController.getRating(userId))
+    }
+  }
+
+  fun loadProfile() {
     viewModelScope.launch {
       try {
-          val profile= profileController.getLocalUserProfile(userId)
-        Log.e(LOG_KEY,profile.toString())
+        val profile = profileController.getLocalUserProfile(userId)
+        Log.e(LOG_KEY, profile.toString())
         _profile.postValue(profile)
+      } catch (e: java.lang.Exception) {
       }
-      catch (e:java.lang.Exception){}
     }
   }
 }

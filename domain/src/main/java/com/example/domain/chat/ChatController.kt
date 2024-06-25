@@ -192,8 +192,6 @@ class ChatController @Inject constructor(
           "isDeleted" to false
         )
         // Use await() to ensure the operation completes
-        saveLastMessage(senderId, receiverId, text, curTime)
-
         messageRef.setValue(messageData).await()
 
         // Save the last message
@@ -202,6 +200,7 @@ class ChatController @Inject constructor(
         withContext(Dispatchers.Main) {
           callback(Result.Success("Successful"))
         }
+        saveLastMessage(senderId, receiverId, text, curTime)
       } catch (e: Exception) {
         // Invoke the callback with failure result on the main thread
         withContext(Dispatchers.Main) {
@@ -285,7 +284,7 @@ class ChatController @Inject constructor(
               }
               val chatList = deferredChats.awaitAll()
               chats.clear()
-              chats.addAll(chatList.sortedBy { it.timestamp })
+              chats.addAll(chatList.sortedByDescending { it.timestamp })
               withContext(Dispatchers.Main) {
                 callback(com.example.utility.Result.Success(chats))
               }

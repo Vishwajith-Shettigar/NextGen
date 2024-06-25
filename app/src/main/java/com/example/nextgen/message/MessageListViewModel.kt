@@ -105,7 +105,6 @@ class MessageListViewModel(
           messageText.set("")
       }
     }
-
   }
 
   fun deleteMessage(

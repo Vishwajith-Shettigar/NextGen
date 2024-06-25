@@ -31,8 +31,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                app:cardCornerRadius="45dp"
-                >
+                app:cardCornerRadius="45dp">
 
                 <ImageView
                     android:id="@+id/image"
@@ -57,9 +56,8 @@
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.username}"
                     android:textColor="@color/home_screen_text_color"
-                    android:textStyle="bold"
                     android:textSize="17dp"
-                    />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/last_message"
@@ -69,7 +67,6 @@
                     android:text="@{viewModel.lastMessage}"
                     android:textColor="@color/home_screen_text_color"
                     android:textSize="15dp" />
-
             </RelativeLayout>
 
             <TextView
@@ -91,16 +88,16 @@
                 android:gravity="center"
                 android:text="@{viewModel.unReadMessage}"
                 android:textColor="@color/home_screen_text_color"
-                android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE, default=gone}" />
 
         </RelativeLayout>
-<View
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp"
-    android:background="@color/divider_color"
-    android:layout_alignParentBottom="true"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/divider_color" />
     </RelativeLayout>
 </layout>

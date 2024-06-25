@@ -127,7 +127,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         val currentLocation = locationResult.lastLocation
         currentLocation?.let {
           val latLng = LatLng(it.latitude, it.longitude)
-          Log.e(LOG_KEY, latLng.toString() + "  update location")
+          Log.e(LOG_KEY, latLng.toString() + "update location")
 
           moveUser(latLng)
           val lastGeoLocation = GeoLocation(locationUser.latitude, locationUser.longitude)

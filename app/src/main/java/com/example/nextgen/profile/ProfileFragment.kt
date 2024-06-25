@@ -80,14 +80,11 @@ class ProfileFragment : BaseFragment() {
       Log.e(LOG_KEY, it?.toString()!!)
       binding.apply {
         try {
-
-
           this.username.text = it.userName
           this.bio.text = it.bio
           if (!it.imageUrl.isBlank())
             Picasso.get().load(it.imageUrl)
               .error(R.drawable.profile_placeholder).into(this.profilePic)
-          this.ratingText.text = it.rating.toString()
         } catch (e: java.lang.Exception) {
           Log.e(LOG_KEY, e.toString())
         }
