@@ -27,7 +27,6 @@ class BindingAdapters {
         return
       }
       try {
-        Log.e(LOG_KEY, url.toString())
         if (url == null || url.isBlank() == true)
           Picasso.get().load(R.drawable.profile_placeholder)
             .error(R.drawable.profile_placeholder).into(view)
@@ -52,10 +51,7 @@ class BindingAdapters {
     @BindingAdapter("loadPrivacyItemsIcon")
     fun loadPrivacyItemsIcon(view: ImageView, itemId: String?) {
       try {
-        Log.e(LOG_KEY, " IN loadPrivacyItemsIcon   " + itemId)
         if (itemId == DISABLE_CHAT_ID) {
-          Log.e(LOG_KEY, " IN loadPrivacyItemsIcon   " + itemId)
-
           Picasso.get().load(R.drawable.chaticon).error(R.drawable.chaticon).into(view)
         } else if (itemId == DISABLE_LOCATION_ID) {
           Picasso.get().load(R.drawable.nearby_24)

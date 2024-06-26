@@ -63,8 +63,6 @@ class SignUpLogInController @Inject constructor(
                   this.lastName = it
                 }
 
-
-
                 doc?.getString("imageUrl")?.let {
                   this.imageUrl = it
                 }
@@ -78,23 +76,16 @@ class SignUpLogInController @Inject constructor(
 
               profileController.setLocalUserProfile(profile = profile) {
                 if (it is com.example.utility.Result.Success) {
-                  Log.e("ash", "Successs====")
                   callback(com.example.utility.Result.Success("Successful"))
                 }
               }
-
-
             }
-
           } else {
             // If sign in fails, display a message to the user.
-            Log.w(LOG_KEY, "signInWithEmail:failure", task.exception)
             callback(com.example.utility.Result.Failure(task.exception?.message.toString()))
           }
         }
         .addOnFailureListener {
-          Log.e(LOG_KEY, "signInWithEmail:failure" + it.toString())
-
         }
     }
   }
@@ -108,8 +99,6 @@ class SignUpLogInController @Inject constructor(
       auth.signOut()
       if (auth.currentUser != null)
         return@launch
-
-      Log.e(LOG_KEY, email)
       auth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener(activity) { task ->
           if (task.isSuccessful) {
@@ -136,8 +125,6 @@ class SignUpLogInController @Inject constructor(
                       this.rating = 0F
                       this.privacy = privacy
                     }.build()
-
-                    Log.e(LOG_KEY, profile.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                       profileController.setLocalUserProfile(profile = profile) {}
                     }

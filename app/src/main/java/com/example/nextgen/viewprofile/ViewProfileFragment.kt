@@ -72,14 +72,11 @@ class ViewProfileFragment : BaseFragment() {
       arguments?.getProto(VIEWPROFILEFRAGMENT_INTENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
     binding = FragmentViewProfileBinding.inflate(inflater, container, false)
 
-    Log.e("pokemon", viewProfile.firstName + "^^^^^^^^^^^^^^")
-
     viewProfileViewModel =
       ViewProfileViewModel(userId!!, viewProfile, profileController, chatController)
     binding.ratingBar.setOnTouchListener { view, motionEvent ->
       when (motionEvent.action) {
         MotionEvent.ACTION_UP -> {
-          Log.e(LOG_KEY, "rate user " + binding.ratingBar.rating)
           viewProfileViewModel.updateRating(
             binding.ratingBar.rating
           )
@@ -120,10 +117,8 @@ class ViewProfileFragment : BaseFragment() {
     val alertDialog = builder.create()
     dialogbinding.btnSave.setOnClickListener {
       if (viewProfileViewModel.chatId.isNullOrBlank()) {
-        Log.e(LOG_KEY, "is null")
         chatController.initiateChat(userId!!, viewProfile.userId) {
           if (it is com.example.utility.Result.Success) {
-            Log.e(LOG_KEY, "succsss nitiate")
             sendMesssage(viewProfile, it.data)
             alertDialog.dismiss()
           } else {
@@ -146,8 +141,6 @@ class ViewProfileFragment : BaseFragment() {
     CoroutineScope(Dispatchers.IO).launch {
       chatController.sendMessage(chatId, userId!!, viewProfile.userId, "Hi!") {
         if (it is com.example.utility.Result.Success) {
-          Log.e(LOG_KEY, "succsss send message")
-
           routeToMessageScreen(viewProfile, chatId)
         } else {
           Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT).show()

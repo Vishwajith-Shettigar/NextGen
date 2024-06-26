@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.registration.SignUpLogInController
@@ -61,6 +62,7 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
     }
 
     binding.signupbtn.setOnClickListener {
+      binding.progressBar.visibility = View.VISIBLE
       signupViewModel.onClickSignUp(
         activity,
         binding.username.text.toString(),
@@ -71,10 +73,12 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
     signupViewModel.registrationResult.observe(viewLifecycleOwner) {
       when (it) {
         is com.example.utility.Result.Success<*> -> {
+          binding.progressBar.visibility = View.GONE
           (activity as RouteToHomeActivity).routeToHome()
         }
         is com.example.utility.Result.Failure -> {
-          Log.e(LOG_KEY,it.message)
+          binding.progressBar.visibility = View.GONE
+          Toast.makeText(activity, "Please enter correct details.", Toast.LENGTH_LONG).show()
         }
         else -> Unit
       }
@@ -91,7 +95,6 @@ class SignupFragment : BaseFragment(), RouteToSignupSigninListener {
   }
 
   override fun routeToSignupOrSignin() {
-    Log.e(LOG_KEY, "Sign up Fragment called")
     (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(
       SignInFragment.newInstance(),
       SignInFragment.tag

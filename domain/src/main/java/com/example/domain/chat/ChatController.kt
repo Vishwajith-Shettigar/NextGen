@@ -86,10 +86,8 @@ class ChatController @Inject constructor(
 
       if (userDocument.exists()) {
         val chats = userDocument.get("chats") as? Map<*, *>
-        Log.e(LOG_KEY,chats.toString())
         if (chats != null && user2ID in chats) {
           val chat = chats[user2ID] as Map<*, *>
-          Log.e(LOG_KEY,chats[user2ID].toString())
           return chat.get("chatId").toString()
         }
       } else {
@@ -106,7 +104,6 @@ class ChatController @Inject constructor(
     senderId: String,
     receiverId: String,
   ) {
-    Log.e(LOG_KEY, senderId + "  " + receiverId)
     CoroutineScope(Dispatchers.IO).launch {
       val UnreadMessageField = "chats.$senderId.unreadMessage"
       val seenChatField = "chats.$senderId.lastMessage.seen"
@@ -128,7 +125,6 @@ class ChatController @Inject constructor(
     text: String,
     curTime: Long,
   ) {
-    Log.e(LOG_KEY, "saveLast")
     try {
       // Creating the paths for the nested fields
       val senderChatField = "chats.$receiverId.lastMessage"
@@ -165,10 +161,7 @@ class ChatController @Inject constructor(
         )
         .await()
 
-
-      Log.e(LOG_KEY, "Last message saved successfully")
     } catch (e: Exception) {
-      Log.e(LOG_KEY, "Failed to save last message: ${e.message}")
     }
   }
 

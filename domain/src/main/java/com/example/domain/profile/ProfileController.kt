@@ -95,7 +95,6 @@ class ProfileController @Inject constructor(
   fun getUserStatus(userId: String, callback: (com.example.utility.Result<String>) -> Unit) {
     try {
       CoroutineScope(Dispatchers.IO).launch {
-        Log.e(LOG_KEY, userId)
         val document = firestore.collection(USERS_COLLECTION).document(userId)
         document.addSnapshotListener { snapShot, e ->
           if (snapShot != null) {
@@ -247,12 +246,10 @@ class ProfileController @Inject constructor(
   fun updateUserRating(ratingUserId: String, ratedUserId: String, rating: Float) {
     val ratingUserDoc = firestore.collection(USERS_COLLECTION).document(ratingUserId)
     ratingUserDoc.update("ratings.$ratedUserId.youRated", rating).addOnSuccessListener {
-      Log.e(LOG_KEY, "successful")
     }
 
     val ratedUserDoc = firestore.collection(USERS_COLLECTION).document(ratedUserId)
     ratedUserDoc.update("ratings.$ratingUserId.rating", rating).addOnSuccessListener {
-      Log.e(LOG_KEY, "successful")
     }
   }
 

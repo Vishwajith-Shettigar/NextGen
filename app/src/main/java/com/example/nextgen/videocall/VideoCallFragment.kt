@@ -141,7 +141,6 @@ class VideoCallFragment : BaseFragment() {
         override fun onAddStream(p0: MediaStream?) {
           super.onAddStream(p0)
           p0?.videoTracks?.get(0)?.addSink(binding?.remoteView)
-          Log.e("#", "onAddStream: $p0")
         }
       })
 
@@ -265,7 +264,6 @@ class VideoCallFragment : BaseFragment() {
               )
             )
           } catch (e: Exception) {
-            Log.e("vish", e.toString())
           }
         } else {
           Toast.makeText(requireContext(), "you should accept all permissions", Toast.LENGTH_LONG)

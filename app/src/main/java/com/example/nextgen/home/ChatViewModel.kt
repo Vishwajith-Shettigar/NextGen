@@ -11,11 +11,6 @@ class ChatViewModel(
   private val chat: Chat,
   private val chatSummaryClickListener: ChatSummaryClickListener,
 ) : HomeItemViewModel() {
-
-  init {
-    Log.e(LOG_KEY, chat.toString())
-  }
-
   val username by lazy {
     chat.userName
   }

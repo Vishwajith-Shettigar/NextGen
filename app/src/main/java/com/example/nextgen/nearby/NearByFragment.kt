@@ -112,8 +112,8 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
       }
     }
 
-      val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-      mapFragment?.getMapAsync(this@NearByFragment)
+    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+    mapFragment?.getMapAsync(this@NearByFragment)
 
     val locationRequest = LocationRequest.create().apply {
       interval = 1000
@@ -127,10 +127,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         val currentLocation = locationResult.lastLocation
         currentLocation?.let {
           val latLng = LatLng(it.latitude, it.longitude)
-          Log.e(LOG_KEY, latLng.toString() + "update location")
-
           moveUser(latLng)
-
           var distance = 0.0
           if (locationUser != null) {
             val lastGeoLocation = GeoLocation(locationUser!!.latitude, locationUser!!.longitude)
@@ -139,9 +136,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
             distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
           }
           if (MAX_UPDATE <= distance && it.accuracy <= MAX_UPDATE) {
-            Log.e(LOG_KEY, locationUser.toString() + "  old")
-
-            Log.e(LOG_KEY, latLng.toString() + "  new")
             moveCamera(latLng)
             Toast.makeText(activity, "New radius", Toast.LENGTH_SHORT).show()
             locationUser = latLng
@@ -153,23 +147,23 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
   }
 
-   fun checkLocationPermission() {
+  fun checkLocationPermission() {
 
-      if (ActivityCompat.checkSelfPermission(
-          requireContext(),
-          Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED &&
-        ActivityCompat.checkSelfPermission(
-          requireContext(),
-          Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-      ) {
-        ActivityCompat.requestPermissions(
-          requireActivity(),
-          arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-          1
-        )
-      }
+    if (ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      ActivityCompat.requestPermissions(
+        requireActivity(),
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1
+      )
+    }
   }
 
   companion object {
@@ -178,7 +172,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
     const val TAG = "NearByFragment"
     fun newInstance(profile: Profile): NearByFragment {
-      Log.e(LOG_KEY, "++++++++++++++ " + profile)
       val nearByFragment = NearByFragment().apply {
         arguments = Bundle().apply {
           this.putProto(NEARBYFRAGMENT_ARGUMENTS_KEY, profile)
@@ -189,38 +182,30 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   }
 
 
-
   override fun onMapReady(googleMap: GoogleMap) {
 
-    lifecycleScope.launch {
-      try {
 
-        mMap = googleMap
+    try {
+      mMap = googleMap
 
-        checkLocationPermission()
+      checkLocationPermission()
 
-        mMap.isMyLocationEnabled = true
-        if (locationUser != null)
-          moveCamera(locationUser!!)
+      mMap.isMyLocationEnabled = true
+      if (locationUser != null)
+        moveCamera(locationUser!!)
 
-        withContext(Dispatchers.Main) {
-          mMap.setOnMarkerClickListener { marker ->
-            val profile = marker.tag as Profile
-            Log.e(LOG_KEY, profile.toString())
-            showNearByProfileDialog(profile)
-            true
-          }
-        }
-      } catch (e: Exception) {
-        Log.e("pokemon", e.toString())
-        withContext(Dispatchers.Main) {
-          Toast.makeText(
-            activity,
-            "Please give access to location to use this feature",
-            Toast.LENGTH_LONG
-          ).show()
-        }
+      mMap.setOnMarkerClickListener { marker ->
+        val profile = marker.tag as Profile
+        showNearByProfileDialog(profile)
+        true
       }
+
+    } catch (e: Exception) {
+        Toast.makeText(
+          activity,
+          "Please give access to location to use this feature",
+          Toast.LENGTH_LONG
+        ).show()
     }
   }
 
@@ -267,17 +252,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     return (16 - Math.log(scale) / Math.log(2.0)).toFloat()
   }
 
-  @Deprecated("Deprecated in Java")
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray,
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      onMapReady(mMap)
-    }
-  }
 
   private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor? {
     val context = context ?: return null
@@ -325,7 +299,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           userMarkers[profile.userId] = newMarker
         }
       }
-      Log.e(LOG_KEY, "${userMarkers.size} markers on map")
     }
   }
 
@@ -335,7 +308,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
     return withContext(Dispatchers.IO) {
       try {
-        Log.e(LOG_KEY, url)
         // Asynchronously load bitmap from URL using Picasso
         val request: RequestCreator = Picasso.get().load(url)
         request.get()
@@ -410,12 +382,10 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         }
 
         layoutbinding.parentLayout.setOnClickListener {
-          Log.e(LOG_KEY, activity.toString())
           (activity as RouteToViewProfile).routeToViewProfile(viewProfile)
         }
 
         layoutbinding.chatIcon.setOnClickListener {
-          Log.e(LOG_KEY, isChatExists.toString() + " chat Id")
           if (isChatExists.isNullOrBlank()) {
             layoutbinding.messageParent.visibility = View.VISIBLE
           } else {
@@ -435,10 +405,8 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
         layoutbinding.buttonYes.setOnClickListener {
           if (isChatExists.isNullOrBlank()) {
-            Log.e(LOG_KEY, "is null")
             chatController.initiateChat(profile.userId, viewProfile.userId) {
               if (it is com.example.utility.Result.Success) {
-                Log.e(LOG_KEY, "succsss nitiate")
                 sendMesssage(viewProfile, it.data)
               } else {
                 Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT)
@@ -457,8 +425,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     CoroutineScope(Dispatchers.IO).launch {
       chatController.sendMessage(chatId, profile.userId, viewProfile.userId, "Hi!") {
         if (it is com.example.utility.Result.Success) {
-          Log.e(LOG_KEY, "succsss send message")
-
           val chat = Chat.newBuilder().apply {
             this.chatId = chatId
             this.userId = viewProfile.userId

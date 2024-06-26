@@ -25,9 +25,7 @@ class NearByViewModel(
   init {
 
     location.observe(lifecycleOwner) {
-      Log.e(LOG_KEY, it.toString() + "###")
       nearByController.listenToNearbyUsers(userId,GeoLocation(it.latitude, it.longitude), NEARBY_DISTANCE.toDouble()) {profile,outOfBound->
-        Log.e(LOG_KEY,  "###"+ profile.userId)
         updateMapListener.updateMap(profile,outOfBound)
       }
     }

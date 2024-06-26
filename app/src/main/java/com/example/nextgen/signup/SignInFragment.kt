@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
 import com.example.domain.registration.SignUpLogInController
@@ -21,8 +22,10 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
 
   @Inject
   lateinit var fragment: Fragment
+
   @Inject
   lateinit var activity: AppCompatActivity
+
   @Inject
   lateinit var signUpLogInController: SignUpLogInController
 
@@ -38,13 +41,15 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
     // Inflate the layout for this fragment
     binding = FragmentSignInBinding.inflate(inflater, container, false)
 
-    val signInViewModel = SignInViewModel(fragment as RouteToSignupSigninListener,signUpLogInController)
+    val signInViewModel =
+      SignInViewModel(fragment as RouteToSignupSigninListener, signUpLogInController)
 
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = signInViewModel
     }
     binding.signinbtn.setOnClickListener {
+      binding.progressBar.visibility = View.VISIBLE
       signInViewModel.onClickSignIn(
         activity,
         binding.email.text.toString(),
@@ -52,13 +57,15 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
       )
     }
 
-    signInViewModel.loginResult.observe(viewLifecycleOwner){
+    signInViewModel.loginResult.observe(viewLifecycleOwner) {
       when (it) {
         is com.example.utility.Result.Success<*> -> {
+          binding.progressBar.visibility = View.GONE
           (activity as? RouteToHomeActivity)?.routeToHome()
         }
         is com.example.utility.Result.Failure -> {
-          Log.e(LOG_KEY,it.message)
+          binding.progressBar.visibility = View.GONE
+          Toast.makeText(activity, "Please enter correct details.", Toast.LENGTH_LONG).show()
         }
         else -> Unit
       }
@@ -75,7 +82,6 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
   }
 
   override fun routeToSignupOrSignin() {
-    Log.e(LOG_KEY, "sign in Fragment called")
     (activity as RouteToSignupSigninActivityListener).routeToSignupSigninActivity(
       SignupFragment.newInstance(),
       SignupFragment.tag
