@@ -158,6 +158,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           true
         }
         R.id.nearby -> {
+
           loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
           true
         }

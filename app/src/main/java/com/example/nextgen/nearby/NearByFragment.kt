@@ -18,6 +18,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.CIRCLE_RADIUS
 import com.example.domain.constants.LOG_KEY
@@ -69,7 +70,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   private lateinit var nearByViewModel: NearByViewModel
   private lateinit var binding: FragmentNearByBinding
 
-  private lateinit var locationUser: LatLng
+  private var locationUser: LatLng? = null
 
   private val userMarkers: MutableMap<String, Marker> = mutableMapOf()
   private var usermarker: Marker? = null
@@ -90,18 +91,14 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View? {
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
     binding = FragmentNearByBinding.inflate(inflater, container, false)
     profile = arguments?.getProto(NEARBYFRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())
       ?: Profile.getDefaultInstance()
 
-    nearByViewModel = NearByViewModel(profile.userId,viewLifecycleOwner, nearByController, this)
+    nearByViewModel = NearByViewModel(profile.userId, viewLifecycleOwner, nearByController, this)
 
-    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-    mapFragment?.getMapAsync(this)
-
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-    checkLocationPermission()
 
     return binding.root
   }
@@ -114,6 +111,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         nearByViewModel.location.value = locationUser
       }
     }
+
+      val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+      mapFragment?.getMapAsync(this@NearByFragment)
 
     val locationRequest = LocationRequest.create().apply {
       interval = 1000
@@ -130,9 +130,14 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           Log.e(LOG_KEY, latLng.toString() + "update location")
 
           moveUser(latLng)
-          val lastGeoLocation = GeoLocation(locationUser.latitude, locationUser.longitude)
-          val newGeoLocation = GeoLocation(it.latitude, it.longitude)
-          val distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
+
+          var distance = 0.0
+          if (locationUser != null) {
+            val lastGeoLocation = GeoLocation(locationUser!!.latitude, locationUser!!.longitude)
+
+            val newGeoLocation = GeoLocation(it.latitude, it.longitude)
+            distance = GeoFireUtils.getDistanceBetween(newGeoLocation, lastGeoLocation)
+          }
           if (MAX_UPDATE <= distance && it.accuracy <= MAX_UPDATE) {
             Log.e(LOG_KEY, locationUser.toString() + "  old")
 
@@ -148,23 +153,23 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
   }
 
-  fun checkLocationPermission() {
+   fun checkLocationPermission() {
 
-    if (ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(
-        requireContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
-      ActivityCompat.requestPermissions(
-        requireActivity(),
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1
-      )
-    }
+      if (ActivityCompat.checkSelfPermission(
+          requireContext(),
+          Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(
+          requireContext(),
+          Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        ActivityCompat.requestPermissions(
+          requireActivity(),
+          arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+          1
+        )
+      }
   }
 
   companion object {
@@ -173,38 +178,53 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
     const val TAG = "NearByFragment"
     fun newInstance(profile: Profile): NearByFragment {
-      Log.e(LOG_KEY,"++++++++++++++ " + profile)
+      Log.e(LOG_KEY, "++++++++++++++ " + profile)
       val nearByFragment = NearByFragment().apply {
-        arguments= Bundle().apply {
-        this.putProto(NEARBYFRAGMENT_ARGUMENTS_KEY, profile)
+        arguments = Bundle().apply {
+          this.putProto(NEARBYFRAGMENT_ARGUMENTS_KEY, profile)
+        }
       }
-      }
-
       return nearByFragment
     }
   }
 
+
+
   override fun onMapReady(googleMap: GoogleMap) {
-    try {
-      mMap = googleMap
-      checkLocationPermission()
-      mMap.isMyLocationEnabled = true
-      moveCamera(locationUser)
-      mMap.setOnMarkerClickListener { marker ->
-        val profile = marker.tag as Profile
-        Log.e(LOG_KEY, profile.toString())
-        showNearByProfileDialog(profile)
-        true
+
+    lifecycleScope.launch {
+      try {
+
+        mMap = googleMap
+
+        checkLocationPermission()
+
+        mMap.isMyLocationEnabled = true
+        if (locationUser != null)
+          moveCamera(locationUser!!)
+
+        withContext(Dispatchers.Main) {
+          mMap.setOnMarkerClickListener { marker ->
+            val profile = marker.tag as Profile
+            Log.e(LOG_KEY, profile.toString())
+            showNearByProfileDialog(profile)
+            true
+          }
+        }
+      } catch (e: Exception) {
+        Log.e("pokemon", e.toString())
+        withContext(Dispatchers.Main) {
+          Toast.makeText(
+            activity,
+            "Please give access to location to use this feature",
+            Toast.LENGTH_LONG
+          ).show()
+        }
       }
-    }catch (e:Exception)
-    {
-      Toast.makeText(activity,"Please give access to location to use this feature",Toast.LENGTH_LONG).show()
     }
   }
 
   private fun moveUser(location: LatLng) {
-
-
     CoroutineScope(Dispatchers.IO).launch {
       // Load profile picture asynchronously using loadBitmapFromUrl
       val bitmap = loadBitmapFromUrl(profile.imageUrl)
