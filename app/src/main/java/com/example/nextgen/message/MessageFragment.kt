@@ -184,10 +184,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
           Manifest.permission.CAMERA
         ).request { allGranted, _, _ ->
           if (allGranted) {
-
             try {
-
-
               val targetUID = chat.userId
               webSocketManager?.sendMessageToSocket(
                 MessageModel(
@@ -195,7 +192,6 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
                 )
               )
             } catch (e: Exception) {
-              Log.e("vish", e.toString())
             }
           } else {
             Toast.makeText(requireContext(), "you should accept all permissions", Toast.LENGTH_LONG)

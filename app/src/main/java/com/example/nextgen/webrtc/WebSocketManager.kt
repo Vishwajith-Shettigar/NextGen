@@ -35,32 +35,24 @@ class WebSocketManager @Inject constructor() {
             TYPE.STORE_USER,uid,null,null
           )
         )
-        Log.d("#","HANDSHAKEDATA:- ${handshakedata.toString()}")
       }
 
       override fun onMessage(message: String?) {
         try {
-//          messageInterface.onNewMessage(gson.fromJson(message,MessageModel::class.java))
           _message.postValue(gson.fromJson(message,MessageModel::class.java))
-
-          Log.d("#","ONNEWMESSAGE:- ${message.toString()}")
         }catch (e:Exception){
           e.printStackTrace()
-          Log.d("#","EXCEPTION:- ${e.message.toString()}")
         }
       }
 
       override fun onClose(code: Int, reason: String?, remote: Boolean) {
-        Log.d("#", "onClose: $reason")
       }
 
       override fun onError(ex: Exception?) {
-        Log.d("#", "onError: $ex")
       }
 
     }
     webSocket?.connect()
-    Log.d("#","Connection:- ${webSocket?.socket?.isConnected.toString()}")
   }
 
   /*
@@ -69,13 +61,9 @@ class WebSocketManager @Inject constructor() {
   */
 
   fun sendMessageToSocket(message: MessageModel) {
-    Log.e("vish","cree ofee")
     try {
-      Log.e("vish", "sendMessageToSocket: $message")
       webSocket?.send(Gson().toJson(message))
-      Log.e("vish", "sendMessageToSocket JSON FORMAT: ${Gson().toJson(message)}")
     } catch (e: Exception) {
-      Log.e("vish", "sendMessageToSocket: $e")
     }
   }
 }

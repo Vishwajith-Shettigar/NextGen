@@ -198,7 +198,6 @@ class RTCClient(
       }, mediaConstraints)
 
     } catch (e: Exception) {
-      Log.e(LOG_KEY, e.toString())
     }
   }
 
@@ -264,8 +263,6 @@ class RTCClient(
         }
       }, constraints)
     } catch (e: Exception) {
-      Log.e(LOG_KEY, e.toString())
-
     }
   }
 

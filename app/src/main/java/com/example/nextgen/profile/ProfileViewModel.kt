@@ -24,11 +24,6 @@ class ProfileViewModel(
   private val _rating = MutableLiveData<Float>()
   val rating: LiveData<Float> get() = _rating
 
-  override fun onCleared() {
-    super.onCleared()
-    Log.e(LOG_KEY, "ProfileViewModel cleared")
-  }
-
   init {
     loadProfile()
     viewModelScope.launch {
@@ -40,7 +35,6 @@ class ProfileViewModel(
     viewModelScope.launch {
       try {
         val profile = profileController.getLocalUserProfile(userId)
-        Log.e(LOG_KEY, profile.toString())
         _profile.postValue(profile)
       } catch (e: java.lang.Exception) {
       }

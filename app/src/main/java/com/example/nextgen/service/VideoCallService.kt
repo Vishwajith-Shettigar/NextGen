@@ -51,11 +51,7 @@ class VideoCallService:android.app.Service() {
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onCreate() {
     super.onCreate()
-    Log.e("ser","service------------------------------->")
-
     (applicationContext as MyApplication).appComponent.inject(this)
-
-    Log.e("ser","service------------------------------->")
 
     webSocketManager.message.observeForever { messageModel ->
       if (messageModel?.type == null )
@@ -63,50 +59,7 @@ class VideoCallService:android.app.Service() {
       else {
         when (messageModel.type) {
           TYPE.OFFER_RECIEVED -> {
-
-            Log.e("ser","offrer recieved")
             createVideoCallNotification(messageModel.imageUrl,messageModel.userName!!)
-
-
-//
-//            binding.acceptBtn.setOnClickListener {
-//              PermissionX.init(this)
-//                .permissions(
-//                  Manifest.permission.RECORD_AUDIO,
-//                  Manifest.permission.CAMERA
-//                ).request { allGranted, _, _ ->
-//                  if (allGranted) {
-//
-//                    binding.callNotificationLayout.visibility = View.GONE
-//                    startActivity(
-//                      VideoCallActivity.createVideoCallActivity(
-//                        this,
-//                        messageModel.name!!,
-//                        messageModel.data.toString()!!,
-//                        UserRole.CALLEE,
-//                       userId,
-//                        profile.imageUrl,
-//                        profile.userName
-//                      )
-//                    )
-//                  }
-//                  else
-//                  {
-//                    Toast.makeText(this, "you should accept all permissions", Toast.LENGTH_LONG)
-//                      .show()
-//                  }
-//                }
-//
-//            }
-
-//            binding.rejectBtn.setOnClickListener {
-//              binding.callNotificationLayout.visibility = View.GONE
-//              // Todo :changes name into targetuserId
-//              val message = MessageModel(TYPE.CALL_ENDED, profile.userId, messageModel.name, null)
-//              webSocketManager.sendMessageToSocket(message)
-//
-//            }
-
 
           }
           TYPE.CALL_ENDED -> {

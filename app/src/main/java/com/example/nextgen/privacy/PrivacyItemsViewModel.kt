@@ -19,8 +19,6 @@ class PrivacyItemsViewModel(
   var status = ObservableField<Boolean>(privacyItem.itemStatus)
   init {
     status.set(privacyItem.itemStatus)
-    Log.e(LOG_KEY, "Shinchan -> "+ privacyItem.itemStatus)
-    Log.e(LOG_KEY, "here  " + status.get())
   }
 
   val itemName by lazy {

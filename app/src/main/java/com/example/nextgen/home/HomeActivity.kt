@@ -49,6 +49,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val DEFAULT_LOCATION_REQUEST_CODE = 1
+const val NEARBY_FRAGMENT_LOCATION_REQUEST_CODE = 2
+
 class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfileActivity,
   RouteToPrivacyActivity, RouteToViewProfile {
   @Inject
@@ -73,7 +76,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-    checkLocationPermission()
+    checkLocationPermission(DEFAULT_LOCATION_REQUEST_CODE)
     CoroutineScope(Dispatchers.IO).launch {
       profile = profileController.getLocalUserProfile(profileController.getUserId()!!)
         ?: Profile.getDefaultInstance()
@@ -142,12 +145,11 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
     // Todo: Build call notification
     // Start foreground service for video call
-//    if (userId != null) {
-//      Log.e("ser","starting intent service")
-//      val intent = Intent(this, VideoCallService::class.java)
-//      intent.putExtra("USER_ID", userId)
-//      ContextCompat.startForegroundService(this, intent)
-//    }
+    //   if (userId != null) {
+    //        val intent = Intent(this, VideoCallService::class.java)
+    //        intent.putExtra("USER_ID", userId)
+    //        ContextCompat.startForegroundService(this, intent)
+    //    }
 
     loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
 
@@ -158,12 +160,15 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           true
         }
         R.id.nearby -> {
-          loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
+          if (isLocationPermissionGranted()) {
+            loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
+          } else {
+            checkLocationPermission(NEARBY_FRAGMENT_LOCATION_REQUEST_CODE)
+          }
           true
         }
         R.id.notification -> {
-//          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
-          startActivity(ViewProfileActivity.createViewProfileActivity(this, profile))
+          loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
           true
         }
         R.id.profile -> {
@@ -174,6 +179,49 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
       }
     }
 
+  }
+
+  private fun isLocationPermissionGranted(): Boolean {
+    return ActivityCompat.checkSelfPermission(
+      this,
+      Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) == PackageManager.PERMISSION_GRANTED
+  }
+
+  @Deprecated("Deprecated in Java")
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray,
+  ) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    when (requestCode) {
+      DEFAULT_LOCATION_REQUEST_CODE -> {
+        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        } else {
+          Toast.makeText(
+            this,
+            "Please grant permission for a better experience.",
+            Toast.LENGTH_SHORT
+          ).show()
+        }
+      }
+      NEARBY_FRAGMENT_LOCATION_REQUEST_CODE -> {
+        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+          loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
+        } else {
+          Toast.makeText(
+            this,
+            "Please grant permission to use nearby services.",
+            Toast.LENGTH_SHORT
+          ).show()
+        }
+      }
+    }
   }
 
   private fun loadFragment(fragment: Fragment, tag: String) {
@@ -223,7 +271,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
     startActivity(ViewProfileActivity.createViewProfileActivity(this, profile))
   }
 
-  private fun checkLocationPermission() {
+  private fun checkLocationPermission(requestCode: Int) {
     if (ActivityCompat.checkSelfPermission(
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -236,7 +284,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
       ActivityCompat.requestPermissions(
         this,
         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1
+        requestCode
       )
     }
   }

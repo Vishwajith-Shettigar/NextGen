@@ -4,6 +4,7 @@ import com.example.nextgen.editprofile.EditProfileFragment
 import com.example.nextgen.home.HomeFragment
 import com.example.nextgen.message.MessageFragment
 import com.example.nextgen.nearby.NearByFragment
+import com.example.nextgen.notification.NotificationFragment
 import com.example.nextgen.privacy.PrivacyFragment
 import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.signup.SignInFragment
@@ -25,6 +26,10 @@ interface FragmentComponent {
   fun inject(fragment: PrivacyFragment)
   fun inject(fragment: ViewProfileFragment)
   fun inject(fragment: VideoCallFragment)
+  fun inject(fragment: NotificationFragment)
+
+
+
 
 
 }

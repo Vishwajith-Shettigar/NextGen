@@ -61,7 +61,6 @@ class EditProfileFragment : BaseFragment() {
     binding = FragmentEditProfileBinding.inflate(layoutInflater, container, false)
     profile =
       arguments?.getProto(EDIT_PROFILE_FRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
-    Log.e(LOG_KEY, profile.toString())
     editProfileViewModel = EditProfileViewModel(profile, profileController)
     binding.viewModel = editProfileViewModel
     binding.lifecycleOwner = this

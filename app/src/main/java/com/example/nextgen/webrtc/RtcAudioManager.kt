@@ -102,10 +102,8 @@ class RtcAudioManager(context: android.content.Context) {
   }
 
   fun start(audioManagerEvents: AudioManagerEvents?) {
-    Log.d(TAG, "start")
     ThreadUtils.checkIsOnMainThread()
     if (amState == AudioManagerState.RUNNING) {
-      Log.e(TAG, "AudioManager is already active")
       return
     }
 
@@ -150,7 +148,6 @@ class RtcAudioManager(context: android.content.Context) {
 
           else -> typeOfChange = "AUDIOFOCUS_INVALID"
         }
-        Log.d(TAG, "onAudioFocusChange: $typeOfChange")
       }
 
     // Request audio playout focus (without ducking) and install listener for changes in focus.
@@ -159,9 +156,7 @@ class RtcAudioManager(context: android.content.Context) {
       AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
     )
     if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-      Log.d(TAG, "Audio focus request granted for VOICE_CALL streams")
     } else {
-      Log.e(TAG, "Audio focus request failed")
     }
 
     // Start by setting MODE_IN_COMMUNICATION as default audio mode. It is
@@ -190,13 +185,8 @@ class RtcAudioManager(context: android.content.Context) {
 
   @SuppressLint("WrongConstant")
   fun stop() {
-    Log.d(TAG, "stop")
     ThreadUtils.checkIsOnMainThread()
     if (amState != AudioManagerState.RUNNING) {
-      Log.e(
-        TAG,
-        "Trying to stop AudioManager in incorrect state: $amState"
-      )
       return
     }
     amState = AudioManagerState.UNINITIALIZED
@@ -210,10 +200,7 @@ class RtcAudioManager(context: android.content.Context) {
     // Abandon audio focus. Gives the previous focus owner, if any, focus.
     audioManager.abandonAudioFocus(audioFocusChangeListener)
     audioFocusChangeListener = null
-    Log.d(TAG, "Abandoned audio focus for VOICE_CALL streams")
-
     audioManagerEvents = null
-    Log.d(TAG, "AudioManager stopped")
   }
 
   /** Changes selection of the currently active audio device.  */
@@ -224,7 +211,7 @@ class RtcAudioManager(context: android.content.Context) {
         AudioDevice.SPEAKER_PHONE -> setSpeakerphoneOn(true)
         AudioDevice.EARPIECE -> setSpeakerphoneOn(false)
         AudioDevice.WIRED_HEADSET -> setSpeakerphoneOn(false)
-        else -> Log.e(TAG, "Invalid audio device selection")
+        else -> {}
       }
     }
     selectedAudioDevice = device
@@ -242,9 +229,8 @@ class RtcAudioManager(context: android.content.Context) {
       } else {
         defaultAudioDevice = AudioDevice.SPEAKER_PHONE
       }
-      else -> Log.e(TAG, "Invalid default audio device selection")
+      else -> {}
     }
-    Log.d(TAG, "setDefaultAudioDevice(device=$defaultAudioDevice)")
     updateAudioDeviceState()
   }
 
@@ -252,10 +238,6 @@ class RtcAudioManager(context: android.content.Context) {
   fun selectAudioDevice(device: AudioDevice) {
     ThreadUtils.checkIsOnMainThread()
     if (!audioDevices.contains(device)) {
-      Log.e(
-        TAG,
-        "Can not select $device from available $audioDevices"
-      )
     }
     userSelectedAudioDevice = device
     updateAudioDeviceState()

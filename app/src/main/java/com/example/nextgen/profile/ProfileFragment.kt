@@ -77,7 +77,6 @@ class ProfileFragment : BaseFragment() {
     binding.lifecycleOwner = this
 
     profileViewModel.profile.observe(viewLifecycleOwner) {
-      Log.e(LOG_KEY, it?.toString()!!)
       binding.apply {
         try {
           this.username.text = it.userName
@@ -86,7 +85,6 @@ class ProfileFragment : BaseFragment() {
             Picasso.get().load(it.imageUrl)
               .error(R.drawable.profile_placeholder).into(this.profilePic)
         } catch (e: java.lang.Exception) {
-          Log.e(LOG_KEY, e.toString())
         }
       }
     }

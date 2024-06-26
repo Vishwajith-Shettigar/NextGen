@@ -22,8 +22,6 @@ class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener
       startActivity(HomeActivity.createHomeActivity(this))
       finish()
     }
-    Log.e(LOG_KEY,firebaseAuth.currentUser.toString())
-
     loadFragment(SignupFragment.newInstance(), SignupFragment.tag)
   }
 
