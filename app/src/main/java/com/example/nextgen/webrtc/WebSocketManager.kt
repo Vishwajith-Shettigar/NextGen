@@ -3,6 +3,7 @@ package com.example.nextgen.webrtc
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.domain.constants.server_url
 import com.example.model.Profile
 import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
@@ -23,7 +24,7 @@ class WebSocketManager @Inject constructor() {
    var UID:String?=null
   private val gson = Gson()
 
-  val serverUri = URI("ws://192.168.43.214:2000")
+  val serverUri = URI(server_url)
 
   fun initSocket(uid:String){
     UID = uid
