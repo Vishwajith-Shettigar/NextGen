@@ -188,7 +188,7 @@ class NearByController @Inject constructor(
      if (oldLocation != null) {
        val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
        val newGeoPoint = GeoLocation(location.latitude, location.longitude)
-       if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 3)
+       if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 10)
          return@launch
      }
 
