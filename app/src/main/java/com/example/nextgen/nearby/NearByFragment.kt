@@ -194,8 +194,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         moveCamera(locationUser!!)
 
       mMap.setOnMarkerClickListener { marker ->
-        val profile = marker.tag as Profile
-        showNearByProfileDialog(profile)
+        val userProfile = marker.tag as Profile
+        if (userProfile.userId!=profile.userId)
+        showNearByProfileDialog(userProfile)
         true
       }
 
