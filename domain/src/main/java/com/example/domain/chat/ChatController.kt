@@ -212,7 +212,7 @@ class ChatController @Inject constructor(
 
       val chats: MutableList<Chat> = mutableListOf()
       val userDocumentRef = firestore.collection(USERS_COLLECTION).document(user1ID)
-
+      var previousChats: Map<*, *>? = null
       // Add a listener to listen for real-time updates
       userDocumentRef.addSnapshotListener { snapshot, e ->
         if (e != null) {
@@ -221,72 +221,83 @@ class ChatController @Inject constructor(
         }
 
         if (snapshot != null && snapshot.exists()) {
-          val usersList = snapshot.get("chats") as? Map<*, *>
-          if (usersList != null) {
-            CoroutineScope(Dispatchers.IO).launch {
-              val deferredChats = usersList.map { entry ->
-                async {
-                  val userId = entry.key as String
-                  val child = entry.value as Map<*, *>
+          // Extract only the chats field for comparison
+          val currentChats = snapshot.get("chats") as? Map<*, *>
 
-                  val chatId = child.get("chatId")
-                  var imageUrl: String? = null
-                  var username: String? = null
-                  val lastMessageInfo = child.get("lastMessage") as Map<*, *>
-                  val timeStamp: Long? = child.get("time") as Long?
+          // Compare with previous chats map.
+          // This comparison is required since we are storing
+          // location also in same document. Location gets updated
+          // frequently so this listens and does below computation, leading heavy processing.
+          if (currentChats != previousChats) {
+            previousChats = currentChats
 
-                  val unreadMessage = if (child.get("unreadMessage") == null)
-                    0
-                  else
-                    child.get("unreadMessage") as Long
+            val usersList = snapshot.get("chats") as? Map<*, *>
+            if (usersList != null) {
+              CoroutineScope(Dispatchers.IO).launch {
+                val deferredChats = usersList.map { entry ->
+                  async {
+                    val userId = entry.key as String
+                    val child = entry.value as Map<*, *>
 
-                  // Get user profile
-                  val userProfileResult = profileController.getUserProfile(userId)
-                  when (userProfileResult) {
-                    is com.example.utility.Result.Success -> {
-                      val doc = userProfileResult.data
-                      imageUrl = doc.getString("imageUrl")
-                      username = doc.getString("username")
+                    val chatId = child.get("chatId")
+                    var imageUrl: String? = null
+                    var username: String? = null
+                    val lastMessageInfo = child.get("lastMessage") as Map<*, *>
+                    val timeStamp: Long? = child.get("time") as Long?
+
+                    val unreadMessage = if (child.get("unreadMessage") == null)
+                      0
+                    else
+                      child.get("unreadMessage") as Long
+
+                    // Get user profile
+                    val userProfileResult = profileController.getUserProfile(userId)
+                    when (userProfileResult) {
+                      is com.example.utility.Result.Success -> {
+                        val doc = userProfileResult.data
+                        imageUrl = doc.getString("imageUrl")
+                        username = doc.getString("username")
+                      }
+                      is com.example.utility.Result.Failure -> {
+                        // Handle failure if needed
+                      }
                     }
-                    is com.example.utility.Result.Failure -> {
-                      // Handle failure if needed
-                    }
-                  }
 
 
-                  Chat.newBuilder().apply {
-                    this.chatId = chatId as String?
-                    this.userId = userId
-                    this.imageUrl = imageUrl ?: ""
-                    this.userName = username ?: ""
-                    this.lastMessage = LastMessageInfo.newBuilder().apply {
-                      this.text = if (lastMessageInfo.get("text") == null)
-                        ""
-                      else
-                        lastMessageInfo.get("text") as String
+                    Chat.newBuilder().apply {
+                      this.chatId = chatId as String?
+                      this.userId = userId
+                      this.imageUrl = imageUrl ?: ""
+                      this.userName = username ?: ""
+                      this.lastMessage = LastMessageInfo.newBuilder().apply {
+                        this.text = if (lastMessageInfo.get("text") == null)
+                          ""
+                        else
+                          lastMessageInfo.get("text") as String
 
-                      this.seen = if (lastMessageInfo.get("seen") == null)
-                        true
-                      else
-                        lastMessageInfo.get("seen") as Boolean
+                        this.seen = if (lastMessageInfo.get("seen") == null)
+                          true
+                        else
+                          lastMessageInfo.get("seen") as Boolean
+                      }.build()
+                      this.timestamp = timeStamp ?: 0
+                      this.unreadMessage = unreadMessage
                     }.build()
-                    this.timestamp = timeStamp ?: 0
-                    this.unreadMessage = unreadMessage
-                  }.build()
+                  }
+                }
+                val chatList = deferredChats.awaitAll()
+                chats.clear()
+                chats.addAll(chatList.sortedByDescending { it.timestamp })
+                withContext(Dispatchers.Main) {
+                  callback(com.example.utility.Result.Success(chats))
                 }
               }
-              val chatList = deferredChats.awaitAll()
-              chats.clear()
-              chats.addAll(chatList.sortedByDescending { it.timestamp })
-              withContext(Dispatchers.Main) {
-                callback(com.example.utility.Result.Success(chats))
-              }
+            } else {
+              callback(com.example.utility.Result.Failure("No chats found"))
             }
           } else {
-            callback(com.example.utility.Result.Failure("No chats found"))
+            callback(com.example.utility.Result.Failure("No document found"))
           }
-        } else {
-          callback(com.example.utility.Result.Failure("No document found"))
         }
       }
     } catch (e: java.lang.Exception) {
