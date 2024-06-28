@@ -41,4 +41,5 @@ Time to mingle, chat, and rate! Have fun exploring the world around you. ğŸŒğŸ
 - [ ] Enhance UX of video call feature.
 - [ ] Notification UI.
 - [ ] Improve UI/UX.
+- [ ] Fix crashing when user swtiches to light/dark mode.
 
