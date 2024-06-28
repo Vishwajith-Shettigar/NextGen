@@ -209,7 +209,6 @@ class ChatController @Inject constructor(
     callback: (com.example.utility.Result<MutableList<Chat>>) -> Unit,
   ) {
     try {
-
       val chats: MutableList<Chat> = mutableListOf()
       val userDocumentRef = firestore.collection(USERS_COLLECTION).document(user1ID)
       var previousChats: Map<*, *>? = null
