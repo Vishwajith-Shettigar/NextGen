@@ -76,8 +76,7 @@ class LocationService
     locationCallback = object : LocationCallback() {
       override fun onLocationResult(locationResult: LocationResult) {
         locationResult.lastLocation?.let {
-
-//          nearByController.updateLocation(userId, it, oldLocation)
+          nearByController.updateLocation(userId, it, oldLocation)
           oldLocation=it
         }
       }

@@ -137,7 +137,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           }
           if (MAX_UPDATE <= distance && it.accuracy <= MAX_UPDATE) {
             moveCamera(latLng)
-            Toast.makeText(activity, "New radius", Toast.LENGTH_SHORT).show()
             locationUser = latLng
             nearByViewModel.location.value = latLng
           }
