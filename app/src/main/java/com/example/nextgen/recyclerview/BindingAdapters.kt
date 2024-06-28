@@ -37,11 +37,13 @@ class BindingAdapters {
       }
     }
 
+    // Todo : Use Glide to load drawables in imageView
     @JvmStatic
     @BindingAdapter(value = ["rating"], requireAll = true)
     fun loadStars(view: ImageView, rating: LiveData<Float>) {
-      if (rating.value == 5F)
-        Picasso.get().load(R.drawable.full_star).error(R.drawable.half_star).into(view)
+      if (rating.value == 5.0F) {
+        Picasso.get().load(R.drawable.ic_full_star).error(R.drawable.ic_full_star).into(view)
+      }
       else {
         Picasso.get().load(R.drawable.half_star).error(R.drawable.half_star).into(view)
       }
@@ -59,7 +61,6 @@ class BindingAdapters {
         } else if (itemId == DISABLE_PROFILE_PICTURE) {
           Picasso.get().load(R.drawable.person_24).error(R.drawable.person_24).into(view)
         }
-
       } catch (e: Exception) {
         Picasso.get().load(R.drawable.privacy_icon).into(view)
       }

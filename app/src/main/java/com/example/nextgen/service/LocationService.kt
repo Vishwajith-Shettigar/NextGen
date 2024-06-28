@@ -20,6 +20,9 @@ import com.google.android.gms.location.*
 import com.example.nextgen.R
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class LocationService
@@ -36,7 +39,7 @@ class LocationService
   private lateinit var fusedLocationClient: FusedLocationProviderClient
   private lateinit var locationCallback: LocationCallback
 
- private  var oldLocation:Location?=null
+  private var oldLocation: Location? = null
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onCreate() {
@@ -67,49 +70,51 @@ class LocationService
   }
 
   private fun startLocationUpdates() {
-    val locationRequest = LocationRequest.create().apply {
-      interval = 3
-      fastestInterval = 3
-      priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-    }
+    CoroutineScope(Dispatchers.IO).launch {
+      val locationRequest = LocationRequest.create().apply {
+        interval = 3
+        fastestInterval = 3
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+      }
 
-    locationCallback = object : LocationCallback() {
-      override fun onLocationResult(locationResult: LocationResult) {
-        locationResult.lastLocation?.let {
-
-//          nearByController.updateLocation(userId, it, oldLocation)
-          oldLocation=it
+      locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+          locationResult.lastLocation?.let {
+            nearByController.updateLocation(userId, it, oldLocation)
+            oldLocation = it
+          }
         }
       }
-    }
 
-    if (ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
-      // TODO: Consider calling
-      //    ActivityCompat#requestPermissions
-      // here to request the missing permissions, and then overriding
-      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-      //                                          int[] grantResults)
-      // to handle the case where the user grants the permission. See the documentation
-      // for ActivityCompat#requestPermissions for more details.
-      return
+      if (ActivityCompat.checkSelfPermission(
+          baseContext,
+          Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+          baseContext,
+          Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
+        return@launch
+      }
+      fusedLocationClient.requestLocationUpdates(
+        locationRequest,
+        locationCallback,
+        Looper.getMainLooper()
+      )
     }
-    fusedLocationClient.requestLocationUpdates(
-      locationRequest,
-      locationCallback,
-      Looper.getMainLooper()
-    )
   }
 
   override fun onDestroy() {
     super.onDestroy()
     fusedLocationClient.removeLocationUpdates(locationCallback)
+    stopForeground(true)
   }
 
   override fun onBind(intent: Intent?): IBinder? {

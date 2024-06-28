@@ -8,6 +8,7 @@ class BaseAdapter<T> : RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
 
   var itemList: MutableList<T> = mutableListOf()
     set(value) {
+      itemList.clear()
       field = value
       notifyDataSetChanged()
     }

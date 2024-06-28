@@ -137,7 +137,6 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           }
           if (MAX_UPDATE <= distance && it.accuracy <= MAX_UPDATE) {
             moveCamera(latLng)
-            Toast.makeText(activity, "New radius", Toast.LENGTH_SHORT).show()
             locationUser = latLng
             nearByViewModel.location.value = latLng
           }
@@ -195,8 +194,9 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         moveCamera(locationUser!!)
 
       mMap.setOnMarkerClickListener { marker ->
-        val profile = marker.tag as Profile
-        showNearByProfileDialog(profile)
+        val userProfile = marker.tag as Profile
+        if (userProfile.userId!=profile.userId)
+        showNearByProfileDialog(userProfile)
         true
       }
 
