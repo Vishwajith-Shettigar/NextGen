@@ -21,7 +21,7 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 <table>
   <tr>
     <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/67e113b9-71f8-4a41-8f12-58f4a70869ea" alt="Real-time Location" style="width: 0;height:600px"/></td>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/de10e364-b5e5-4e0a-aab1-f6f7fdf4958a" alt="Chat Interface" style="width: 0;height:600px""/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/33567a7b-aa5e-4c45-a25b-d5007b9da686" alt="Chat Interface" style="width: 0;height:600px""/></td>
   </tr>
   <tr>
     <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/e98f0919-9547-461f-8437-0d2a0cd81046" alt="Real-time Location" style="width: 0;height:600px"/></td>
