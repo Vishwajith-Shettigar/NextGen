@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.LOG_KEY
+import com.example.domain.constants.VIDEO_CALL_AVAILABLE
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
@@ -178,6 +179,10 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     }
 
     binding.videoCallBtn.setOnClickListener {
+      if (VIDEO_CALL_AVAILABLE==false) {
+        Toast.makeText(activity, "Not available right now.", Toast.LENGTH_LONG).show()
+        return@setOnClickListener
+      }
       PermissionX.init(this)
         .permissions(
           Manifest.permission.RECORD_AUDIO,
@@ -186,7 +191,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
           if (allGranted) {
             try {
               val targetUID = chat.userId
-              webSocketManager?.sendMessageToSocket(
+              webSocketManager.sendMessageToSocket(
                 MessageModel(
                   TYPE.START_CALL, userId, targetUID, null
                 )
