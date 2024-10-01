@@ -1,5 +1,9 @@
 # neXtgen 🌍📱
 
+## [Contributors guide 🔗](https://github.com/Vishwajith-Shettigar/NextGen/blob/master/CONTRIBUTORS.md)
+
+
+
 ## Overview 🌟
 Interact with people within a 100-meter radius! Get real-time locations of nearby folks on Google Maps and chat or have a video call with them. If the conversation wasn’t up to par, you can give them a solid 0-star rating. 😄👎
 
