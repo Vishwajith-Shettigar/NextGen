@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.*
@@ -35,6 +36,7 @@ import com.example.nextgen.databinding.FragmentNearByBinding
 import com.example.nextgen.databinding.NearbyProfileDialogBinding
 import com.example.nextgen.home.ChatSummaryClickListener
 import com.example.nextgen.viewprofile.RouteToViewProfile
+import com.example.utility.Result
 import com.example.utility.getProto
 import com.example.utility.putProto
 import com.firebase.geofire.GeoFireUtils
@@ -103,6 +105,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     return binding.root
   }
 
+  @SuppressLint("MissingPermission")
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     fusedLocationClient.lastLocation.addOnSuccessListener {
@@ -145,7 +148,36 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     }
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
   }
+  private fun addMarker(latLng: LatLng, imageUrl: String?) {
+    // Create MarkerOptions
+    val markerOptions = MarkerOptions()
+      .position(latLng)
+      .title("Marker Title") // Optional
+      .snippet("Marker Snippet") // Optional
 
+    // Launch a coroutine to load the bitmap
+    CoroutineScope(Dispatchers.Main).launch {
+      // Load bitmap asynchronously from URL
+      val bitmapDescriptor = if (!imageUrl.isNullOrEmpty()) {
+        val bitmap = loadBitmapFromUrl(imageUrl) a
+
+        // Use loaded bitmap if available; otherwise, use default image
+        if (bitmap != null) {
+          BitmapDescriptorFactory.fromBitmap(bitmap)
+        } else {
+          BitmapDescriptorFactory.fromResource(R.drawable.person_24) // Default image
+        }
+      } else {
+        BitmapDescriptorFactory.fromResource(R.drawable.person_24) // Default image
+      }
+
+      // Set the icon for the marker
+      markerOptions.icon(bitmapDescriptor)
+
+      // Add the marker to the map
+      mMap.addMarker(markerOptions)
+    }
+  }
   fun checkLocationPermission() {
 
     if (ActivityCompat.checkSelfPermission(
@@ -181,6 +213,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   }
 
 
+  @SuppressLint("SuspiciousIndentation")
   override fun onMapReady(googleMap: GoogleMap) {
 
 
@@ -190,8 +223,14 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
       checkLocationPermission()
 
       mMap.isMyLocationEnabled = true
-      if (locationUser != null)
+      if (locationUser != null) {
         moveCamera(locationUser!!)
+
+        // Call addMarker here
+        val imageUrl= profile.imageUrl
+        if(imageUrl.isNullOrEmpty())
+          addMarker(locationUser!!, imageUrl) // Add marker at the user's location
+      }
 
       mMap.setOnMarkerClickListener { marker ->
         val userProfile = marker.tag as Profile
@@ -406,7 +445,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
         layoutbinding.buttonYes.setOnClickListener {
           if (isChatExists.isNullOrBlank()) {
             chatController.initiateChat(profile.userId, viewProfile.userId) {
-              if (it is com.example.utility.Result.Success) {
+              if (it is Result.Success) {
                 sendMesssage(viewProfile, it.data)
               } else {
                 Toast.makeText(requireContext(), "Something went wrong !", Toast.LENGTH_SHORT)
@@ -424,7 +463,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   fun sendMesssage(viewProfile: Profile, chatId: String) {
     CoroutineScope(Dispatchers.IO).launch {
       chatController.sendMessage(chatId, profile.userId, viewProfile.userId, "Hi!") {
-        if (it is com.example.utility.Result.Success) {
+        if (it is Result.Success) {
           val chat = Chat.newBuilder().apply {
             this.chatId = chatId
             this.userId = viewProfile.userId
