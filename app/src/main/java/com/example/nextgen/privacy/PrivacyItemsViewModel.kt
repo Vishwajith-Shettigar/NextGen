@@ -10,30 +10,31 @@ import com.example.model.PrivacyItem
 import com.example.nextgen.viewmodel.ObservableViewModel
 
 class PrivacyItemsViewModel(
-  private val index: Int,
-  private val privacyItem: PrivacyItem,
-  private val onPrivacyItemClicked: OnPrivacyItemClicked,
+    private val index: Int,
+    private val privacyItem: PrivacyItem,
+    private val onPrivacyItemClicked: OnPrivacyItemClicked,
 ) : ObservableViewModel() {
 
 
-  var status = ObservableField<Boolean>(privacyItem.itemStatus)
-  init {
-    status.set(privacyItem.itemStatus)
-  }
+    var status = ObservableField<Boolean>(privacyItem.itemStatus)
 
-  val itemName by lazy {
-    privacyItem.itemName
-  }
+    init {
+        status.set(privacyItem.itemStatus)
+    }
 
-  val itemId by lazy {
-    privacyItem.itemId
-  }
+    val itemName by lazy {
+        privacyItem.itemName
+    }
 
-  fun onClick(view: View) {
-    onPrivacyItemClicked.onPrivacyItemClicked(
-      privacyItem = privacyItem,
-      status = status.get()!!,
-      index
-    )
-  }
+    val itemId by lazy {
+        privacyItem.itemId
+    }
+
+    fun onClick(view: View) {
+        onPrivacyItemClicked.onPrivacyItemClicked(
+            privacyItem = privacyItem,
+            status = status.get()!!,
+            index
+        )
+    }
 }

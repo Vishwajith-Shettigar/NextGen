@@ -3,27 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-<variable
-    name="viewModel"
-    type="com.example.nextgen.privacy.PrivacyItemsViewModel" />
+        <variable
+            name="viewModel"
+            type="com.example.nextgen.privacy.PrivacyItemsViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="6dp"
-        android:onClick="@{viewModel.onClick}">
+        android:gravity="center_vertical"
+        android:onClick="@{viewModel.onClick}"
+        android:padding="6dp">
 
         <ImageView
             android:id="@+id/privacyItem_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:loadPrivacyItemsIcon="@{viewModel.itemId}"
             app:tint="@color/hint_color" />
 
@@ -31,21 +33,29 @@
             android:id="@+id/item_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:text="@{viewModel.itemName}"
             android:textSize="16sp"
-            android:gravity="center_vertical" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_status"
+            app:layout_constraintStart_toEndOf="@id/privacyItem_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.7" />
 
         <TextView
             android:id="@+id/item_status"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginEnd="3dp"
+            android:gravity="center_vertical|end"
             android:paddingStart="20dp"
             android:text="@{viewModel.status ? `Yes` : `No`}"
             android:textSize="16sp"
-            android:layout_marginEnd="3dp"
-            android:gravity="center_vertical|end" />
-    </LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

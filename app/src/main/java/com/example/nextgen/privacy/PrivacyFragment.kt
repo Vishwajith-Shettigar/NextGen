@@ -36,167 +36,183 @@ import kotlinx.coroutines.launch
 
 class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
 
-  lateinit var binding: FragmentPrivacyBinding
+    lateinit var binding: FragmentPrivacyBinding
 
-  lateinit var profile: Profile
+    lateinit var profile: Profile
 
-  @Inject
-  lateinit var activity: AppCompatActivity
+    @Inject
+    lateinit var activity: AppCompatActivity
 
-  @Inject
-  lateinit var fragment: Fragment
+    @Inject
+    lateinit var fragment: Fragment
 
-  @Inject
-  lateinit var profileController: ProfileController
+    @Inject
+    lateinit var profileController: ProfileController
 
-  private val privacyAdapter = BaseAdapter<PrivacyItemsViewModel>()
+    private val privacyAdapter = BaseAdapter<PrivacyItemsViewModel>()
 
-  private lateinit var privacyViewModel: PrivacyViewModel
+    private lateinit var privacyViewModel: PrivacyViewModel
 
-  override fun injectDependencies(fragmentComponent: FragmentComponent) {
-    fragmentComponent.inject(this)
-  }
-
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): View {
-    // Inflate the layout for this fragment
-    binding = FragmentPrivacyBinding.inflate(inflater, container, false)
-    profile = arguments?.getProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
-    privacyViewModel =
-      PrivacyViewModel(profile, fragment, profileController, (fragment as OnPrivacyItemClicked))
-    val layoutManager = LinearLayoutManager(activity.applicationContext)
-    binding.privacyRecyclerView.apply {
-      this.adapter = privacyAdapter
-      this.layoutManager = layoutManager
+    override fun injectDependencies(fragmentComponent: FragmentComponent) {
+        fragmentComponent.inject(this)
     }
 
-    binding.lifecycleOwner = this
 
-    privacyViewModel.privacyitemsList.observe(viewLifecycleOwner) {
-      privacyAdapter.itemList = it as MutableList<PrivacyItemsViewModel>
-    }
-
-    privacyAdapter.expressionGetViewType = { homeItemViewModel ->
-
-      BaseAdapter.ViewType.PRIVACY_ITEM
-
-    }
-    privacyAdapter.expressionOnCreateViewHolder = { viewGroup, viewType ->
-      when (viewType) {
-        BaseAdapter.ViewType.PRIVACY_ITEM -> {
-          PrivacyItemsLayoutBinding.inflate(
-            LayoutInflater.from(viewGroup.context),
-            viewGroup,
-            false
-          )
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        // Inflate the layout for this fragment
+        binding = FragmentPrivacyBinding.inflate(inflater, container, false)
+        profile =
+            arguments?.getProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, Profile.getDefaultInstance())!!
+        privacyViewModel =
+            PrivacyViewModel(
+                profile,
+                fragment,
+                profileController,
+                (fragment as OnPrivacyItemClicked)
+            )
+        val layoutManager = LinearLayoutManager(activity.applicationContext)
+        binding.privacyRecyclerView.apply {
+            this.adapter = privacyAdapter
+            this.layoutManager = layoutManager
         }
-        else -> {
-          throw IllegalArgumentException("Encountered unexpected view type: $viewType")
+
+        binding.lifecycleOwner = this
+
+        privacyViewModel.privacyitemsList.observe(viewLifecycleOwner) {
+            privacyAdapter.itemList = it as MutableList<PrivacyItemsViewModel>
         }
-      }
-    }
 
-    privacyAdapter.expressionViewHolderBinding = { viewModel, viewtype, viewBinding ->
+        privacyAdapter.expressionGetViewType = { homeItemViewModel ->
 
-      val itemBinding = viewBinding as PrivacyItemsLayoutBinding
-      itemBinding.viewModel = viewModel
-      itemBinding.lifecycleOwner = this
+            BaseAdapter.ViewType.PRIVACY_ITEM
 
-    }
-
-    return binding.root
-  }
-
-  companion object {
-
-    private val PRIVACY_FRAGMENT_ARGUMENTS_KEY = "PrivacyFragment.arguments"
-
-    @JvmStatic
-    fun newInstance(profile: Profile) =
-      PrivacyFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, profile)
         }
-      }
-  }
+        privacyAdapter.expressionOnCreateViewHolder = { viewGroup, viewType ->
+            when (viewType) {
+                BaseAdapter.ViewType.PRIVACY_ITEM -> {
+                    PrivacyItemsLayoutBinding.inflate(
+                        LayoutInflater.from(viewGroup.context),
+                        viewGroup,
+                        false
+                    )
+                }
 
-  override fun onPrivacyItemClicked(privacyItem: PrivacyItem, status: Boolean, index: Int) {
-    showCustomDialog(privacyItem, status, index)
-  }
-
-  private fun showCustomDialog(privacyItem: PrivacyItem, status: Boolean, index: Int) {
-    // Inflate the dialog layout
-    val dialogbinding = DialogYesNoOptionsBinding.inflate(layoutInflater)
-
-    // Build the AlertDialog
-    val builder = AlertDialog.Builder(activity)
-    builder.setView(dialogbinding.root)
-
-    var choice = status
-
-    // Create the AlertDialog
-    val alertDialog = builder.create()
-    if (status == true)
-      dialogbinding.rbYes.isChecked = true
-    else
-      dialogbinding.rbNo.isChecked = true
-
-    dialogbinding.tvDialogTitle.text = privacyItem.itemName.toString()
-
-    // Set button click listeners
-    dialogbinding.rbYes.setOnClickListener {
-      // Do something when Yes is clicked
-      dialogbinding.rbNo.isChecked = false
-      choice = true
-
-    }
-
-    dialogbinding.rbNo.setOnClickListener {
-      // Do something when No is clicked
-      dialogbinding.rbYes.isChecked = false
-      choice = false
-
-    }
-
-    dialogbinding.btnSave.setOnClickListener {
-      // Do something when Save is clicked
-      handleSave(privacyItem, choice, index)
-      alertDialog.dismiss()
-    }
-
-    dialogbinding.btnCancel.setOnClickListener {
-      // Do something when Cancel is clicked
-      alertDialog.dismiss()
-    }
-
-    // Display the dialog
-    alertDialog.show()
-  }
-
-  fun handleSave(privacyItem: PrivacyItem, choice: Boolean, index: Int) {
-
-    if (privacyItem.itemId == DISABLE_CHAT_ID) {
-      privacyViewModel.updateDisableChatStatus(choice) {
-        if (it is com.example.utility.Result.Success) {
-          privacyAdapter.itemList[index].status.set(choice)
+                else -> {
+                    throw IllegalArgumentException("Encountered unexpected view type: $viewType")
+                }
+            }
         }
-      }
-    } else if (privacyItem.itemId == DISABLE_LOCATION_ID) {
-      privacyViewModel.updatedisableLocationStatus(choice) {
-        if (it is com.example.utility.Result.Success) {
-          privacyAdapter.itemList[index].status.set(choice)
+
+        privacyAdapter.expressionViewHolderBinding = { viewModel, viewtype, viewBinding ->
+
+            val itemBinding = viewBinding as PrivacyItemsLayoutBinding
+            itemBinding.viewModel = viewModel
+            itemBinding.lifecycleOwner = this
+
         }
-      }
-    } else if (privacyItem.itemId == DISABLE_PROFILE_PICTURE) {
-      privacyViewModel.updatedisableProfilePicture(choice) {
-        if (it is com.example.utility.Result.Success) {
-          privacyAdapter.itemList[index].status.set(choice)
-        }
-      }
-    } else {
+
+        return binding.root
     }
-  }
+
+    companion object {
+
+        private val PRIVACY_FRAGMENT_ARGUMENTS_KEY = "PrivacyFragment.arguments"
+
+        @JvmStatic
+        fun newInstance(profile: Profile) =
+            PrivacyFragment().apply {
+                arguments = Bundle().apply {
+                    putProto(PRIVACY_FRAGMENT_ARGUMENTS_KEY, profile)
+                }
+            }
+    }
+
+    override fun onPrivacyItemClicked(privacyItem: PrivacyItem, status: Boolean, index: Int) {
+        showCustomDialog(privacyItem, status, index)
+    }
+
+    private fun showCustomDialog(privacyItem: PrivacyItem, status: Boolean, index: Int) {
+        // Inflate the dialog layout
+        val dialogbinding = DialogYesNoOptionsBinding.inflate(layoutInflater)
+
+        // Build the AlertDialog
+        val builder = AlertDialog.Builder(activity)
+        builder.setView(dialogbinding.root)
+
+        var choice = status
+
+        // Create the AlertDialog
+        val alertDialog = builder.create()
+        if (status == true)
+            dialogbinding.rbYes.isChecked = true
+        else
+            dialogbinding.rbNo.isChecked = true
+
+        dialogbinding.tvDialogTitle.text = privacyItem.itemName.toString()
+
+        // Set button click listeners
+        dialogbinding.rbYes.setOnClickListener {
+            // Do something when Yes is clicked
+            dialogbinding.rbNo.isChecked = false
+            choice = true
+
+        }
+
+        dialogbinding.rbNo.setOnClickListener {
+            // Do something when No is clicked
+            dialogbinding.rbYes.isChecked = false
+            choice = false
+
+        }
+
+        dialogbinding.btnSave.setOnClickListener {
+            // Do something when Save is clicked
+            handleSave(privacyItem, choice, index)
+            alertDialog.dismiss()
+        }
+
+        dialogbinding.btnCancel.setOnClickListener {
+            // Do something when Cancel is clicked
+            alertDialog.dismiss()
+        }
+
+        // Display the dialog
+        alertDialog.show()
+    }
+
+    fun handleSave(privacyItem: PrivacyItem, choice: Boolean, index: Int) {
+        when (privacyItem.itemId) {
+            DISABLE_CHAT_ID -> {
+                privacyViewModel.updateDisableChatStatus(choice) {
+                    if (it is com.example.utility.Result.Success) {
+                        privacyAdapter.itemList[index].status.set(choice)
+                    }
+                }
+            }
+
+            DISABLE_LOCATION_ID -> {
+                privacyViewModel.updatedisableLocationStatus(choice) {
+                    if (it is com.example.utility.Result.Success) {
+                        privacyAdapter.itemList[index].status.set(choice)
+                    }
+                }
+            }
+
+            DISABLE_PROFILE_PICTURE -> {
+                privacyViewModel.updatedisableProfilePicture(choice) {
+                    if (it is com.example.utility.Result.Success) {
+                        privacyAdapter.itemList[index].status.set(choice)
+                    }
+                }
+            }
+
+            else -> {
+                // Handle default case if needed
+            }
+        }
+    }
+
 }
