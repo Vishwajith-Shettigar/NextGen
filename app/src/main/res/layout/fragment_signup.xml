@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -13,26 +12,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".signup.SignupSigninActivity"
-        android:background="@color/white">
+        android:background="@color/white"
+        tools:context=".signup.SignupSigninActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            >
+            android:layout_centerInParent="true">
 
             <TextView
                 android:id="@+id/nextgen_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="50dp"
-                android:text="NextGen"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="100dp"
+                android:text="NextGen"
+                android:textColor="@color/black"
+                android:textSize="50dp"
+                android:textStyle="bold"
 
                 />
 
@@ -43,12 +41,12 @@
                 android:layout_below="@+id/nextgen_logo"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="#7E7B7B"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:hint="Enter username " />
+                android:hint="Enter username "
+                android:textColor="@color/black"
+                android:textColorHint="#7E7B7B" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email"
@@ -68,13 +66,12 @@
                 android:id="@+id/password"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/email"
-                android:hint="Enter password "
+                android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
+                android:hint="Enter password "
                 android:textColor="@color/black"
-                android:textColorHint="#7E7B7B"
-                />
+                android:textColorHint="#7E7B7B" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signupbtn"
@@ -82,17 +79,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/password"
                 android:layout_centerInParent="true"
-                android:text="sign up"
-                android:textColor="@color/white"
                 android:layout_marginTop="10dp"
-                />
+                android:text="sign up"
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_below="@+id/signupbtn"
                 android:gravity="center_horizontal"
-                android:layout_below="@+id/signupbtn">
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/signinherebt"
                     android:layout_width="wrap_content"
@@ -111,6 +108,7 @@
                     android:textColor="#0020FF" />
             </LinearLayout>
         </RelativeLayout>
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="50dp"

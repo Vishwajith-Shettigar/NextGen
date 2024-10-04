@@ -71,17 +71,17 @@
             android:id="@+id/message_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="10dp"
-            android:visibility="gone"
-            android:gravity="center_vertical">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/message_text"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:padding="10dp"
                 android:gravity="center_vertical"
+                android:padding="10dp"
                 android:text="Say hi :) ?"
                 android:textSize="16sp" />
 
@@ -90,25 +90,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end">
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_yes"
                     android:layout_width="60dp"
                     android:layout_height="40dp"
-                    android:textSize="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="8dp"
                     android:text="Yes"
                     android:textColor="@color/home_screen_text_color"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="8dp" />
+                    android:textSize="10dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_no"
                     android:layout_width="60dp"
                     android:layout_height="40dp"
-                    android:text="No"
-                    android:textSize="10dp"
-                    android:textColor="@color/home_screen_text_color"
+                    android:layout_marginEnd="8dp"
                     android:layout_toStartOf="@id/button_yes"
-                    android:layout_marginEnd="8dp" />
+                    android:text="No"
+                    android:textColor="@color/home_screen_text_color"
+                    android:textSize="10dp" />
 
             </RelativeLayout>
         </LinearLayout>

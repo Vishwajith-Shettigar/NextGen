@@ -2,9 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-                <variable
-                    name="viewModel"
-                    type="com.example.nextgen.message.MessageViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.example.nextgen.message.MessageViewModel" />
     </data>
 
     <RelativeLayout
@@ -18,19 +19,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:onLongClick="@{viewModel.onLongClick}"
-            android:background="@drawable/sender_chat_background">
+            android:background="@drawable/sender_chat_background"
+            android:onLongClick="@{viewModel.onLongClick}">
 
 
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:paddingLeft="35dp"
                 android:paddingTop="7dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="27dp"
-                android:layout_marginBottom="10dp"
                 android:text="@{viewModel.text}"
                 android:textColor="@color/white"
                 android:textSize="18sp" />

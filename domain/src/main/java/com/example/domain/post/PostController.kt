@@ -6,9 +6,8 @@ import javax.inject.Singleton
 
 @Singleton
 class PostController @Inject constructor(
-  val fireBaseFireStore:FirebaseFirestore
+  val fireBaseFireStore: FirebaseFirestore
 ) {
-
 
 
 }

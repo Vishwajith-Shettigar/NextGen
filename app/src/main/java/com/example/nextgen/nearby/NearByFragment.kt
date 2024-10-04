@@ -187,17 +187,17 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
       mMap.setOnMarkerClickListener { marker ->
         val userProfile = marker.tag as Profile
-        if (userProfile.userId!=profile.userId)
-        showNearByProfileDialog(userProfile)
+        if (userProfile.userId != profile.userId)
+          showNearByProfileDialog(userProfile)
         true
       }
 
     } catch (e: Exception) {
-        Toast.makeText(
-          activity,
-          "Please give access to location to use this feature",
-          Toast.LENGTH_LONG
-        ).show()
+      Toast.makeText(
+        activity,
+        "Please give access to location to use this feature",
+        Toast.LENGTH_LONG
+      ).show()
     }
   }
 

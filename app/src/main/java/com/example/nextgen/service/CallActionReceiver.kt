@@ -14,6 +14,7 @@ class CallActionReceiver : BroadcastReceiver() {
         Toast.makeText(context, "Call Accepted", Toast.LENGTH_SHORT).show()
 
       }
+
       "ACTION_REJECT" -> {
         // Handle reject action
         Toast.makeText(context, "Call Rejected", Toast.LENGTH_SHORT).show()

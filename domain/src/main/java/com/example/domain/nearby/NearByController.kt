@@ -85,6 +85,7 @@ class NearByController @Inject constructor(
                       updateNearbyUsers(profile, false) // Notify new addition
                     }
                   }
+
                   DocumentChange.Type.REMOVED -> {
                     usersToRemove.add(profile)
                   }
@@ -171,37 +172,37 @@ class NearByController @Inject constructor(
   }
 
   fun updateLocation(userId: String, location: Location, oldLocation: Location?) {
-   CoroutineScope(Dispatchers.IO).launch {
-     if (auth.currentUser == null) {
-       return@launch
-     }
+    CoroutineScope(Dispatchers.IO).launch {
+      if (auth.currentUser == null) {
+        return@launch
+      }
 
-     if (oldLocation != null) {
-       val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
-       val newGeoPoint = GeoLocation(location.latitude, location.longitude)
-       if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 10)
-         return@launch
-     }
+      if (oldLocation != null) {
+        val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
+        val newGeoPoint = GeoLocation(location.latitude, location.longitude)
+        if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 10)
+          return@launch
+      }
 
-     val latitude = location.latitude
-     val longitude = location.longitude
+      val latitude = location.latitude
+      val longitude = location.longitude
 
-     val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+      val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
 
-     val doc = firestore.collection(USERS_COLLECTION).document(userId)
+      val doc = firestore.collection(USERS_COLLECTION).document(userId)
 
-     doc.update("geoHash", geoHash)
-       .addOnSuccessListener {
+      doc.update("geoHash", geoHash)
+        .addOnSuccessListener {
 
-       }
-       .addOnFailureListener { exception ->
-       }
+        }
+        .addOnFailureListener { exception ->
+        }
 
-     doc.update("location", GeoPoint(latitude, longitude))
-       .addOnSuccessListener {
-       }
-       .addOnFailureListener { exception ->
-       }
-   }
+      doc.update("location", GeoPoint(latitude, longitude))
+        .addOnSuccessListener {
+        }
+        .addOnFailureListener { exception ->
+        }
+    }
   }
 }

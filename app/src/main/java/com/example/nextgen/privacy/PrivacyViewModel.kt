@@ -50,6 +50,7 @@ class PrivacyViewModel(
       }
     }
   }
+
   fun updatedisableLocationStatus(
     choice: Boolean,
     callback: (com.example.utility.Result<String>) -> Unit,

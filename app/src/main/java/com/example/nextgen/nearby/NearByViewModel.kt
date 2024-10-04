@@ -9,7 +9,7 @@ import com.firebase.geofire.GeoLocation
 import com.google.android.gms.maps.model.LatLng
 
 class NearByViewModel(
-  private val userId:String,
+  private val userId: String,
   private val lifecycleOwner: LifecycleOwner,
   nearByController: NearByController,
   updateMapListener: UpdateMapListener,
@@ -20,8 +20,12 @@ class NearByViewModel(
   init {
 
     location.observe(lifecycleOwner) {
-      nearByController.listenToNearbyUsers(userId,GeoLocation(it.latitude, it.longitude), NEARBY_DISTANCE.toDouble()) {profile,outOfBound->
-        updateMapListener.updateMap(profile,outOfBound)
+      nearByController.listenToNearbyUsers(
+        userId,
+        GeoLocation(it.latitude, it.longitude),
+        NEARBY_DISTANCE.toDouble()
+      ) { profile, outOfBound ->
+        updateMapListener.updateMap(profile, outOfBound)
       }
     }
   }

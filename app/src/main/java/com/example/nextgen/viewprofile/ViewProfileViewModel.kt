@@ -26,7 +26,7 @@ class ViewProfileViewModel(
       chatId = chatController.isChatExists(userId, viewProfile.userId)
     }
 
-    _rating.value=viewProfile.rating
+    _rating.value = viewProfile.rating
   }
 
   val userName by lazy {

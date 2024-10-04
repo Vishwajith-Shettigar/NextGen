@@ -83,6 +83,7 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
             false
           )
         }
+
         else -> {
           throw IllegalArgumentException("Encountered unexpected view type: $viewType")
         }

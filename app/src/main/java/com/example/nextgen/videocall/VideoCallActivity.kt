@@ -15,7 +15,8 @@ class VideoCallActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_video_call)
-   val args=intent.getProtoExtra(VIDEO_CALL_ACTIVITY_KEY,VideoCallScreenArguments.getDefaultInstance())
+    val args =
+      intent.getProtoExtra(VIDEO_CALL_ACTIVITY_KEY, VideoCallScreenArguments.getDefaultInstance())
     supportFragmentManager.beginTransaction().replace(
       R.id.frame_layout, VideoCallFragment.newInstance(
         args!!
@@ -36,16 +37,16 @@ class VideoCallActivity : BaseActivity() {
       data: String,
       userRole: UserRole,
       userId: String,
-      imageUrl:String,
-      userName:String
+      imageUrl: String,
+      userName: String
     ): Intent {
 
       val args = VideoCallScreenArguments.newBuilder().apply {
         this.targetId = name
         this.data = data
         this.userId = userId
-        this.imageUrl=imageUrl
-        this.userName=userName
+        this.imageUrl = imageUrl
+        this.userName = userName
         if (userRole == UserRole.CALLER)
           this.userRole = com.example.model.UserRole.CALLER
         else

@@ -59,10 +59,12 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
           binding.progressBar.visibility = View.GONE
           (activity as? RouteToHomeActivity)?.routeToHome()
         }
+
         is com.example.utility.Result.Failure -> {
           binding.progressBar.visibility = View.GONE
           Toast.makeText(activity, "Please enter correct details.", Toast.LENGTH_LONG).show()
         }
+
         else -> Unit
       }
     }

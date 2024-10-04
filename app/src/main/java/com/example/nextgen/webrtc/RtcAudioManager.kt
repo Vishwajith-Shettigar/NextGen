@@ -228,6 +228,7 @@ class RtcAudioManager(context: android.content.Context) {
       } else {
         defaultAudioDevice = AudioDevice.SPEAKER_PHONE
       }
+
       else -> {}
     }
     updateAudioDeviceState()

@@ -124,9 +124,11 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
 
             }
           }
+
           TYPE.CALL_ENDED -> {
             binding.callNotificationLayout.visibility = View.GONE
           }
+
           else -> {}
         }
       }
@@ -153,6 +155,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           loadFragment(HomeFragment.newInstance(), HomeFragment.TAG)
           true
         }
+
         R.id.nearby -> {
           if (isLocationPermissionGranted()) {
             loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
@@ -161,14 +164,17 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           }
           true
         }
+
         R.id.notification -> {
           loadFragment(NotificationFragment.newInstance(), NotificationFragment.TAG)
           true
         }
+
         R.id.profile -> {
           loadFragment(ProfileFragment.newInstance(), ProfileFragment.TAG)
           true
         }
+
         else -> false
       }
     }
@@ -204,6 +210,7 @@ class HomeActivity : BaseActivity(), ChatSummaryClickListener, RouteToEditProfil
           ).show()
         }
       }
+
       NEARBY_FRAGMENT_LOCATION_REQUEST_CODE -> {
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
           loadFragment(NearByFragment.newInstance(profile), NearByFragment.TAG)
