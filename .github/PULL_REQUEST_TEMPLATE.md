@@ -1,5 +1,5 @@
 ## Description
-Please include a summary of the change and what issue is fixed.
+Please include issue number and a summary of the change and what issue is fixed.
 
 ## Checklist:
 - [ ] My code follows the style guidelines of this project
