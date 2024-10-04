@@ -2,10 +2,22 @@ package com.example.videocallapp
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
-import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.webrtc.WebSocketManager
-import org.webrtc.*
+import org.webrtc.AudioTrack
+import org.webrtc.Camera2Enumerator
+import org.webrtc.CameraVideoCapturer
+import org.webrtc.DefaultVideoDecoderFactory
+import org.webrtc.DefaultVideoEncoderFactory
+import org.webrtc.EglBase
+import org.webrtc.IceCandidate
+import org.webrtc.MediaConstraints
+import org.webrtc.PeerConnection
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.SdpObserver
+import org.webrtc.SessionDescription
+import org.webrtc.SurfaceTextureHelper
+import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 import org.webrtc.audio.JavaAudioDeviceModule
 
 

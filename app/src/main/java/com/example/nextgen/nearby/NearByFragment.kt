@@ -1,32 +1,24 @@
 package com.example.nextgen.nearby
 
+import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
-import android.location.Location
+import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import android.Manifest
-import android.app.Activity
-import android.app.Dialog
-import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.domain.chat.ChatController
 import com.example.domain.constants.CIRCLE_RADIUS
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.MAX_UPDATE
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
-import com.example.model.LastMessageInfo
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
@@ -47,8 +39,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
-import javax.inject.Inject
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
 class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 

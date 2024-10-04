@@ -1,14 +1,11 @@
 package com.example.nextgen.editprofile
 
 import android.graphics.Bitmap
-import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
 import com.example.domain.profile.ProfileController
 import com.example.model.Profile
 import com.example.nextgen.viewmodel.ObservableViewModel
 import com.example.utility.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class EditProfileViewModel(

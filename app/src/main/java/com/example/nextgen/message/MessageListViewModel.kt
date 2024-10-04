@@ -1,24 +1,16 @@
 package com.example.nextgen.message
 
-import android.database.Observable
-import android.util.Log
 import android.view.View
-import androidx.databinding.Observable.OnPropertyChangedCallback
 import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.example.domain.chat.ChatController
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.model.*
 import com.example.nextgen.viewmodel.ObservableViewModel
 import com.example.utility.Result
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

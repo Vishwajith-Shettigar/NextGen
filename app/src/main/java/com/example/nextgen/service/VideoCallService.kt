@@ -9,22 +9,14 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.nextgen.Application.MyApplication
 import com.example.nextgen.R
-import com.example.nextgen.videocall.VideoCallActivity
 import com.example.nextgen.webrtc.WebSocketManager
-import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
-import com.example.videocallapp.UserRole
-import com.permissionx.guolindev.PermissionX
-import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 

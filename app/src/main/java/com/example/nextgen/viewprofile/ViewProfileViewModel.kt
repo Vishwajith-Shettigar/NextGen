@@ -1,15 +1,11 @@
 package com.example.nextgen.viewprofile
 
-import android.media.Rating
-import androidx.databinding.ObservableFloat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.domain.chat.ChatController
 import com.example.domain.profile.ProfileController
 import com.example.model.Profile
-import com.example.model.ViewProfile
-import com.example.nextgen.privacy.PrivacyItemsViewModel
 import com.example.nextgen.viewmodel.ObservableViewModel
 import kotlinx.coroutines.launch
 

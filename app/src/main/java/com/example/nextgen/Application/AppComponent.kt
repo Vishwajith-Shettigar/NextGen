@@ -1,6 +1,5 @@
 package com.example.nextgen.Application
 
-import com.example.domain.post.PostController
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.ActivityModule
 import com.example.nextgen.service.LocationService

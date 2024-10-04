@@ -1,13 +1,10 @@
 package com.example.nextgen.signup
 
-import android.app.Activity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.registration.SignUpLogInController
-import com.example.nextgen.Fragment.FragmentScope
 import com.example.nextgen.viewmodel.ObservableViewModel
 
 

@@ -1,7 +1,10 @@
 package com.example.utility
 
-import com.google.firebase.firestore.GeoPoint;
-import java.lang.Math.*
+import com.google.firebase.firestore.GeoPoint
+import java.lang.Math.atan2
+import java.lang.Math.cos
+import java.lang.Math.sin
+import java.lang.Math.sqrt
 
 
 object GeoUtils {

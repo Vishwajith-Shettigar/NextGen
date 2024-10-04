@@ -2,13 +2,11 @@ package com.example.nextgen.privacy
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.model.Profile
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
-import com.example.nextgen.message.MessageActivity
 import com.example.utility.getProtoExtra
 import com.example.utility.putProtoExtra
 

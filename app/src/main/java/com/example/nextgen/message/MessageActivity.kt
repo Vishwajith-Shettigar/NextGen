@@ -2,13 +2,9 @@ package com.example.nextgen.message
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.example.domain.constants.LOG_KEY
 import com.example.model.Chat
 import com.example.nextgen.Activity.ActivityComponent
-import com.example.nextgen.Activity.ActivityScope
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.webrtc.WebSocketManager

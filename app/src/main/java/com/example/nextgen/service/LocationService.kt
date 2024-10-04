@@ -1,28 +1,32 @@
 package com.example.nextgen.service
 
 import android.Manifest
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.nextgen.Application.MyApplication
-import com.google.android.gms.location.*
 import com.example.nextgen.R
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class LocationService

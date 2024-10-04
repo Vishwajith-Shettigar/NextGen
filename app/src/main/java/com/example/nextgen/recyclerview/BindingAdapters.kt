@@ -1,18 +1,12 @@
 package com.example.nextgen.recyclerview
 
-import android.graphics.drawable.Drawable
-import android.media.Rating
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.DISABLE_CHAT_ID
 import com.example.domain.profile.DISABLE_LOCATION_ID
 import com.example.domain.profile.DISABLE_PROFILE_PICTURE
 import com.example.nextgen.R
-import com.google.errorprone.annotations.InlineMeValidationDisabled
 import com.squareup.picasso.Picasso
 
 class BindingAdapters {

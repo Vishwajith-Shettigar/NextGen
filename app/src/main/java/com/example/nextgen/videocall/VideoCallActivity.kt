@@ -2,7 +2,6 @@ package com.example.nextgen.videocall
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.model.VideoCallScreenArguments
 import com.example.nextgen.Activity.ActivityComponent
@@ -10,7 +9,6 @@ import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.utility.getProtoExtra
 import com.example.utility.putProtoExtra
-import com.example.videocallapp.MessageModel
 import com.example.videocallapp.UserRole
 
 class VideoCallActivity : BaseActivity() {
