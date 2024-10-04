@@ -23,8 +23,8 @@ Follow these steps to set up the neXtgen project on your local machine:
    - Open the `secrets.properties` file and add the following lines, replacing the placeholders with your actual values:
      ```properties
      MAPS_API_KEY=[your google maps api key (no need to quote it with double quotes)]
-     SERVER_URL=[your video call server URL]
-     ```
+     SERVER_URL=[your video call server URL] (Add random characters in place of the server URL if you are not working on the video call feature).
+```
 
 6. **Clean and Rebuild the Project**
    - In Android Studio, go to **Build > Clean Project**.
