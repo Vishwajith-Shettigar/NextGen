@@ -1,7 +1,5 @@
 package com.example.data.repository
 
-import android.speech.RecognizerResultsIntent
-import android.util.Log
 import com.example.data.dao.UserDao
 import com.example.data.entity.UserEntity
 import com.example.model.Privacy

@@ -1,12 +1,7 @@
 package com.example.nextgen.nearby
 
-import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.NEARBY_DISTANCE
 import com.example.domain.nearby.NearByController
 import com.example.nextgen.viewmodel.ObservableViewModel

@@ -1,41 +1,29 @@
 package com.example.nextgen.viewprofile
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.chat.ChatController
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
-import com.example.model.Privacy
 import com.example.model.Profile
-import com.example.model.ViewProfile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
-import com.example.nextgen.R
 import com.example.nextgen.databinding.DialogYesNoOptionsBinding
 import com.example.nextgen.databinding.FragmentViewProfileBinding
-import com.example.nextgen.home.ChatSummaryClickListener
 import com.example.nextgen.message.MessageActivity
 import com.example.utility.getProto
-import com.example.utility.getProtoExtra
 import com.example.utility.putProto
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class ViewProfileFragment : BaseFragment() {
 

@@ -1,18 +1,16 @@
 package com.example.nextgen.webrtc
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.model.Profile
 import com.example.nextgen.BuildConfig
 import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
 import com.google.gson.Gson
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 
 @Singleton
 class WebSocketManager @Inject constructor() {

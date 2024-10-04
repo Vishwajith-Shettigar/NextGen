@@ -1,15 +1,14 @@
 package com.example.nextgen.signup
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
+
 class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener,
   RouteToHomeActivity {
 

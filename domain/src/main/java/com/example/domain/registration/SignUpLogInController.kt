@@ -1,8 +1,6 @@
 package com.example.domain.registration
 
 import android.app.Activity
-import android.content.Context
-import android.util.EventLog
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.domain.constants.LOG_KEY
@@ -10,20 +8,18 @@ import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.profile.ProfileController
 import com.example.model.Privacy
 import com.example.model.Profile
-import com.example.utility.Result
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class SignUpLogInController @Inject constructor(

@@ -1,25 +1,16 @@
 package com.example.domain.nearby
 
 import android.location.Location
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
-import com.example.utility.GeoUtils
-import com.example.model.GeoPoint
 import com.example.model.Privacy
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.type.LatLng
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.ln
-import kotlinx.coroutines.*
 
 const val NEAEBY_USERS_COLLECTION = "nearby_users"
 

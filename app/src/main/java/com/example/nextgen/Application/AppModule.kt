@@ -5,14 +5,11 @@ import androidx.room.Room
 import com.example.data.dao.UserDao
 import com.example.data.db.AppDatabase
 import com.example.data.repository.UserRepo
-import com.firebase.geofire.GeoFire
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides

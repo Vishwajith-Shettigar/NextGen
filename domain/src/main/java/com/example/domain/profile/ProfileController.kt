@@ -1,25 +1,21 @@
 package com.example.domain.profile
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.data.repository.UserRepo
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.model.Privacy
 import com.example.model.PrivacyItem
 import com.example.model.Profile
+import com.example.utility.Result
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
-import com.example.utility.Result
-import com.google.firebase.storage.FirebaseStorage
-import java.io.ByteArrayOutputStream
-import kotlinx.coroutines.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 val DISABLE_CHAT_ID = "disableChat.id"
 

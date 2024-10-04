@@ -1,13 +1,9 @@
 package com.example.nextgen.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.domain.chat.ChatController
-import com.example.domain.constants.LOG_KEY
-import com.example.domain.profile.ProfileController
 import com.example.model.Chat
-import com.example.model.Profile
 import com.example.nextgen.viewmodel.ObservableViewModel
 
 class HomeViewModel(

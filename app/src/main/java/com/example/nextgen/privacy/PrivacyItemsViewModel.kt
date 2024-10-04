@@ -1,11 +1,7 @@
 package com.example.nextgen.privacy
 
-import android.util.Log
 import android.view.View
 import androidx.databinding.ObservableField
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.model.PrivacyItem
 import com.example.nextgen.viewmodel.ObservableViewModel
 

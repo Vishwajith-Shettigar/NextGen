@@ -1,10 +1,7 @@
 package com.example.nextgen.home
 
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.View
-import androidx.lifecycle.LiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.model.Chat
 
 class ChatViewModel(

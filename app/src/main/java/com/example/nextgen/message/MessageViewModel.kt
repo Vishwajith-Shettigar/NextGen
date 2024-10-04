@@ -1,6 +1,5 @@
 package com.example.nextgen.message
 
-import android.text.format.DateUtils
 import android.view.View
 import com.example.model.Message
 import com.example.nextgen.viewmodel.ObservableViewModel

@@ -4,19 +4,14 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import com.example.domain.constants.LOG_KEY
-import com.example.domain.post.PostController
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
 import com.example.model.Profile
@@ -33,7 +28,6 @@ import com.example.nextgen.privacy.PrivacyActivity
 import com.example.nextgen.privacy.RouteToPrivacyActivity
 import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.service.LocationService
-import com.example.nextgen.service.VideoCallService
 import com.example.nextgen.videocall.VideoCallActivity
 import com.example.nextgen.viewprofile.RouteToViewProfile
 import com.example.nextgen.viewprofile.ViewProfileActivity
@@ -44,10 +38,10 @@ import com.example.videocallapp.UserRole
 import com.google.firebase.firestore.FirebaseFirestore
 import com.permissionx.guolindev.PermissionX
 import com.squareup.picasso.Picasso
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val DEFAULT_LOCATION_REQUEST_CODE = 1
 const val NEARBY_FRAGMENT_LOCATION_REQUEST_CODE = 2

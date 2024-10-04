@@ -3,7 +3,6 @@ package com.example.nextgen.videocall
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.domain.profile.ProfileController
-import com.example.model.Profile
 import com.example.model.VideoCallScreenArguments
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
@@ -23,14 +21,13 @@ import com.example.utility.putProto
 import com.example.videocallapp.*
 import com.google.gson.Gson
 import com.permissionx.guolindev.PermissionX
-import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import org.webrtc.SessionDescription
+import javax.inject.Inject
 
 class VideoCallFragment : BaseFragment() {
 
