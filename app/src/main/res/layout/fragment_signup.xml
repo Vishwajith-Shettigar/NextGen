@@ -87,18 +87,29 @@
                 android:layout_marginTop="10dp"
                 />
 
-            <TextView
-                android:id="@+id/signinherebtn"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/signupbtn"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="@{viewModel.onClickSignIn}"
-                android:text="Already have an account ? sign in here"
-                android:textColor="#626997" />
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/signupbtn">
+                <TextView
+                    android:id="@+id/signinherebt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Already have an account ?"
+                    android:textColor="#626997" />
+
+                <TextView
+                    android:id="@+id/signinherebtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{viewModel.onClickSignIn}"
+                    android:text=" Sign in"
+                    android:textColor="#0020FF" />
+            </LinearLayout>
         </RelativeLayout>
         <ProgressBar
             android:id="@+id/progress_bar"
