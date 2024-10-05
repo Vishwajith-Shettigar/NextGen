@@ -67,11 +67,7 @@ class UserRepo(private val userDao: UserDao) {
     }
   }
 
-  suspend fun updatedisableLocationStatus(
-    userId: String,
-    status: Boolean,
-    updated: (Boolean) -> Unit
-  ) {
+  suspend fun updatedisableLocationStatus(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
 
     try {
       val rowUpdated = userDao.updatedisableLocationStatus(userId, status)
@@ -86,11 +82,7 @@ class UserRepo(private val userDao: UserDao) {
     }
   }
 
-  suspend fun updatedisableProfilePicture(
-    userId: String,
-    status: Boolean,
-    updated: (Boolean) -> Unit
-  ) {
+  suspend fun updatedisableProfilePicture(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
 
     try {
       val rowUpdated = userDao.updatedisableProfilePicture(userId, status)

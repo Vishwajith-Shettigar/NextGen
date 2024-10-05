@@ -251,7 +251,6 @@ class ChatController @Inject constructor(
                         imageUrl = doc.getString("imageUrl")
                         username = doc.getString("username")
                       }
-
                       is com.example.utility.Result.Failure -> {
                         // Handle failure if needed
                       }

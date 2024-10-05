@@ -74,7 +74,6 @@ class HomeFragment : BaseFragment() {
         is ChatViewModel -> {
           BaseAdapter.ViewType.CHAT
         }
-
         else -> {
           throw IllegalArgumentException("Encountered unexpected view model: $homeViewModel")
         }
@@ -86,7 +85,6 @@ class HomeFragment : BaseFragment() {
         BaseAdapter.ViewType.CHAT -> {
           ChatLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         }
-
         else -> {
           throw IllegalArgumentException("Encountered unexpected view type: $viewType")
         }

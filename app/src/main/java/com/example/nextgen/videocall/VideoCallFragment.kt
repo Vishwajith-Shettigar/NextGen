@@ -319,7 +319,6 @@ class VideoCallFragment : BaseFragment() {
           }
         }
       }
-
       else -> {}
     }
   }

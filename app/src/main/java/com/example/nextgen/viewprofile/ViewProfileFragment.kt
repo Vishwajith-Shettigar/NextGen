@@ -70,7 +70,6 @@ class ViewProfileFragment : BaseFragment() {
           )
           true
         }
-
         else -> {
           false
         }

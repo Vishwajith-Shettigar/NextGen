@@ -13,11 +13,11 @@ class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener
   RouteToHomeActivity {
 
   @Inject
-  lateinit var firebaseAuth: FirebaseAuth
+   lateinit var firebaseAuth:FirebaseAuth
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_signup)
-    if (firebaseAuth.currentUser != null) {
+    if(firebaseAuth.currentUser!=null){
       startActivity(HomeActivity.createHomeActivity(this))
       finish()
     }

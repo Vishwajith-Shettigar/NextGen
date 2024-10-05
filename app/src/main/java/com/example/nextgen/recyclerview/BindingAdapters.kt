@@ -37,7 +37,8 @@ class BindingAdapters {
     fun loadStars(view: ImageView, rating: LiveData<Float>) {
       if (rating.value == 5.0F) {
         Picasso.get().load(R.drawable.ic_full_star).error(R.drawable.ic_full_star).into(view)
-      } else {
+      }
+      else {
         Picasso.get().load(R.drawable.half_star).error(R.drawable.half_star).into(view)
       }
     }

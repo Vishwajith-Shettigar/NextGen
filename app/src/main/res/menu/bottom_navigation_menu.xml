@@ -7,7 +7,8 @@
         android:id="@+id/home"
         android:enabled="true"
         android:icon="@drawable/home_24"
-        android:title="@string/home_label" />
+        android:title="@string/home_label"
+        />
     <item
         android:id="@+id/nearby"
         android:enabled="true"

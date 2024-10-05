@@ -1,126 +1,126 @@
 plugins {
-  id 'com.android.application'
-  id 'org.jetbrains.kotlin.android'
-  // firebase
-  id("com.google.gms.google-services")
-  // secrets gradle plugin
-  id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    // firebase
+    id("com.google.gms.google-services")
+    // secrets gradle plugin
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 }
 
 android {
 
-  namespace 'com.example.nextgen'
-  compileSdk 34
+    namespace 'com.example.nextgen'
+    compileSdk 34
 
-  defaultConfig {
-    applicationId "com.example.nextgen"
-    minSdk 24
-    targetSdk 34
-    versionCode 1
-    versionName "1.0"
+    defaultConfig {
+        applicationId "com.example.nextgen"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
 
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-  }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = '1.8'
-  }
 
-  buildFeatures {
-    buildConfig true
-    dataBinding = true
-    viewBinding = true
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        buildConfig true
+        dataBinding = true
+        viewBinding = true
+    }
 
 
 }
 apply plugin: 'kotlin-kapt'
 
 secrets {
-  // Optionally specify a different file name containing your secrets.
-  // The plugin defaults to "local.properties"
-  propertiesFileName = "secrets.properties"
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
 
-  // A properties file containing default secret values. This file can be
-  // checked in version control.
-  defaultPropertiesFileName = "local.defaults.properties"
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
 
-  // Configure which keys should be ignored by the plugin by providing regular expressions.
-  // "sdk.dir" is ignored by default.
-  ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
-  ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
 
 
 dependencies {
 
-  implementation project(':model')
-  implementation project(':domain')
-  implementation project(':data')
+    implementation project(':model')
+    implementation project(':domain')
+    implementation project(':data')
 
 
-  implementation("com.google.protobuf:protobuf-javalite:4.26.1") {
-    exclude module: 'protobuf-java'
-  }
-  implementation 'androidx.core:core-ktx:1.13.1'
-  implementation 'androidx.appcompat:appcompat:1.4.0'
-  implementation 'com.google.android.material:material:1.12.0'
-  implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-  implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation("com.google.protobuf:protobuf-javalite:4.26.1") {
+        exclude module: 'protobuf-java'
+    }
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-  testImplementation 'junit:junit:4.13.2'
-  androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-  implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-  implementation 'androidx.databinding:databinding-runtime:8.4.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.databinding:databinding-runtime:8.4.1'
 
-  //Dagger 2
-  implementation 'com.google.dagger:dagger:2.46'
-  kapt 'com.google.dagger:dagger-compiler:2.43.2'
-
-
-  //firenbase
-  implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-  implementation("com.google.firebase:firebase-analytics")
-  implementation 'com.google.firebase:firebase-auth:23.0.0'
-  implementation 'com.google.firebase:firebase-database:21.0.0'
-  implementation 'com.google.firebase:firebase-firestore:25.0.0'
-  implementation 'com.google.firebase:firebase-storage:21.0.0'
+    //Dagger 2
+    implementation 'com.google.dagger:dagger:2.46'
+    kapt 'com.google.dagger:dagger-compiler:2.43.2'
 
 
-  implementation 'com.firebase:geofire-android:3.1.0'
+    //firenbase
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation 'com.google.firebase:firebase-auth:23.0.0'
+    implementation 'com.google.firebase:firebase-database:21.0.0'
+    implementation 'com.google.firebase:firebase-firestore:25.0.0'
+    implementation 'com.google.firebase:firebase-storage:21.0.0'
 
 
-  // Maps SDK for Android
-  implementation 'com.google.android.gms:play-services-maps:18.2.0'
-  implementation 'com.google.android.gms:play-services-location:21.2.0'
-
-  //picasso
-  implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'com.firebase:geofire-android:3.1.0'
 
 
-  implementation "androidx.room:room-runtime:2.6.1"
-  annotationProcessor "androidx.room:room-compiler:2.6.1"
+    // Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-location:21.2.0'
+
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
 
 
-  implementation 'com.mesibo.api:webrtc:1.0.5'
-  implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 
-  //Easy Permissions
-  implementation 'com.guolindev.permissionx:permissionx:1.6.1'
 
-  implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.mesibo.api:webrtc:1.0.5'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+
+    //Easy Permissions
+    implementation 'com.guolindev.permissionx:permissionx:1.6.1'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
 
 }

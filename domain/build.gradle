@@ -1,50 +1,51 @@
 plugins {
-  id 'com.android.library'
-  id 'kotlin-android'
-  // firebase
-  id 'com.google.gms.google-services'
-  id 'org.jetbrains.kotlin.android'
+    id 'com.android.library'
+    id 'kotlin-android'
+    // firebase
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-  compileSdkVersion 34
-  defaultConfig {
-    minSdkVersion 24
-    targetSdkVersion 34
-  }
-  sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-  }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = '1.8'
-  }
+    compileSdkVersion 34
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 34
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
-  implementation project(':data')
-  implementation project(':model')
+    implementation project(':data')
+    implementation project(':model')
 
 
-  // Firebase
-  implementation platform('com.google.firebase:firebase-bom:33.0.0')
-  implementation 'com.google.firebase:firebase-analytics'
-  implementation 'com.google.firebase:firebase-auth'
-  implementation 'com.google.firebase:firebase-database'
-  implementation 'com.google.firebase:firebase-firestore'
-  implementation 'com.google.firebase:firebase-storage'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:33.0.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
 
 
-  implementation 'com.firebase:geofire-android-common:3.2.0'
+    implementation 'com.firebase:geofire-android-common:3.2.0'
 
-  // coroutines
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
-  implementation 'androidx.appcompat:appcompat:1.4.0'
-  implementation 'androidx.core:core-ktx:1.13.1'
+    // coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
 
 
 }

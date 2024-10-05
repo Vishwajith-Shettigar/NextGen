@@ -7,17 +7,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MessageViewModel(
-  private val userId: String,
-  private val message: Message,
+  private val userId:String,
+  private val message:Message,
   private val messageOnLongPressListener: MessageOnLongPressListener,
-  private val index: Int
-) : ObservableViewModel() {
+  private val index:Int
+):ObservableViewModel() {
 
   val isSender by lazy {
-    userId == message.senderId
+    userId==message.senderId
   }
 
-  val messageId by lazy {
+  val messageId by lazy{
     message.messageId
   }
 
@@ -32,16 +32,8 @@ class MessageViewModel(
   val timestamp: String by lazy {
     val timeDifferenceMillis = now - message.timestamp
     when {
-      isToday(message.timestamp) -> SimpleDateFormat(
-        "h:mm a",
-        Locale.getDefault()
-      ).format(message.timestamp)
-
-      isYesterday(message.timestamp) -> "Yesterday " + SimpleDateFormat(
-        "h:mm a",
-        Locale.getDefault()
-      ).format(message.timestamp)
-
+      isToday(message.timestamp) -> SimpleDateFormat("h:mm a", Locale.getDefault()).format(message.timestamp)
+      isYesterday(message.timestamp) -> "Yesterday " + SimpleDateFormat("h:mm a", Locale.getDefault()).format(message.timestamp)
       else -> SimpleDateFormat("dd/MM/yyyy h:mm a", Locale.getDefault()).format(message.timestamp)
     }
   }
@@ -63,10 +55,11 @@ class MessageViewModel(
       nowCalendar.get(Calendar.DAY_OF_YEAR) == timestampCalendar.get(Calendar.DAY_OF_YEAR)
   }
 
-  fun onLongClick(view: View): Boolean {
-    messageOnLongPressListener.onLongPress(message, index)
+  fun onLongClick(view: View):Boolean{
+    messageOnLongPressListener.onLongPress(message,index)
     return true
   }
+
 
 
 }

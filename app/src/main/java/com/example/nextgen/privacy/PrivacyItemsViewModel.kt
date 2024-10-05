@@ -13,7 +13,6 @@ class PrivacyItemsViewModel(
 
 
   var status = ObservableField<Boolean>(privacyItem.itemStatus)
-
   init {
     status.set(privacyItem.itemStatus)
   }

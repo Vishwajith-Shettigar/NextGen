@@ -126,7 +126,6 @@ class SignUpLogInController @Inject constructor(
                     }
                     callback(com.example.utility.Result.Success("Saved"))
                   }
-
                   is com.example.utility.Result.Failure -> {
                     if (auth.currentUser != null) {
                       deleteUserFromAuth(email, password)
@@ -135,7 +134,6 @@ class SignUpLogInController @Inject constructor(
                     callback(com.example.utility.Result.Failure(result.message.toString()))
 
                   }
-
                   else -> {}
                 }
               }

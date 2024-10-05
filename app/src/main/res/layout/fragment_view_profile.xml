@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <data>
-
         <variable
             name="viewModel"
             type="com.example.nextgen.viewprofile.ViewProfileViewModel" />
@@ -12,9 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/home_screen_background"
-        android:padding="16dp">
-
+        android:padding="16dp"
+        android:background="@color/home_screen_background">
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_picture_cardview"
             android:layout_width="wrap_content"
@@ -23,7 +20,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="100dp">
-
             <ImageView
                 android:id="@+id/profile_picture_imageview"
                 android:layout_width="100dp"
@@ -47,8 +43,8 @@
             android:layout_marginBottom="8dp"
             android:text="@{viewModel.viewProfile.userName}"
             android:textColor="@color/home_screen_text_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/rating_text"
@@ -59,17 +55,19 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/username"
             android:gravity="center_vertical"
-            android:text="@{viewModel.rating.toString()}" />
+            android:text="@{viewModel.rating.toString()}"
+            />
 
         <ImageView
             android:id="@+id/rating_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_below="@id/profile_picture_cardview"
-            android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/rating_text"
             android:gravity="center_vertical"
-            app:rating="@{ viewModel.rating }" />
+            android:layout_below="@id/profile_picture_cardview"
+            android:layout_marginStart="4dp"
+            app:rating="@{ viewModel.rating }"
+           />
 
         <!-- Full Name -->
         <TextView
