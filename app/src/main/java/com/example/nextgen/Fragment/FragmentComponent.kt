@@ -27,9 +27,4 @@ interface FragmentComponent {
   fun inject(fragment: ViewProfileFragment)
   fun inject(fragment: VideoCallFragment)
   fun inject(fragment: NotificationFragment)
-
-
-
-
-
 }

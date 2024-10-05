@@ -33,7 +33,7 @@ class EditProfileViewModel(
   }
 
 
-  fun storeNewImage(bitmap: Bitmap, callback:(com.example.utility.Result<String>)->Unit){
+  fun storeNewImage(bitmap: Bitmap, callback: (com.example.utility.Result<String>) -> Unit){
     viewModelScope.launch {
       profileController.uploadImageToStorage(bitmap = bitmap, userId = profile.userId) {
         if (it is com.example.utility.Result.Success) {
@@ -44,7 +44,7 @@ class EditProfileViewModel(
     }
   }
 
-  fun updateUserProfile(profile: Profile,callback: (Result<String>) -> Unit) {
+  fun updateUserProfile(profile: Profile, callback: (Result<String>) -> Unit) {
 
     profileController.updateUserProfile(profile) {
       if (it is com.example.utility.Result.Success)

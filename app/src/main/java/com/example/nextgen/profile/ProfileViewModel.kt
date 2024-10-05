@@ -22,7 +22,7 @@ class ProfileViewModel(
   init {
     loadProfile()
     viewModelScope.launch {
-      _rating.value=( profileController.getRating(userId))
+      _rating.value = (profileController.getRating(userId))
     }
   }
 
