@@ -1,15 +1,11 @@
 package com.example.nextgen.privacy
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
-import com.example.model.PrivacyItem
 import com.example.model.Profile
-import com.example.nextgen.home.HomeItemViewModel
 import com.example.nextgen.viewmodel.ObservableViewModel
 import kotlinx.coroutines.launch
 
@@ -25,11 +21,9 @@ class PrivacyViewModel(
 
   init {
     loadPrivacyItems()
-
   }
 
   fun loadPrivacyItems() {
-
     val privacyItems = profileController.getPrivacyItems(profile.privacy)
     val data = mutableListOf<PrivacyItemsViewModel>()
     privacyItems.mapIndexed { index, privacyItem ->
@@ -54,6 +48,7 @@ class PrivacyViewModel(
       }
     }
   }
+
   fun updatedisableLocationStatus(
     choice: Boolean,
     callback: (com.example.utility.Result<String>) -> Unit,

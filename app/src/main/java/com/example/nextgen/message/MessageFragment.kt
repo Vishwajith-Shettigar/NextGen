@@ -2,21 +2,17 @@ package com.example.nextgen.message
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.domain.chat.ChatController
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.VIDEO_CALL_AVAILABLE
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
@@ -25,16 +21,9 @@ import com.example.model.Message
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
-import com.example.nextgen.Fragment.FragmentScope
-import com.example.nextgen.R
-import com.example.nextgen.databinding.ChatLayoutBinding
 import com.example.nextgen.databinding.FragmentMessageBinding
 import com.example.nextgen.databinding.ReceiverMessageLayoutBinding
 import com.example.nextgen.databinding.SenderMessageLayoutBinding
-import com.example.nextgen.home.ChatSummaryClickListener
-import com.example.nextgen.home.ChatViewModel
-import com.example.nextgen.home.HomeItemViewModel
-import com.example.nextgen.home.HomeViewModel
 import com.example.nextgen.recyclerview.BaseAdapter
 import com.example.nextgen.videocall.VideoCallActivity
 import com.example.nextgen.viewprofile.ViewProfileActivity
@@ -45,10 +34,10 @@ import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
 import com.example.videocallapp.UserRole
 import com.permissionx.guolindev.PermissionX
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class MessageFragment : BaseFragment(), MessageOnLongPressListener {
   private lateinit var binding: FragmentMessageBinding
@@ -179,7 +168,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     }
 
     binding.videoCallBtn.setOnClickListener {
-      if (VIDEO_CALL_AVAILABLE==false) {
+      if (VIDEO_CALL_AVAILABLE == false) {
         Toast.makeText(activity, "Not available right now.", Toast.LENGTH_LONG).show()
         return@setOnClickListener
       }

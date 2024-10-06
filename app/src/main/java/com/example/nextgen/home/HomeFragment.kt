@@ -1,40 +1,23 @@
 package com.example.nextgen.home
 
-import android.Manifest
-import android.app.Person
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.chat.ChatController
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.nearby.NearByController
-import com.example.utility.GeoUtils
 import com.example.domain.profile.ProfileController
-import com.example.model.GeoPoint
-import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
-import com.example.nextgen.Fragment.FragmentScope
-import com.example.nextgen.R
 import com.example.nextgen.databinding.ChatLayoutBinding
 import com.example.nextgen.databinding.FragmentHomeBinding
-import com.example.nextgen.profile.ProfileFragment
 import com.example.nextgen.recyclerview.BaseAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
-import kotlin.random.Random
 
 class HomeFragment : BaseFragment() {
   @Inject

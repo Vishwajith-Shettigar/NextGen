@@ -2,7 +2,7 @@ package com.example.videocallapp
 
 import org.webrtc.*
 
-open class PeerConnectionObserver : PeerConnection.Observer{
+open class PeerConnectionObserver : PeerConnection.Observer {
   override fun onSignalingChange(p0: PeerConnection.SignalingState?) {
   }
 

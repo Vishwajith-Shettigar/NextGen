@@ -1,24 +1,23 @@
 package com.example.nextgen.signup
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import com.example.domain.constants.LOG_KEY
 import com.example.nextgen.Activity.ActivityComponent
 import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
+
 class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener,
   RouteToHomeActivity {
 
   @Inject
-   lateinit var firebaseAuth:FirebaseAuth
+  lateinit var firebaseAuth:FirebaseAuth
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_signup)
-    if(firebaseAuth.currentUser!=null){
+    if (firebaseAuth.currentUser != null){
       startActivity(HomeActivity.createHomeActivity(this))
       finish()
     }

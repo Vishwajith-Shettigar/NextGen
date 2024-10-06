@@ -1,25 +1,16 @@
 package com.example.domain.nearby
 
 import android.location.Location
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
-import com.example.utility.GeoUtils
-import com.example.model.GeoPoint
 import com.example.model.Privacy
 import com.example.model.Profile
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.type.LatLng
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.ln
-import kotlinx.coroutines.*
 
 const val NEAEBY_USERS_COLLECTION = "nearby_users"
 
@@ -180,37 +171,37 @@ class NearByController @Inject constructor(
   }
 
   fun updateLocation(userId: String, location: Location, oldLocation: Location?) {
-   CoroutineScope(Dispatchers.IO).launch {
-     if (auth.currentUser == null) {
-       return@launch
-     }
+    CoroutineScope(Dispatchers.IO).launch {
+      if (auth.currentUser == null) {
+        return@launch
+      }
 
-     if (oldLocation != null) {
-       val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
-       val newGeoPoint = GeoLocation(location.latitude, location.longitude)
-       if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 10)
-         return@launch
-     }
+      if (oldLocation != null) {
+        val oldGeoPoint = GeoLocation(oldLocation.latitude, oldLocation.longitude)
+        val newGeoPoint = GeoLocation(location.latitude, location.longitude)
+        if (GeoFireUtils.getDistanceBetween(oldGeoPoint, newGeoPoint) < 10)
+          return@launch
+      }
 
-     val latitude = location.latitude
-     val longitude = location.longitude
+      val latitude = location.latitude
+      val longitude = location.longitude
 
-     val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+      val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
 
-     val doc = firestore.collection(USERS_COLLECTION).document(userId)
+      val doc = firestore.collection(USERS_COLLECTION).document(userId)
 
-     doc.update("geoHash", geoHash)
-       .addOnSuccessListener {
+      doc.update("geoHash", geoHash)
+        .addOnSuccessListener {
 
-       }
-       .addOnFailureListener { exception ->
-       }
+        }
+        .addOnFailureListener { exception ->
+        }
 
-     doc.update("location", GeoPoint(latitude, longitude))
-       .addOnSuccessListener {
-       }
-       .addOnFailureListener { exception ->
-       }
+      doc.update("location", GeoPoint(latitude, longitude))
+        .addOnSuccessListener {
+        }
+        .addOnFailureListener { exception ->
+        }
    }
   }
 }

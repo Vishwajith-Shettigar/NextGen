@@ -1,20 +1,16 @@
 package com.example.nextgen.signup
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.domain.constants.LOG_KEY
+import androidx.fragment.app.Fragment
 import com.example.domain.registration.SignUpLogInController
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
-import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentSignInBinding
-import com.example.nextgen.databinding.FragmentSignupBinding
 import javax.inject.Inject
 
 

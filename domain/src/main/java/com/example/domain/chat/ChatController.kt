@@ -1,33 +1,27 @@
 package com.example.domain.chat
 
-import android.util.Log
 import com.example.domain.constants.CHATS_NODE
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.constants.USERS_COLLECTION
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
 import com.example.model.LastMessageInfo
 import com.example.model.Message
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.util.nextAlphanumericString
-import javax.inject.Inject
-import kotlin.random.Random
-import kotlinx.coroutines.tasks.await
 import com.example.utility.Result
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ListenerRegistration
-import java.util.Date
-import javax.inject.Singleton
-import kotlin.coroutines.resumeWithException
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.util.nextAlphanumericString
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
+import java.util.Date
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class ChatController @Inject constructor(

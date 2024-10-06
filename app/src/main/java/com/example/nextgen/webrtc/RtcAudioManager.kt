@@ -12,9 +12,8 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.annotation.Nullable
-import java.util.*
-import kotlin.collections.HashSet
 import org.webrtc.ThreadUtils
+import java.util.Collections
 
 class RtcAudioManager(context: android.content.Context) {
   enum class AudioDevice {

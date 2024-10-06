@@ -1,7 +1,5 @@
 package com.example.data.repository
 
-import android.speech.RecognizerResultsIntent
-import android.util.Log
 import com.example.data.dao.UserDao
 import com.example.data.entity.UserEntity
 import com.example.model.Privacy
@@ -55,7 +53,6 @@ class UserRepo(private val userDao: UserDao) {
   }
 
   suspend fun updateDisableChatStatus(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
-
     try {
       val rowUpdated = userDao.updateDisableChatStatus(userId, status)
       if (rowUpdated != 0) {
@@ -65,12 +62,10 @@ class UserRepo(private val userDao: UserDao) {
       }
     } catch (e: Exception) {
       updated(false)
-
     }
   }
 
   suspend fun updatedisableLocationStatus(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
-
     try {
       val rowUpdated = userDao.updatedisableLocationStatus(userId, status)
       if (rowUpdated != 0) {
@@ -80,12 +75,10 @@ class UserRepo(private val userDao: UserDao) {
       }
     } catch (e: Exception) {
       updated(false)
-
     }
   }
 
   suspend fun updatedisableProfilePicture(userId: String, status: Boolean, updated: (Boolean) -> Unit) {
-
     try {
       val rowUpdated = userDao.updatedisableProfilePicture(userId, status)
       if (rowUpdated != 0) {
@@ -95,7 +88,6 @@ class UserRepo(private val userDao: UserDao) {
       }
     } catch (e: Exception) {
       updated(false)
-
     }
   }
 }

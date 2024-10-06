@@ -1,18 +1,16 @@
 package com.example.nextgen.webrtc
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.model.Profile
 import com.example.nextgen.BuildConfig
 import com.example.videocallapp.MessageModel
 import com.example.videocallapp.TYPE
 import com.google.gson.Gson
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 
 @Singleton
 class WebSocketManager @Inject constructor() {
@@ -20,8 +18,8 @@ class WebSocketManager @Inject constructor() {
   private val _message= MutableLiveData<MessageModel>()
   val message: LiveData<MessageModel> get() = _message
 
-  private var webSocket: WebSocketClient?=null
-   var UID:String?=null
+  private var webSocket: WebSocketClient? = null
+   var UID: String? = null
   private val gson = Gson()
 
   val serverUri = URI(BuildConfig.SERVER_URL)
@@ -29,7 +27,7 @@ class WebSocketManager @Inject constructor() {
   fun initSocket(uid:String){
     UID = uid
 
-    webSocket = object:WebSocketClient(serverUri){
+    webSocket = object : WebSocketClient(serverUri){
       override fun onOpen(handshakedata: ServerHandshake?) {
         sendMessageToSocket(
           MessageModel(
@@ -41,7 +39,7 @@ class WebSocketManager @Inject constructor() {
       override fun onMessage(message: String?) {
         try {
           _message.postValue(gson.fromJson(message,MessageModel::class.java))
-        }catch (e:Exception){
+        } catch (e:Exception) {
           e.printStackTrace()
         }
       }

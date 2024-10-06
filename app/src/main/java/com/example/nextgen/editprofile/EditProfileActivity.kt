@@ -2,7 +2,6 @@ package com.example.nextgen.editprofile
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.model.Profile
 import com.example.nextgen.Activity.ActivityComponent

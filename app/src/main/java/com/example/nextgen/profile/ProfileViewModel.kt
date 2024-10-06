@@ -1,13 +1,8 @@
 package com.example.nextgen.profile
 
-import android.util.Log
-import androidx.databinding.Observable
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableFloat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.domain.constants.LOG_KEY
 import com.example.domain.profile.ProfileController
 import com.example.model.Profile
 import com.example.nextgen.viewmodel.ObservableViewModel
@@ -27,7 +22,7 @@ class ProfileViewModel(
   init {
     loadProfile()
     viewModelScope.launch {
-      _rating.value=( profileController.getRating(userId))
+      _rating.value = (profileController.getRating(userId))
     }
   }
 

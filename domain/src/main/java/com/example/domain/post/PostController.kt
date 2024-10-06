@@ -1,6 +1,5 @@
 package com.example.domain.post
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 import javax.inject.Singleton
