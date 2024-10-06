@@ -7,6 +7,7 @@ import com.example.domain.chat.ChatController
 import com.example.domain.nearby.NearByController
 import com.example.domain.profile.ProfileController
 import com.example.model.Chat
+
 class MessageListViewModelFactory(
   private val userId: String,
   private val chatController: ChatController,

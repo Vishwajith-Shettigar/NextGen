@@ -14,7 +14,7 @@ class MessageViewModel(
 ):ObservableViewModel() {
 
   val isSender by lazy {
-    userId==message.senderId
+    userId == message.senderId
   }
 
   val messageId by lazy{
@@ -55,11 +55,9 @@ class MessageViewModel(
       nowCalendar.get(Calendar.DAY_OF_YEAR) == timestampCalendar.get(Calendar.DAY_OF_YEAR)
   }
 
-  fun onLongClick(view: View):Boolean{
+  fun onLongClick(view: View): Boolean {
     messageOnLongPressListener.onLongPress(message,index)
     return true
   }
-
-
 
 }

@@ -21,11 +21,9 @@ class PrivacyViewModel(
 
   init {
     loadPrivacyItems()
-
   }
 
   fun loadPrivacyItems() {
-
     val privacyItems = profileController.getPrivacyItems(profile.privacy)
     val data = mutableListOf<PrivacyItemsViewModel>()
     privacyItems.mapIndexed { index, privacyItem ->
@@ -50,6 +48,7 @@ class PrivacyViewModel(
       }
     }
   }
+
   fun updatedisableLocationStatus(
     choice: Boolean,
     callback: (com.example.utility.Result<String>) -> Unit,
