@@ -122,6 +122,7 @@
                     android:id="@+id/signupherebt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#1F2F33"
                     android:text="Already have an account ?" />
 
                 <TextView
@@ -129,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:onClick="@{viewModel.onClickSignUp}"
+                    android:onClick="@{viewModel.onClickSignIn}"
                     android:text="Sign In"
                     android:textColor="#01AEDB"
                     android:textStyle="bold" />
