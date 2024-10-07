@@ -11,6 +11,7 @@ import com.google.firebase.firestore.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.example.model.GeoPoint
 
 const val NEAEBY_USERS_COLLECTION = "nearby_users"
 

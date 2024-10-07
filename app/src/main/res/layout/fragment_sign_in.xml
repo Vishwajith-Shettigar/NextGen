@@ -91,16 +91,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/signinbtn"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="40dp"
                 android:gravity="center_horizontal"
-                android:layout_centerInParent="true"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/signupherebt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dont have an account ?" />
+                    android:text="Dont have an account ?"
+                    android:textColor="#1F2F33" />
 
                 <TextView
                     android:id="@+id/signupherebtn"
