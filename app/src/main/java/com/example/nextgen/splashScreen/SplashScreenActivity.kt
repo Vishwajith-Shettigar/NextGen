@@ -4,28 +4,34 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.nextgen.Activity.ActivityComponent
+import com.example.nextgen.Activity.BaseActivity
 import com.example.nextgen.R
 import com.example.nextgen.home.HomeActivity
 import com.example.nextgen.signup.SignupSigninActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SplashScreenActivity : AppCompatActivity() {
+class SplashScreenActivity : BaseActivity() {
 
-    private lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseAuth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
-        firebaseAuth = FirebaseAuth.getInstance()
 
 
         lifecycleScope.launch {
             delay(3000) // 3-second delay
             redirectUserBasedOnSignInStatus()
         }
+    }
+
+    override fun injectDependencies(activityComponent: ActivityComponent) {
+        activityComponent.inject(this)
     }
 
     private fun redirectUserBasedOnSignInStatus() {
