@@ -17,10 +17,7 @@ class SignupSigninActivity : BaseActivity(), RouteToSignupSigninActivityListener
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_signup)
-    if (firebaseAuth.currentUser != null){
-      startActivity(HomeActivity.createHomeActivity(this))
-      finish()
-    }
+
     loadFragment(SignupFragment.newInstance(), SignupFragment.tag)
   }
 
