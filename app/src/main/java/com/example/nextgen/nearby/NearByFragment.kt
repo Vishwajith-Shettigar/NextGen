@@ -210,8 +210,11 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
       withContext(Dispatchers.Main) {
         usermarker?.remove()
-        val bitmapDescriptor = roundedBitmap?.let { BitmapDescriptorFactory.fromBitmap(it) }
-          ?: BitmapDescriptorFactory.defaultMarker()
+        // Use the default avatar if imageUrl is null
+        val bitmapDescriptor = roundedBitmap?.let {
+          BitmapDescriptorFactory.fromBitmap(it)
+        } ?: bitmapDescriptorFromVector(R.drawable.person_24) // Default avatar
+
         usermarker = mMap.addMarker(
           MarkerOptions().position(location).title("You are here")
             .icon(bitmapDescriptor)
@@ -267,19 +270,19 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
           userMarkers.remove(profile.userId)?.remove()
         }
       } else {
-
         // Load profile picture asynchronously using loadBitmapFromUrl
         val bitmap = loadBitmapFromUrl(profile.imageUrl)
         val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
         val roundedBitmap = resizedBitmap?.let { getRoundedBitmap(it) }
 
         withContext(Dispatchers.Main) {
-
           val otherUserLocation = LatLng(profile.location.latitude, profile.location.longitude)
           userMarkers.remove(profile.userId)?.remove()
 
-          val bitmapDescriptor = roundedBitmap?.let { BitmapDescriptorFactory.fromBitmap(it) }
-            ?: BitmapDescriptorFactory.defaultMarker()
+          // Use the default avatar if imageUrl is null
+          val bitmapDescriptor = roundedBitmap?.let {
+            BitmapDescriptorFactory.fromBitmap(it)
+          } ?: bitmapDescriptorFromVector(R.drawable.person_24) // Default avatar
 
           val newMarker = mMap.addMarker(
             MarkerOptions()
