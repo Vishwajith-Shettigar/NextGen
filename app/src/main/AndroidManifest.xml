@@ -83,13 +83,6 @@
             android:name=".signup.SignupSigninActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize">
-
-<!--            i comment this out because if there will be two launcher then two app will be install-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
 
         <meta-data
