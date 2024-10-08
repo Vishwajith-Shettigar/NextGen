@@ -37,6 +37,16 @@
         android:theme="@style/Theme.NextGen"
         tools:targetApi="31">
         <activity
+            android:name=".splashScreen.SplashScreenActivity"
+            android:exported="true"
+            android:theme="@style/Theme.NextGen"
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".videocall.VideoCallActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"/>
@@ -73,11 +83,13 @@
             android:name=".signup.SignupSigninActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            i comment this out because if there will be two launcher then two app will be install-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <meta-data

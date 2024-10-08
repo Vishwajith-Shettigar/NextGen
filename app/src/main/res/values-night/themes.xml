@@ -12,5 +12,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <!-- color for splash screen-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/nextgen_logo</item>
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="postSplashScreenTheme">@style/Theme.NextGen</item>
     </style>
 </resources>
