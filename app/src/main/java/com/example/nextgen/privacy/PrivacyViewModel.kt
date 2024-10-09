@@ -70,6 +70,7 @@ class PrivacyViewModel(
     callback: (com.example.utility.Result<String>) -> Unit,
   ) {
     viewModelScope.launch {
+     // profile.privacy.disableProfilePicture = choice
       profileController.updatedisableProfilePicture(userId = profile.userId, choice) {
         if (it is com.example.utility.Result.Success) {
           callback(com.example.utility.Result.Success("Successful"))
