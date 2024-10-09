@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -8,145 +9,133 @@
             type="com.example.nextgen.message.MessageListViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/message_recyclerView_background"
->
+        android:background="@color/message_recyclerView_background">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="0dp"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/home_screen_background"
-            android:elevation="4dp">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
-                android:id="@+id/top_layout"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/topLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="0dp">
+                android:layout_height="match_parent">
 
-                <RelativeLayout
-                    android:id="@+id/top_relativelayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_toRightOf="@+id/cardview"
-                    android:gravity="center_vertical">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userimage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    app:imageUrl="@{viewModel.imageUrl}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
 
-                    <TextView
-                        android:id="@+id/username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.userName}"
-                        android:textColor="@color/home_screen_text_color"
-                        android:textSize="20dp" />
-
-                    <TextView
-                        android:id="@+id/status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/username"
-                        android:text="@{viewModel.status}"
-                        android:textAllCaps="false"
-                        android:textColor="@color/home_screen_text_color" />
-                </RelativeLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardview"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    app:cardCornerRadius="40dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{viewModel.userName}"
+                    android:textColor="@color/home_screen_text_color"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/status"
+                    app:layout_constraintEnd_toStartOf="@+id/videoCallBtn"
+                    app:layout_constraintStart_toEndOf="@+id/userimage"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="John Doe" />
 
-                    <ImageView
-                        android:id="@+id/userimage"
-                        imageUrl="@{viewModel.imageUrl}"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/ic_launcher_background"
-                        android:scaleType="centerCrop" />
-                </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{viewModel.status}"
+                    android:textColor="@color/home_screen_text_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/videoCallBtn"
+                    app:layout_constraintStart_toEndOf="@+id/userimage"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="Online" />
 
                 <ImageView
-                    android:id="@+id/deletechat"
+                    android:id="@+id/videoCallBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="30dp"
-                    android:layout_toStartOf="@id/video_call_btn"
-                    android:src="@drawable/delete_icon"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/video_call_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="20dp"
-                    android:clickable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="16dp"
                     android:src="@drawable/ic_baseline_videocam_24"
-                    app:tint="@color/home_screen_text_color"
-                    android:focusable="true" />
-            </RelativeLayout>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/home_screen_text_color" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/message"
-            android:layout_below="@+id/toolbar"
+            android:layout_height="598dp"
             android:padding="5dp"
             android:background="@color/message_recyclerView_background"
-            />
+            app:layout_constraintBottom_toTopOf="@+id/messageInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/messageInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/send_btn"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/sendbtn_cardview"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter a message"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:text="@={viewModel.messageText}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/send_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/round_button_background"
+            android:contentDescription="Send message"
+            android:clickable="true"
+            android:padding="4dp"
+            android:onClick="@{viewModel::onSendClick}"
+            android:src="@drawable/send_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/messageInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/messageInputLayout" />
+
+        <ImageView
+            android:id="@+id/deletechat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/message"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="-57dp"
-            android:layout_marginBottom="10dp"
-            android:focusable="true"
-            app:cardCornerRadius="30dp">
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/delete_icon"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/messageInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerview" />
 
-            <ImageButton
-                android:id="@+id/send_btn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/flag_transparent"
-                android:clickable="true"
-                android:onClick="@{viewModel.onSendClick}"
-                android:padding="4dp"
-                android:src="@drawable/send_icon" />
-        </androidx.cardview.widget.CardView>
-
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/edittext_background"
-            android:hint="Enter a message"
-            android:padding="5dp"
-            android:paddingStart="20dp"
-            android:text="@={viewModel.messageText}"
-            android:textColor="@color/home_screen_text_color"
-            android:textColorHint="#6F6C6C" />
-
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
