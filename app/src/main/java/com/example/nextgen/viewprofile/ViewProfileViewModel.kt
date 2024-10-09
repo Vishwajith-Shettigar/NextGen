@@ -21,12 +21,11 @@ class ViewProfileViewModel(
   val rating: LiveData<Float> get() = _rating
 
   init {
-
     viewModelScope.launch {
       chatId = chatController.isChatExists(userId, viewProfile.userId)
     }
 
-    _rating.value=viewProfile.rating
+    _rating.value = viewProfile.rating
   }
 
   val userName by lazy {

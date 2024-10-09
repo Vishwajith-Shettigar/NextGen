@@ -168,7 +168,7 @@ class MessageFragment : BaseFragment(), MessageOnLongPressListener {
     }
 
     binding.videoCallBtn.setOnClickListener {
-      if (VIDEO_CALL_AVAILABLE==false) {
+      if (VIDEO_CALL_AVAILABLE == false) {
         Toast.makeText(activity, "Not available right now.", Toast.LENGTH_LONG).show()
         return@setOnClickListener
       }

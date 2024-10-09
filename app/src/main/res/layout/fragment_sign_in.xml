@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/home_screen_background"
         tools:context=".Signinactivity">
 
         <RelativeLayout
@@ -29,7 +29,7 @@
                 android:layout_marginBottom="100dp"
                 android:fontFamily="@font/lilitaone_regular"
                 android:text="neXtgen"
-                android:textColor="@color/black"
+                android:textColor="@color/home_screen_text_color"
                 android:textSize="50dp" />
 
             <com.google.android.material.textfield.TextInputEditText
@@ -47,7 +47,7 @@
                 android:maxLines="1"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textColor="@color/black"
+                android:textColor="@color/home_screen_text_color"
                 android:textColorHint="#7E7B7B"
                 android:textSize="16sp" />
 
@@ -66,7 +66,7 @@
                 android:maxLines="1"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textColor="@color/black"
+                android:textColor="@color/home_screen_text_color"
                 android:textColorHint="#7E7B7B"
                 android:textSize="16sp" />
 
@@ -91,16 +91,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/signinbtn"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="40dp"
                 android:gravity="center_horizontal"
-                android:layout_centerInParent="true"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/signupherebt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dont have an account ?" />
+                    android:text="Dont have an account ?"
+                    android:textColor="#7E7B7B" />
 
                 <TextView
                     android:id="@+id/signupherebtn"

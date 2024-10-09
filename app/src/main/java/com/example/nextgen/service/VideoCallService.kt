@@ -30,11 +30,11 @@ class VideoCallService:android.app.Service() {
 
   private lateinit var userId:String
 
-  private val NOTIFICATION_ID=101
+  private val NOTIFICATION_ID = 101
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-     userId = intent?.getStringExtra("USER_ID")!!
+    userId = intent?.getStringExtra("USER_ID")!!
     webSocketManager.initSocket(userId)
     // Use the data
     return START_NOT_STICKY
@@ -46,7 +46,7 @@ class VideoCallService:android.app.Service() {
     (applicationContext as MyApplication).appComponent.inject(this)
 
     webSocketManager.message.observeForever { messageModel ->
-      if (messageModel?.type == null )
+      if (messageModel?.type == null)
         return@observeForever
       else {
         when (messageModel.type) {
@@ -66,8 +66,7 @@ class VideoCallService:android.app.Service() {
   }
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun createVideoCallNotification(imageUrl:String?,userName:String){
-
+  fun createVideoCallNotification(imageUrl: String?, userName: String){
     val acceptIntent = Intent(this, CallActionReceiver::class.java).apply {
       action = "ACTION_ACCEPT"
     }
@@ -89,14 +88,13 @@ class VideoCallService:android.app.Service() {
       .addAction(R.drawable.ic_reject, "Reject", rejectPendingIntent)
 
     // Optionally set the caller image
-    if(!imageUrl.isNullOrBlank()){
+    if (!imageUrl.isNullOrBlank()) {
       val callerImage = BitmapFactory.decodeStream(contentResolver.openInputStream(Uri.parse(imageUrl)))
       builder.setLargeIcon(callerImage)
-    }else
-  {
-    val callerImage = BitmapFactory.decodeResource(resources, R.drawable.profile_placeholder)
-    builder.setLargeIcon(callerImage)
-  }
+    } else {
+      val callerImage = BitmapFactory.decodeResource(resources, R.drawable.profile_placeholder)
+      builder.setLargeIcon(callerImage)
+    }
 
     with(NotificationManagerCompat.from(this)) {
       if (ActivityCompat.checkSelfPermission(

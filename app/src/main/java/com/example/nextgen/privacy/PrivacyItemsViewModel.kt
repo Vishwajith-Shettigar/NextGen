@@ -11,8 +11,8 @@ class PrivacyItemsViewModel(
   private val onPrivacyItemClicked: OnPrivacyItemClicked,
 ) : ObservableViewModel() {
 
-
   var status = ObservableField<Boolean>(privacyItem.itemStatus)
+
   init {
     status.set(privacyItem.itemStatus)
   }

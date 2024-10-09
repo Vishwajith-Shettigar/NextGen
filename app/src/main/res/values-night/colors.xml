@@ -16,4 +16,9 @@
     <color name="home_screen_text_color">#FFFFFF</color>
     <color name="divider_color">#564E4E</color>
     <color name="message_recyclerView_background">#121111</color>
+
+    <color name="splash_background">#000000</color>
+
+    <color name="textfield_background_color">#0DFFFFFF</color>
+
 </resources>
