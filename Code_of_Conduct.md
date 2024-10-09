@@ -2,7 +2,7 @@
 
 ## Welcome
 
-Welcome to the **NextGen ** repository! Our project aims to foster innovation in AI while promoting an open, inclusive, and respectful environment. We encourage contributions from developers of all experience levels and backgrounds, as we believe in the power of collaborative development to improve AI tools and resources. Whether you're a seasoned professional or a beginner, your contribution is valued, and we are committed to ensuring a positive experience for all.
+Welcome to the **NextGen** repository! Our project aims to foster innovation in AI while promoting an open, inclusive, and respectful environment. We encourage contributions from developers of all experience levels and backgrounds, as we believe in the power of collaborative development to improve AI tools and resources. Whether you're a seasoned professional or a beginner, your contribution is valued, and we are committed to ensuring a positive experience for all.
 
 ## Our Pledge
 
