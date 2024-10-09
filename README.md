@@ -1,4 +1,4 @@
-# neXtgen 🌍📱
+ # neXtgen 🌍📱
 
 ## [Contributors guide 🔗](https://github.com/Vishwajith-Shettigar/NextGen/blob/master/CONTRIBUTORS.md)
 
