@@ -11,7 +11,7 @@
         <import type="android.view.View" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chat_layout"
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -19,85 +19,90 @@
         android:onClick="@{viewModel.onClickChat}"
         android:padding="5dp">
 
-        <RelativeLayout
-            android:id="@+id/parent_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/image_cardview"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="45dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/image_cardview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                app:cardCornerRadius="45dp">
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/ic_launcher_background"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel.imageUrl}" />
+        </androidx.cardview.widget.CardView>
 
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/ic_launcher_background"
-                    android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModel.imageUrl}" />
-
-            </androidx.cardview.widget.CardView>
-
-            <RelativeLayout
-                android:id="@+id/parentOf_username_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/image_cardview">
-
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.username}"
-                    android:textColor="@color/home_screen_text_color"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/last_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/username"
-                    android:text="@{viewModel.lastMessage}"
-                    android:textColor="@color/home_screen_text_color"
-                    android:textSize="15dp" />
-            </RelativeLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parentOf_username_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/time_stamp"
+            app:layout_constraintStart_toEndOf="@id/image_cardview"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/time_stamp"
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/parentOf_username_message"
-                android:text="@{viewModel.time}"
+                android:text="@{viewModel.username}"
                 android:textColor="@color/home_screen_text_color"
-                android:textSize="15sp" />
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignEnd="@+id/time_stamp"
-                android:layout_alignBottom="@id/parentOf_username_message"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/new_messsage_alert_background"
-                android:gravity="center"
-                android:text="@{viewModel.unReadMessage}"
+                android:id="@+id/last_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.lastMessage}"
                 android:textColor="@color/home_screen_text_color"
-                android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE, default=gone}" />
+                android:textSize="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/username" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/time_stamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.time}"
+            android:textColor="@color/home_screen_text_color"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/parentOf_username_message"
+            app:layout_constraintTop_toTopOf="@id/parentOf_username_message" />
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/new_messsage_alert_background"
+            android:gravity="center"
+            android:text="@{viewModel.unReadMessage}"
+            android:textColor="@color/home_screen_text_color"
+            android:visibility="@{viewModel.isSeen ? View.GONE : View.VISIBLE, default=gone}"
+            app:layout_constraintEnd_toEndOf="@id/time_stamp"
+            app:layout_constraintTop_toBottomOf="@id/time_stamp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@color/divider_color" />
-    </RelativeLayout>
+            android:background="@color/divider_color"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

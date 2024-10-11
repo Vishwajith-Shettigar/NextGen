@@ -7,16 +7,18 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/home_screen_background"
         tools:context=".home.HomeFragment">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/home_screen_background">
+            android:background="@color/home_screen_background"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -31,9 +33,7 @@
                     android:fontFamily="@font/lilitaone_regular"
                     android:text="neXtgen"
                     android:textColor="@color/home_screen_text_color"
-                    android:textSize="40dp">
-
-                </TextView>
+                    android:textSize="40dp" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -41,10 +41,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chats_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
