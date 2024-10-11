@@ -2,6 +2,8 @@ package com.example.nextgen.nearby
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -31,12 +33,14 @@ import com.example.utility.getProto
 import com.example.utility.putProto
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.Task
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import kotlinx.coroutines.*
@@ -97,11 +101,21 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    fusedLocationClient.lastLocation.addOnSuccessListener {
-      it?.let {
-        locationUser = LatLng(it.latitude, it.longitude)
-        nearByViewModel.location.value = locationUser
+    checkLocationPermission();
+    if(hasLocationPermission()) {
+      checkLocationSettings() //check if location enabled
+      fusedLocationClient.lastLocation.addOnSuccessListener {
+        it?.let {
+          locationUser = LatLng(it.latitude, it.longitude)
+          nearByViewModel.location.value = locationUser
+        }
       }
+    }else{
+      Toast.makeText(
+        requireContext(),
+        "Location permission is required to access your location",
+        Toast.LENGTH_SHORT
+      ).show()
     }
 
     val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -138,6 +152,34 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
   }
 
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    when (requestCode) {
+      LOCATION_REQUEST_CODE -> {
+        if (resultCode == AppCompatActivity.RESULT_OK) {
+          // Location settings are enabled, proceed with your logic
+          Toast.makeText(requireContext(), "Location enabled", Toast.LENGTH_SHORT).show()
+        } else {
+          // User did not enable location
+          Toast.makeText(requireContext(), "Please enable location services", Toast.LENGTH_SHORT).show()
+        }
+      }
+    }
+  }
+
+  private fun hasLocationPermission(): Boolean {
+    return ActivityCompat.checkSelfPermission(
+      requireContext(),
+      Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+              requireContext(),
+              Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+  }
+
+
   fun checkLocationPermission() {
 
     if (ActivityCompat.checkSelfPermission(
@@ -160,7 +202,7 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
   companion object {
 
     const val NEARBYFRAGMENT_ARGUMENTS_KEY = "NearByFragment.arguments"
-
+    const val LOCATION_REQUEST_CODE = 1001
     const val TAG = "NearByFragment"
     fun newInstance(profile: Profile): NearByFragment {
       val nearByFragment = NearByFragment().apply {
@@ -171,6 +213,37 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
       return nearByFragment
     }
   }
+
+  private fun checkLocationSettings() {
+    val locationRequest = LocationRequest.create().apply {
+      priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+    val settingsClient: SettingsClient = LocationServices.getSettingsClient(requireActivity())
+    val task: Task<LocationSettingsResponse> = LocationServices.getSettingsClient(requireActivity())
+      .checkLocationSettings(LocationSettingsRequest.Builder()
+        .addLocationRequest(locationRequest)
+        .build())
+
+    task.addOnSuccessListener {
+      // Location settings are satisfied, proceed with your logic
+    }
+
+    task.addOnFailureListener { exception ->
+      if (exception is ResolvableApiException) {
+        // Location settings are not satisfied, show the dialog
+        try {
+          exception.startResolutionForResult(
+            requireActivity(),
+            LOCATION_REQUEST_CODE
+          )
+        } catch (sendEx: IntentSender.SendIntentException) {
+          // Ignore the error
+        }
+      }
+    }
+  }
+
 
 
   override fun onMapReady(googleMap: GoogleMap) {
