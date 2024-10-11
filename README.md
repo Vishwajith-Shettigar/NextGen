@@ -52,14 +52,14 @@ Time to mingle, chat, and rate! Have fun exploring the world around you. 🌍�
 We’re excited to have you contribute to this *Ice Cream Parlour Website* project! Follow these simple steps to get started:
 
 1. **🍴 Fork the Repository**  
-   - Go to the [repository page]().
+   - Go to the [repository page](https://github.com/Vishwajith-Shettigar/NextGen).
    - Click the *Fork* button (top right). This creates a copy of the project in your GitHub account.
 
 2. **💻 Clone Your Fork**  
    - Once the repository is forked, clone it to your local machine. Open your terminal and run:
     ``` bash
      git clone
-     
+            https://github.com/Vishwajith-Shettigar/NextGen
     ```
      
    - Replace your-username with your GitHub username.
@@ -96,7 +96,7 @@ We’re excited to have you contribute to this *Ice Cream Parlour Website* proje
      
 
 8. **🔄 Create a Pull Request (PR)** 
-   - Go back to the original repository [here]().
+   - Go back to the original repository [here](https://github.com/Vishwajith-Shettigar/NextGen).
    - Click the *Compare & pull request* button.
    - Write a short description of your changes and submit the pull request (PR).
 
