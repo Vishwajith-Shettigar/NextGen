@@ -41,6 +41,46 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 
 Time to mingle, chat, and rate! Have fun exploring the world around you. 🌍🎉
 
+## Troubleshooting 🤔
+
+If you encounter any issues while using the app, this section will help you find quick solutions to common problems.
+
+### 1. App Crashes on Device Configuration Changes
+**Issue:** The app crashes when the device orientation or configuration changes.  
+**Solution:**  
+- Ensure that `android:configChanges="orientation|screenSize"` is added in the AndroidManifest.xml for the affected activities.
+- Consider using ViewModel or handling configuration changes appropriately in the activity lifecycle.
+
+### 2. User's Location is Not Detected
+**Issue:** The app is not able to detect the user's location.  
+**Solution:**  
+- Make sure that location permissions are granted in the device settings.
+- If the location is off, prompt the user to enable location services.
+
+### 3. Profile Pictures Still Visible Despite Disabling
+**Issue:** Profile pictures are still visible on the map or chat screen, even after setting them to be disabled.  
+**Solution:**  
+- Check the API response to ensure that the `profilePictureVisible` flag is properly updated.
+- Ensure that the visibility logic is correctly handled in the frontend component.
+
+### 4. Red Stroke Not Showing in Default Image on Map
+**Issue:** Red stroke does not appear in the default image on the map.  
+**Solution:**  
+- Check if the image loading logic is correctly implemented in the Map component.
+- Ensure that the red stroke is added as an overlay when the map is rendered.
+
+### 5. Online Status Not Working Properly
+**Issue:** The user's online status is not updating or displaying correctly.  
+**Solution:**  
+- Verify that the status updates are being sent from the backend in real-time.
+- Ensure that the app is subscribed to the correct event listeners for online status updates.
+
+### 6. Debugging Tips
+- Check the logs for any specific error messages or stack traces.
+- Try running the app in **debug mode** to identify where the issue occurs.
+- If an issue persists, feel free to open a new issue on GitHub or seek help from the community.
+
+
 ## TODO 📝
 - [ ] Enhance UX of video call feature.
 - [ ] Notification UI.
