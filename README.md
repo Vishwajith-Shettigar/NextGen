@@ -42,43 +42,36 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 Time to mingle, chat, and rate! Have fun exploring the world around you. 🌍🎉
 
 ## Troubleshooting 🤔
+If you encounter any issues while setting up or using NextGen, try the following:
 
-If you encounter any issues while using the app, this section will help you find quick solutions to common problems.
+- Double-check your environment setup against the installation instructions.
+- Search for similar issues in the project's GitHub Issues.
+- Reach out to the community or project maintainers for assistance.
 
-### 1. App Crashes on Device Configuration Changes
-**Issue:** The app crashes when the device orientation or configuration changes.  
-**Solution:**  
-- Ensure that `android:configChanges="orientation|screenSize"` is added in the AndroidManifest.xml for the affected activities.
-- Consider using ViewModel or handling configuration changes appropriately in the activity lifecycle.
+If you are facing specific issues, see the detailed troubleshooting tips below.
 
-### 2. User's Location is Not Detected
-**Issue:** The app is not able to detect the user's location.  
-**Solution:**  
-- Make sure that location permissions are granted in the device settings.
-- If the location is off, prompt the user to enable location services.
+### 1. Build Fails with Gradle Errors
+- **Issue:** Errors related to Gradle during the build.
+- **Solution:** Ensure the correct version of Gradle and Android Studio are installed.
 
-### 3. Profile Pictures Still Visible Despite Disabling
-**Issue:** Profile pictures are still visible on the map or chat screen, even after setting them to be disabled.  
-**Solution:**  
-- Check the API response to ensure that the `profilePictureVisible` flag is properly updated.
-- Ensure that the visibility logic is correctly handled in the frontend component.
+### 2. Missing SDK Components
+- **Issue:** Build failure due to missing components.
+- **Solution:** Check for required packages using the SDK Manager in Android Studio.
 
-### 4. Red Stroke Not Showing in Default Image on Map
-**Issue:** Red stroke does not appear in the default image on the map.  
-**Solution:**  
-- Check if the image loading logic is correctly implemented in the Map component.
-- Ensure that the red stroke is added as an overlay when the map is rendered.
+### 3. Dependency Conflicts
+- **Issue:** Conflicts between libraries or dependencies.
+- **Solution:** Review the `build.gradle` files for conflicts and update versions.
 
-### 5. Online Status Not Working Properly
-**Issue:** The user's online status is not updating or displaying correctly.  
-**Solution:**  
-- Verify that the status updates are being sent from the backend in real-time.
-- Ensure that the app is subscribed to the correct event listeners for online status updates.
+### 4. Insufficient Memory
+- **Issue:** Running out of memory during the build process.
+- **Solution:** Increase the heap size in `gradle.properties`.
 
-### 6. Debugging Tips
-- Check the logs for any specific error messages or stack traces.
-- Try running the app in **debug mode** to identify where the issue occurs.
-- If an issue persists, feel free to open a new issue on GitHub or seek help from the community.
+### 5. Network Issues
+- **Issue:** Failures in downloading dependencies due to network issues.
+- **Solution:** Check your internet connection and configure proxy settings if needed.
+
+## Getting Help
+If you are still facing issues after checking the troubleshooting steps, feel free to open a new issue on GitHub or seek help from the community.
 
 
 ## TODO 📝
