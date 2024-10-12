@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".privacy.PrivacyActivity">
-    <!-- AppBarLayout with Toolbar -->
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="0dp"
@@ -20,7 +20,6 @@
             app:title="Privacy" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- RecyclerView for Privacy Items below the AppBarLayout -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/privacy_recycler_view"
         android:layout_width="0dp"
