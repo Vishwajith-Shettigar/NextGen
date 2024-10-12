@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/home_screen_background"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:background="@color/home_screen_background">
 
         <ImageView
+            android:id="@+id/under_construction_logo"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/under_construction_logo" />
+            android:src="@drawable/under_construction_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/coming_soon_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
 
         <TextView
+            android:id="@+id/coming_soon_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lilitaone_regular"
-            android:text="Feature coming soon! Stay tuned for updates." />
-    </LinearLayout>
+            android:text="Feature coming soon! Stay tuned for updates."
+            app:layout_constraintTop_toBottomOf="@id/under_construction_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
