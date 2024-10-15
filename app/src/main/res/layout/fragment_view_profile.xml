@@ -7,11 +7,12 @@
             type="com.example.nextgen.viewprofile.ViewProfileViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
         android:background="@color/home_screen_background">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_picture_cardview"
             android:layout_width="wrap_content"
@@ -19,7 +20,11 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="100dp">
+            app:cardCornerRadius="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
             <ImageView
                 android:id="@+id/profile_picture_imageview"
                 android:layout_width="100dp"
@@ -44,42 +49,51 @@
             android:text="@{viewModel.viewProfile.userName}"
             android:textColor="@color/home_screen_text_color"
             android:textStyle="bold"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/profile_picture_cardview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="18dp"
+            />
 
         <TextView
             android:id="@+id/rating_text"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:layout_below="@id/profile_picture_cardview"
-            android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@id/username"
             android:gravity="center_vertical"
             android:text="@{viewModel.rating.toString()}"
+            app:layout_constraintTop_toTopOf="@+id/username"
+            app:layout_constraintStart_toEndOf="@+id/username"
+            app:layout_constraintBottom_toBottomOf="@+id/username"
             />
 
         <ImageView
             android:id="@+id/rating_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_toEndOf="@id/rating_text"
             android:gravity="center_vertical"
             android:layout_below="@id/profile_picture_cardview"
             android:layout_marginStart="4dp"
             app:rating="@{ viewModel.rating }"
+            app:layout_constraintTop_toTopOf="@+id/rating_text"
+            app:layout_constraintBottom_toBottomOf="@+id/rating_text"
+            app:layout_constraintStart_toEndOf="@+id/rating_text"
            />
 
         <!-- Full Name -->
         <TextView
             android:id="@+id/full_name"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/username"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
             android:text="@{viewModel.fullName}"
             android:textColor="@android:color/darker_gray"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/username"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
         <!-- Rating Bar -->
         <RatingBar
@@ -87,23 +101,29 @@
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/full_name"
+            android:layout_marginTop="16dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp"
             android:isIndicator="false"
             android:numStars="5"
             android:progressTint="#CBC966"
             android:rating="@{viewModel.existingRating}"
-            android:stepSize="0.5" />
+            android:stepSize="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/full_name"
+            />
         <!-- Icons Row -->
         <LinearLayout
             android:id="@+id/icons_row"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rating_bar"
-            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rating_bar"
+            >
 
             <!-- Chat Icon -->
             <ImageButton
@@ -140,13 +160,16 @@
             android:id="@+id/bio"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@id/icons_row"
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:text="@{viewModel.bio}"
             android:textColor="@android:color/darker_gray"
             android:textSize="18sp"
-            app:drawableStartCompat="@drawable/baseline_bubble_chart_24" />
-    </RelativeLayout>
+            app:drawableStartCompat="@drawable/baseline_bubble_chart_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/icons_row"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
