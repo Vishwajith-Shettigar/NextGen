@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".profile.activity_profile"
+    android:padding="26dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profilePicCard"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/profile_placeholder" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/profilePicCard"
+        app:layout_constraintTop_toTopOf="@id/profilePicCard" />
+
+    <TextView
+        android:id="@+id/bio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@id/profilePicCard"
+        app:layout_constraintTop_toBottomOf="@id/username" />
+
+    <ImageView
+        android:id="@+id/rating_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:rating="@{ viewModel.rating }"
+        app:layout_constraintStart_toEndOf="@id/bio"
+        app:layout_constraintTop_toTopOf="@id/bio"
+        android:layout_marginStart="16dp" />
+
+    <TextView
+        android:id="@+id/rating_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@{viewModel.rating.toString()}"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/rating_image"
+        app:layout_constraintTop_toTopOf="@id/rating_image" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/profilePicCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/divider">
+
+        <ImageView
+            android:id="@+id/privacy_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/privacy_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy"
+            android:textSize="18sp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/privacy_icon"
+            app:layout_constraintTop_toTopOf="@id/privacy_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/privacy">
+
+        <ImageView
+            android:id="@+id/account_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/account_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account"
+            android:textSize="18sp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/account_icon"
+            app:layout_constraintTop_toTopOf="@id/account_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/account">
+
+        <ImageView
+            android:id="@+id/help_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/help_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textSize="18sp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/help_icon"
+            app:layout_constraintTop_toTopOf="@id/help_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nextgen"
+        android:fontFamily="@font/lilitaone_regular"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/help"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
