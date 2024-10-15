@@ -45,6 +45,7 @@
             android:id="@+id/parentOf_username_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/time_stamp"
             app:layout_constraintStart_toEndOf="@id/image_cardview"
