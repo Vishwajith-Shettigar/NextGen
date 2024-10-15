@@ -18,14 +18,6 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/logo"/>
 
-    <TextView
-        android:textSize="20sp"
-        android:layout_margin="20dp"
-        android:fontFamily="@font/itali"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Instant, seamless video calls—connect anytime, anywhere!"/>
 
     <ImageView
         android:layout_width="wrap_content"
