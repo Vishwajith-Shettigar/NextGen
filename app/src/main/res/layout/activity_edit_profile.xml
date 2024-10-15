@@ -4,10 +4,193 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".editprofile.EditProfileActivity">
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/image_cardview"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="60dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/imageViewProfile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{viewModel.imageUrl}"
+            android:contentDescription="@null" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:cardCornerRadius="100dp"
+        android:elevation="9dp"
+        android:layout_margin="0dp"
+        android:padding="10dp"
+        android:background="@drawable/flag_transparent"
+        app:layout_constraintTop_toTopOf="@+id/image_cardview"
+        app:layout_constraintEnd_toEndOf="@+id/image_cardview"
+        app:layout_constraintStart_toEndOf="@+id/image_cardview">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_edit" />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:textColorHint="@color/hint_color"
+        app:layout_constraintTop_toBottomOf="@id/image_cardview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:gravity="end"
+            android:drawableEnd="@drawable/ic_user"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_edit"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@{viewModel.userName}"
+            android:textColorHint="@color/hint_color"
+            android:textColor="@color/home_screen_text_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutFirstName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="First Name"
+        android:textColorHint="@color/hint_color"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:gravity="end"
+            android:text="@{viewModel.firstName}"
+            android:drawableStart="@drawable/ic_edit"
+            android:drawableEnd="@drawable/outline_person_ic"
+            android:drawablePadding="8dp"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColorHint="@color/hint_color"
+            android:textColor="@color/home_screen_text_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutLastName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Last Name"
+        android:textColorHint="@color/hint_color"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFirstName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="@{viewModel.lastName}"
+            android:drawableStart="@drawable/ic_edit"
+            android:drawableEnd="@drawable/person_search_ic"
+            android:drawablePadding="8dp"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="12dp"
+            android:gravity="end"
+            android:paddingEnd="12dp"
+            android:textColorHint="@color/hint_color"
+            android:textColor="@color/home_screen_text_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextBio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Bio  "
+        android:textColorHint="@color/hint_color"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutLastName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:text="@{viewModel.bio}"
+            android:drawableStart="@drawable/ic_edit"
+            android:gravity="end"
+            android:drawableEnd="@drawable/baseline_bubble_chart_24"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColorHint="@color/hint_color"
+            android:textColor="@color/home_screen_text_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/editTextBio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/loading_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#918A92"
+        android:alpha="0.5"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:progressTint="@color/purple_200"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
