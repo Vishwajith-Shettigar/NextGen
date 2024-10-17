@@ -78,10 +78,10 @@ If you encounter any issues while setting up or using NextGen, try the following
   org.gradle.jvmargs=-Xmx2048m
   ```
 
-### 5. Network Issues
-- **Issue:** Build fails while downloading dependencies due to network issues.
-- **Solution:** Check your internet connection and ensure proxy settings (if any) are correctly configured. Reattempt the build after resolving network problems.
-
+### 5. Clarification on SERVER_URL in secrets.properties from #47
+**Issue:** Uncertainty about the value to use for SERVER_URL.
+**Solution:** If you are not working on the video call feature, please add any random characters as a workaround, e.g., SERVER_URL=pbdwkw. Just for your information, SERVER_URL holds the URL of the video call server; you can find the repository for reference.
+You can find the repository for reference [here](https://github.com/Vishwajith-Shettigar/video-call-server-node.js).
 
 ## TODO 📝
 - [ ] Enhance UX of video call feature.
