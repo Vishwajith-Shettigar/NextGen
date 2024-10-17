@@ -42,36 +42,45 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 Time to mingle, chat, and rate! Have fun exploring the world around you. 🌍🎉
 
 ## Troubleshooting 🤔
-If you encounter any issues while setting up or using NextGen, try the following:
-
-- Double-check your environment setup against the installation instructions.
-- Search for similar issues in the project's GitHub Issues.
-- Reach out to the community or project maintainers for assistance.
-
-If you are facing specific issues, see the detailed troubleshooting tips below.
+If you encounter any issues while setting up or using NextGen, try the following troubleshooting tips.
 
 ### 1. Build Fails with Gradle Errors
-- **Issue:** Errors related to Gradle during the build.
-- **Solution:** Ensure the correct version of Gradle and Android Studio are installed.
+- **Issue:** Errors related to Gradle during the build process.
+- **Solution:** Ensure you have the correct version of Gradle and Android Studio installed. Check the `build.gradle` files to verify dependencies are compatible.
+
+**Additional Tip from #75:**
+- **Issue:** Incompatible Java version settings causing errors such as `kaptGenerateStubsDebugKotlin` task failures.
+- **Solution:** Make sure `JAVA_HOME` is set to JDK 17 in the environment variables. In the `build.gradle` files, specify:
+  ```gradle
+  android {
+      compileOptions {
+          sourceCompatibility JavaVersion.VERSION_1_8
+          targetCompatibility JavaVersion.VERSION_1_8
+      }
+      kotlinOptions {
+          jvmTarget = "1.8"
+      }
+  }
+  ```
 
 ### 2. Missing SDK Components
-- **Issue:** Build failure due to missing components.
-- **Solution:** Check for required packages using the SDK Manager in Android Studio.
+- **Issue:** Build failure due to missing SDK components.
+- **Solution:** Check for required packages using the SDK Manager in Android Studio and install any missing dependencies.
 
 ### 3. Dependency Conflicts
-- **Issue:** Conflicts between libraries or dependencies.
-- **Solution:** Review the `build.gradle` files for conflicts and update versions.
+- **Issue:** Conflicts between libraries or dependencies causing build issues.
+- **Solution:** Review the `build.gradle` files and check for any version conflicts. Updating the library versions to be compatible might solve the issue.
 
-### 4. Insufficient Memory
-- **Issue:** Running out of memory during the build process.
-- **Solution:** Increase the heap size in `gradle.properties`.
+### 4. Insufficient Memory During Build
+- **Issue:** Running out of memory while building the project.
+- **Solution:** Increase the heap size in the `gradle.properties` file. Try allocating more memory to the Gradle build by updating:
+  ```properties
+  org.gradle.jvmargs=-Xmx2048m
+  ```
 
 ### 5. Network Issues
-- **Issue:** Failures in downloading dependencies due to network issues.
-- **Solution:** Check your internet connection and configure proxy settings if needed.
-
-## Getting Help
-If you are still facing issues after checking the troubleshooting steps, feel free to open a new issue on GitHub or seek help from the community.
+- **Issue:** Build fails while downloading dependencies due to network issues.
+- **Solution:** Check your internet connection and ensure proxy settings (if any) are correctly configured. Reattempt the build after resolving network problems.
 
 
 ## TODO 📝
