@@ -1,9 +1,12 @@
 package com.example.nextgen.signup
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -53,6 +56,14 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
       )
     }
 
+    binding.root.setOnTouchListener { v, event ->
+      if (event.action == MotionEvent.ACTION_DOWN) {
+        v.performClick()
+        hideKeyboard()
+      }
+      false
+    }
+
     signInViewModel.loginResult.observe(viewLifecycleOwner) {
       when (it) {
         is com.example.utility.Result.Success<*> -> {
@@ -74,6 +85,14 @@ class SignInFragment : BaseFragment(), RouteToSignupSigninListener {
 
     fun newInstance(): SignInFragment {
       return SignInFragment()
+    }
+  }
+
+  private fun hideKeyboard() {
+    val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val currentFocusView = requireActivity().currentFocus
+    if (currentFocusView != null) {
+      inputMethodManager.hideSoftInputFromWindow(currentFocusView.windowToken, 0)
     }
   }
 
