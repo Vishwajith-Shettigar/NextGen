@@ -42,6 +42,7 @@
                         android:id="@+id/profilePic"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/profile_placeholder" />
                 </androidx.cardview.widget.CardView>
 
