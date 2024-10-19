@@ -80,7 +80,7 @@ If you encounter any issues while setting up or using NextGen, try the following
 
 ### 5. Clarification on SERVER_URL in secrets.properties from #47
 **Issue:** Uncertainty about the value to use for SERVER_URL.
-**Solution:** If you are not working on the video call feature, please add any random characters as a workaround, e.g., SERVER_URL=pbdwkw. Just for your information, SERVER_URL holds the URL of the video call server; you can find the repository for reference.
+**Solution:** If you are not working on the video call feature, please add any random characters as a workaround (e.g., SERVER_URL=pbdwkw). This variable holds the video call server URL. 
 You can find the repository for reference [here](https://github.com/Vishwajith-Shettigar/video-call-server-node.js).
 
 ## TODO 📝
