@@ -1,6 +1,6 @@
 # neXtgen 🌍📱
 
-## [Contributors guide 🔗](https://github.com/Vishwajith-Shettigar/NextGen/blob/master/CONTRIBUTORS.md)
+## [Contributors guide 🔗](https://github.com/Vishwajith-Shettigar/NextGen/blob/develop/CONTRIBUTORS.md)
 
 
 
