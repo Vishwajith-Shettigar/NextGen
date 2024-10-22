@@ -1,4 +1,3 @@
-
 # neXtgen Project Setup Guide 🚀
 
 Thank you for contributing to the neXtgen project! 🎉 Follow these steps to set up the project on your local machine:
@@ -37,7 +36,7 @@ SERVER_URL=[your video call server URL]
 
 <br>
 
-# Need Help with the Basics? 🤔
+# Need help getting started?? 🤔
 
 If you're new to Git and GitHub, no worries! Here are some useful resources:
 
@@ -125,7 +124,7 @@ NextGen/
 
 When submitting a pull request, please adhere to the following:
 
-1. **Self-review your code** before submission. 😀
+1. **Self-review your code** before submission. 
 2. Include a detailed description of the functionality you’ve added or modified.
 3. Comment your code, especially in complex sections, to aid understanding.
 4. Add relevant screenshots to assist in the review process.
@@ -139,7 +138,7 @@ To report an issue, follow these steps:
 
 1. Navigate to the project's issues section :- [Issues](https://github.com/Vishwajith-Shettigar/NextGen/issues)
 2. Provide a clear and concise description of the issue.
-3. **Avoid spamming** to claim an issue. Patience is key! 😀
+3. **Avoid spamming** to claim an issue. Patience is key! 
 4. Wait until someone looks into your report.
 5. Begin working on the issue only after you have been assigned to it. 🚀
 
