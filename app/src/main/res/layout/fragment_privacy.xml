@@ -16,16 +16,64 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="50dp">
+
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:title="Privacy" />
+                app:title="Privacy"
+                app:titleTextColor="@color/black"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/privacy_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <!-- Scrollable TextView for Privacy Content -->
+
+        <ScrollView
+            android:id="@+id/privacy_scrollview"
+            android:layout_width="381dp"
+            android:layout_height="513dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toTopOf="@id/accept_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.484"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/privacy_title">
+
+            <TextView
+                android:id="@+id/privacy_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy_content"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        </ScrollView>
+
+        <CheckBox
+            android:id="@+id/read_checkbox"
+            android:layout_width="411dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
+            android:text="Have you read all the the terms and conditions of privacy policy agreement carefully?"
+            app:layout_constraintBottom_toTopOf="@+id/accept_button"
+            app:layout_constraintEnd_toEndOf="@+id/privacy_scrollview"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/privacy_scrollview"
+            app:layout_constraintTop_toBottomOf="@id/privacy_scrollview"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="372dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:enabled="false"
+            android:text="I Agree"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/privacy_scrollview" />
 
     </LinearLayout>
 </layout>
