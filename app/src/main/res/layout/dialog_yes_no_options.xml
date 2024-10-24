@@ -7,13 +7,14 @@
     </data>
 
     <LinearLayout
-        style="@style/PrivacyButtonAppearance"
         android:layout_width="match_parent"
-        android:layout_height="264dp"
+        android:layout_height="300dp"
         android:background="@drawable/background_dialog"
+        android:backgroundTint="#CCBBE9"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
 
         <TextView
             android:id="@+id/tvDialogTitle"

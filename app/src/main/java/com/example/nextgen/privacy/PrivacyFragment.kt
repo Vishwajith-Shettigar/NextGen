@@ -131,7 +131,7 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
     // Create the AlertDialog
     val alertDialog = builder.create()
 
-  //  alertDialog.window?.setBackgroundDrawableResource(R.drawable.rounded_dialog_background)
+    alertDialog.window?.setBackgroundDrawableResource(R.drawable.background_dialog)
 
     if (status == true)
       dialogbinding.rbYes.isChecked = true

@@ -28,6 +28,6 @@
     
     <style name="PrivacyButtonAppearance" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">100dp</item>
+        <item name="cornerSize">25dp</item>
     </style>
 </resources>
