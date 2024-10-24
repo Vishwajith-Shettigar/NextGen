@@ -61,18 +61,24 @@ class ProfileFragment : BaseFragment() {
     binding.viewModel = profileViewModel
     binding.lifecycleOwner = this
 
-    profileViewModel.profile.observe(viewLifecycleOwner) {
-      binding.apply {
+profileViewModel.profile.observe(viewLifecycleOwner) {
+    binding.apply {
         try {
-          this.username.text = it.userName
-          this.bio.text = it.bio
-          if (!it.imageUrl.isBlank())
-            Picasso.get().load(it.imageUrl)
-              .error(R.drawable.profile_placeholder).into(this.profilePic)
-        } catch (e: java.lang.Exception) {
+            this.username.text = it.userName
+            this.bio.text = it.bio
+            if (it.privacy.disableProfilePicture) {
+                Picasso.get().load(R.drawable.profile_placeholder).into(this.profilePic) // Default avatar
+            } else if (!it.imageUrl.isBlank()) {
+                Picasso.get().load(it.imageUrl)
+                    .error(R.drawable.profile_placeholder).into(this.profilePic)
+            } else {
+                Picasso.get().load(R.drawable.profile_placeholder).into(this.profilePic) // Default avatar
+            }
+        } catch (e: Exception) {
+            e.printStackTrace() // Optional: log the error
         }
-      }
     }
+}
 
     binding.parentProfileInfo.setOnClickListener {
       (activity as RouteToEditProfileActivity).routeToEditProfileActivity(
