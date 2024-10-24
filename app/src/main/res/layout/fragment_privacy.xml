@@ -19,12 +19,13 @@
             android:background="#CCBBE9">
 
             <androidx.appcompat.widget.Toolbar
-                android:layout_width="220dp"
+                android:layout_width="203dp"
                 android:layout_height="match_parent"
                 android:background="#CCBBE9"
                 app:title="Privacy"
+                app:titleMarginBottom="-10dp"
                 app:titleMarginStart="40dp"
-                app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1" />
+                app:titleTextAppearance="@style/TextAppearance.AppCompat.Headline" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView

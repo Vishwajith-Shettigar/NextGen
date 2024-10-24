@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="Do you want to proceed?"
+            android:textColor="@android:color/black"
             android:textSize="22sp" />
 
         <LinearLayout
@@ -34,14 +35,16 @@
                 android:id="@+id/rbYes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Yes" />
+                android:text="Yes"
+                android:textColor="@color/black" />
 
             <RadioButton
                 android:id="@+id/rbNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="No" />
+                android:text="No"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -53,7 +56,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancel"
-                style="@style/Widget.App.Button.OutlinedButton"
+                style="@style/PrivacyButtonAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
@@ -61,7 +64,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSave"
-                style="@style/Widget.App.Button.OutlinedButton"
+                style="@style/PrivacyButtonAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
