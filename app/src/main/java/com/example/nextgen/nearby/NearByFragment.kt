@@ -337,38 +337,41 @@ class NearByFragment : BaseFragment(), OnMapReadyCallback, UpdateMapListener {
 
   override fun updateMap(profile: Profile, outOfBound: Boolean) {
     CoroutineScope(Dispatchers.IO).launch {
-      if (outOfBound) {
-        // Remove marker if out of bound
-        withContext(Dispatchers.Main) {
-          userMarkers.remove(profile.userId)?.remove()
+        if (outOfBound) {
+            // Remove marker if out of bound
+            withContext(Dispatchers.Main) {
+                userMarkers.remove(profile.userId)?.remove()
+            }
+        } else {
+            // Load profile picture asynchronously using loadBitmapFromUrl
+            val bitmap = loadBitmapFromUrl(profile.imageUrl)
+            val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
+            val roundedBitmap = resizedBitmap?.let { getRoundedBitmap(it) }
+
+            withContext(Dispatchers.Main) {
+                val otherUserLocation = LatLng(profile.location.latitude, profile.location.longitude)
+                userMarkers.remove(profile.userId)?.remove()
+
+                // Use default avatar if imageUrl is null or profile picture is disabled
+                val bitmapDescriptor = when {
+                    profile.privacy.disableProfilePicture -> bitmapDescriptorFromVector(R.drawable.person_24)
+                    roundedBitmap != null -> BitmapDescriptorFactory.fromBitmap(roundedBitmap)
+                    else -> bitmapDescriptorFromVector(R.drawable.person_24) // Fallback to default avatar
+                }
+
+                val newMarker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(otherUserLocation)
+                        .icon(bitmapDescriptor)
+                        .title(profile.userId)
+                )!!
+                newMarker.tag = profile // Attach profile object as tag to the marker
+                userMarkers[profile.userId] = newMarker
+            }
         }
-      } else {
-        // Load profile picture asynchronously using loadBitmapFromUrl
-        val bitmap = loadBitmapFromUrl(profile.imageUrl)
-        val resizedBitmap = bitmap?.let { resizeBitmap(it, 50, 50) }
-        val roundedBitmap = resizedBitmap?.let { getRoundedBitmap(it) }
-
-        withContext(Dispatchers.Main) {
-          val otherUserLocation = LatLng(profile.location.latitude, profile.location.longitude)
-          userMarkers.remove(profile.userId)?.remove()
-
-          // Use the default avatar if imageUrl is null
-          val bitmapDescriptor = roundedBitmap?.let {
-            BitmapDescriptorFactory.fromBitmap(it)
-          } ?: bitmapDescriptorFromVector(R.drawable.person_24) // Default avatar
-
-          val newMarker = mMap.addMarker(
-            MarkerOptions()
-              .position(otherUserLocation)
-              .icon(bitmapDescriptor)
-              .title(profile.userId)
-          )!!
-          newMarker.tag = profile // Attach profile object as tag to the marker
-          userMarkers[profile.userId] = newMarker
-        }
-      }
     }
-  }
+}
+
 
   // Function to load bitmap from URL using Picasso
   suspend fun loadBitmapFromUrl(url: String?): Bitmap? {
