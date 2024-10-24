@@ -16,6 +16,18 @@
         <item name="windowSplashScreenBackground">@color/black</item>
         <item name="postSplashScreenTheme">@style/Theme.NextGen</item>
         <!-- Customize your theme here. -->
+        <item name="materialButtonOutlinedStyle">
+            @style/Widget.App.Button.OutlinedButton
+        </item>
+        
+    </style>
 
+    <style name="Widget.App.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/PrivacyButtonAppearance</item>
+    </style>
+    
+    <style name="PrivacyButtonAppearance" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
     </style>
 </resources>

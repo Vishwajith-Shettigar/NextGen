@@ -16,6 +16,7 @@ import com.example.model.PrivacyItem
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
+import com.example.nextgen.R
 import com.example.nextgen.databinding.DialogYesNoOptionsBinding
 import com.example.nextgen.databinding.FragmentPrivacyBinding
 import com.example.nextgen.databinding.PrivacyItemsLayoutBinding
@@ -129,6 +130,9 @@ class PrivacyFragment : BaseFragment(), OnPrivacyItemClicked {
 
     // Create the AlertDialog
     val alertDialog = builder.create()
+
+    alertDialog.window?.setBackgroundDrawableResource(R.drawable.background_dialog)
+
     if (status == true)
       dialogbinding.rbYes.isChecked = true
     else

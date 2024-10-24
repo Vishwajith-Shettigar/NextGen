@@ -15,11 +15,17 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="wrap_content"
+            android:background="#CCBBE9">
+
             <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
+                android:layout_width="203dp"
                 android:layout_height="match_parent"
-                app:title="Privacy" />
+                android:background="#CCBBE9"
+                app:title="Privacy"
+                app:titleMarginBottom="-10dp"
+                app:titleMarginStart="40dp"
+                app:titleTextAppearance="@style/TextAppearance.AppCompat.Headline" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
