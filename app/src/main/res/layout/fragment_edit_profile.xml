@@ -4,29 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-<variable
-    name="viewModel"
-    type="com.example.nextgen.editprofile.EditProfileViewModel" />
+        <variable
+            name="viewModel"
+            type="com.example.nextgen.editprofile.EditProfileViewModel" />
     </data>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:background="@color/home_screen_background"
         android:paddingStart="32dp"
         android:paddingEnd="32dp"
         android:paddingTop="24dp"
-        android:paddingBottom="24dp"
-        android:background="@color/home_screen_background">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            >
+        android:paddingBottom="24dp">
 
         <!-- Profile Image -->
         <androidx.cardview.widget.CardView
@@ -34,8 +24,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="60dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="32dp" >
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="32dp">
+
             <ImageView
                 android:id="@+id/imageViewProfile"
                 android:layout_width="120dp"
@@ -45,31 +38,35 @@
                 android:contentDescription="@null" />
         </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:cardCornerRadius="100dp"
-                android:elevation="9dp"
-                android:layout_margin="0dp"
-                android:padding="10dp"
-                android:background="@drawable/flag_transparent"
-                android:layout_alignEnd="@+id/image_cardview"
-                >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_edit"
-                    />
-            </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/edit_icon_cardview"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="100dp"
+            android:elevation="9dp"
+            android:padding="10dp"
+            android:background="@drawable/flag_transparent"
+            app:layout_constraintEnd_toEndOf="@+id/image_cardview"
+            app:layout_constraintBottom_toBottomOf="@+id/image_cardview">
 
-        </RelativeLayout>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_edit" />
+        </androidx.cardview.widget.CardView>
+
         <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:id="@+id/username_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Username"
-            android:textColorHint="@color/hint_color">
+            android:textColorHint="@color/hint_color"
+            app:layout_constraintTop_toBottomOf="@+id/image_cardview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextUsername"
                 android:layout_width="match_parent"
@@ -89,10 +86,14 @@
 
         <!-- First Name -->
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:id="@+id/firstName_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="First Name"
             android:textColorHint="@color/hint_color"
+            app:layout_constraintTop_toBottomOf="@+id/username_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -114,10 +115,14 @@
 
         <!-- Last Name -->
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:id="@+id/lastName_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Last Name"
             android:textColorHint="@color/hint_color"
+            app:layout_constraintTop_toBottomOf="@+id/firstName_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -139,10 +144,14 @@
 
         <!-- Bio -->
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:id="@+id/bio_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Bio"
             android:textColorHint="@color/hint_color"
+            app:layout_constraintTop_toBottomOf="@+id/lastName_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -165,30 +174,32 @@
         <!-- Save Button -->
         <Button
             android:id="@+id/buttonSave"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Save"
             android:textColor="@android:color/white"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary" app:layout_constraintTop_toBottomOf="@+id/bio_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="24dp"/>
+        <LinearLayout
+            android:id="@+id/loading_blur"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#918A92"
+            android:alpha="0.5"
+            android:visibility="gone"
+            android:gravity="center" android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:progressTint="@color/purple_200" />
+        </LinearLayout>
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/loading_blur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#918A92"
-        android:alpha="0.5"
-        android:visibility="gone"
-        android:gravity="center_vertical"
-        android:orientation="vertical" >
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:progressTint="@color/purple_200"
-            />
-    </LinearLayout>
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
