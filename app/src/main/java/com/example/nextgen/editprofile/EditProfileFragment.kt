@@ -9,12 +9,14 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.domain.profile.ProfileController
 import com.example.model.Profile
 import com.example.nextgen.Fragment.BaseFragment
 import com.example.nextgen.Fragment.FragmentComponent
+import com.example.nextgen.R
 import com.example.nextgen.databinding.FragmentEditProfileBinding
 import com.example.utility.getProto
 import com.example.utility.putProto
@@ -75,6 +77,10 @@ class EditProfileFragment : BaseFragment() {
       pickPhotoIntent.type = "image/*"
       startActivityForResult(pickPhotoIntent, REQUEST_IMAGE_CAPTURE)
     }
+
+    // Edit by Soumyajit Chatterjee
+    var userId = profileController.getUserId()
+    val editText = binding.editTextUsername
     return binding.root
   }
 

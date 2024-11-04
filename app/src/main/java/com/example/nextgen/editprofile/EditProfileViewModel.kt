@@ -1,6 +1,7 @@
 package com.example.nextgen.editprofile
 
 import android.graphics.Bitmap
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.domain.profile.ProfileController
 import com.example.model.Profile
@@ -13,45 +14,30 @@ class EditProfileViewModel(
   private val profileController: ProfileController,
 ) : ObservableViewModel() {
 
-  val userName by lazy {
-    profile.userName
-  }
-
-  val firstName by lazy {
-    profile.firstName
-  }
-
-  val lastName by lazy {
-    profile.lastName
-  }
-
+  val userName = MutableLiveData<String>().apply { value = profile.userName }
+  val firstName = MutableLiveData<String>().apply { value = profile.firstName }
+  val lastName = MutableLiveData<String>().apply { value = profile.lastName }
+  val bio = MutableLiveData<String>().apply { value = profile.bio }
   var imageUrl: String = profile.imageUrl
 
-
-  val bio by lazy {
-    profile.bio
-  }
-
-
-  fun storeNewImage(bitmap: Bitmap, callback: (com.example.utility.Result<String>) -> Unit){
+  fun storeNewImage(bitmap: Bitmap, callback: (Result<String>) -> Unit) {
     viewModelScope.launch {
       profileController.uploadImageToStorage(bitmap = bitmap, userId = profile.userId) {
-        if (it is com.example.utility.Result.Success) {
+        if (it is Result.Success) {
           imageUrl = it.data.toString()
-          callback(com.example.utility.Result.Success(imageUrl))
+          callback(Result.Success(imageUrl))
         }
       }
     }
   }
 
   fun updateUserProfile(profile: Profile, callback: (Result<String>) -> Unit) {
-
     profileController.updateUserProfile(profile) {
-      if (it is com.example.utility.Result.Success)
+      if (it is Result.Success) {
         viewModelScope.launch {
-          profileController.setLocalUserProfile(profile,callback)
+          profileController.setLocalUserProfile(profile, callback)
         }
+      }
     }
   }
-
 }
