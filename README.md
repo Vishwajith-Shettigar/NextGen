@@ -14,11 +14,7 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 - **Rating System:** Rate your chat experience. If it was a dud, slap them with a 0-star review. 🌟😢
 
 ## Technologies Used 🛠️
-- **Android:** The app is tailor-made for Android devices. 🤖📱
-- **Firebase:** Powering up authentication, real-time database awesomeness, and storage ninja skills. 🔥🧙‍♀️
-- **WebRTC:** Real-time video calling sorcery. Let the calls flow like magic! 🎩🔮
-- **Google Maps API:** Pinpointing the exact coordinates of your newfound friends. 📍🗺️
-- **Kotlin:** The language of choice for Android wizardry. It’s like casting spells with code! 🧙‍♂️✨
+🤖 Android | 🔥 Firebase | 🎩 WebRTC | 📍 Google Maps API | 🧙‍♂️ Kotlin
 
 ## Screenshots 📸
 
