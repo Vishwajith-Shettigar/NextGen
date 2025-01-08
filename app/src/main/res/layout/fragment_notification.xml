@@ -6,21 +6,22 @@
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/home_screen_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
         android:gravity="center"
-        android:orientation="vertical">
-
+        android:id="@+id/empty_indicator"
+        >
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/under_construction_logo" />
-
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_empty"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/lilitaone_regular"
-            android:text="Feature coming soon! Stay tuned for updates." />
+            android:text="No Notifications."
+            android:textColor="@color/hint_color"/>
     </LinearLayout>
 </layout>

@@ -36,7 +36,7 @@ import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
 import kotlin.random.Random
 
-class HomeFragment : BaseFragment() {
+class  HomeFragment : BaseFragment() {
   @Inject
   lateinit var fragment: Fragment
 
@@ -83,6 +83,12 @@ class HomeFragment : BaseFragment() {
       layoutManager = chatLayoutManager
     }
     homeViewModel.chatList.observe(viewLifecycleOwner) {
+      if (it.size==0) {
+        binding.apply {
+          emptyIndicator.visibility = View.VISIBLE
+          chatsRecyclerview.visibility=View.GONE
+        }
+      }
       chatAdapter.itemList = it as MutableList<HomeItemViewModel>
     }
 
