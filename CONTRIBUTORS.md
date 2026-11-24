@@ -25,6 +25,14 @@ MAPS_API_KEY=[your google maps api key]
 SERVER_URL=[your video call server URL]
 ```
 
+Use a `ws://` or `wss://` endpoint for `SERVER_URL`, pointing to your own running
+video-call signaling server. See the [signaling server repository](https://github.com/Vishwajith-Shettigar/video-call-server-node.js)
+for the server code. A placeholder can document the required value, but it cannot
+establish a connection or be used to verify video calls.
+
+Keep `secrets.properties` local: the repository already ignores it. Never include
+real keys or private server configuration in a commit, issue, or pull request.
+
 ## 6. Clean & Rebuild 🛠️
 - Go to **Build > Clean Project**.
 - Then select **Build > Rebuild Project**.

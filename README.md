@@ -20,16 +20,16 @@ Interact with people within a 100-meter radius! Get real-time locations of nearb
 
 <table>
   <tr>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/67e113b9-71f8-4a41-8f12-58f4a70869ea" alt="Real-time Location" style="width: 0;height:600px"/></td>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/33567a7b-aa5e-4c45-a25b-d5007b9da686" alt="Chat Interface" style="width: 0;height:600px""/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/67e113b9-71f8-4a41-8f12-58f4a70869ea" alt="Real-time Location" width="280"/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/33567a7b-aa5e-4c45-a25b-d5007b9da686" alt="Chat Interface" width="280"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/e98f0919-9547-461f-8437-0d2a0cd81046" alt="Real-time Location" style="width: 0;height:600px"/></td>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/5b61abcb-4eb9-4d48-a204-cd1427d321d0" alt="Chat Interface" style="width: 0;height:600px""/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/e98f0919-9547-461f-8437-0d2a0cd81046" alt="Real-time Location" width="280"/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/5b61abcb-4eb9-4d48-a204-cd1427d321d0" alt="Chat Interface" width="280"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/493ea38d-8fa4-4596-ade8-937848672dc4" alt="Real-time Location" style="width: 0;height:600px"/></td>
-    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/278f6e58-65fe-41e2-b6ca-ec496e8410d1" alt="Chat Interface" style="width: 0;height:600px""/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/493ea38d-8fa4-4596-ade8-937848672dc4" alt="Real-time Location" width="280"/></td>
+    <td><img src="https://github.com/Vishwajith-Shettigar/NextGen/assets/76042077/278f6e58-65fe-41e2-b6ca-ec496e8410d1" alt="Chat Interface" width="280"/></td>
   </tr>
 </table>
 
@@ -76,7 +76,7 @@ If you encounter any issues while setting up or using NextGen, try the following
 
 ### 5. Clarification on SERVER_URL in secrets.properties from #47
 **Issue:** Uncertainty about the value to use for SERVER_URL.
-**Solution:** If you are not working on the video call feature, please add any random characters as a workaround (e.g., SERVER_URL=pbdwkw). This variable holds the video call server URL. 
+**Solution:** Set `SERVER_URL` to the WebSocket endpoint of your own running signaling server, using a `ws://` or `wss://` URL. For example, `SERVER_URL=wss://your-signaling-server.example` shows the expected format only; replace it with a reachable server before testing calls. Arbitrary text such as `pbdwkw` is not a usable WebSocket endpoint. The app passes this value to `WebSocketClient`, so a placeholder does not enable video calling.
 You can find the repository for reference [here](https://github.com/Vishwajith-Shettigar/video-call-server-node.js).
 
 ## TODO 📝
